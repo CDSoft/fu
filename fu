@@ -1,0 +1,2524 @@
+#!/bin/env lua
+-- vim: set ts=4 sw=4 foldmethod=marker :
+
+--[[====================================================================
+Fedora Updater (fu): lightweight Fedora « distribution »
+
+Copyright (C) 2018-2020 Christophe Delord
+https://github.com/CDSoft/fu
+
+This file is part of Fedora Updater (FU)
+
+FU is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FU is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FU.  If not, see <http://www.gnu.org/licenses/>.
+====================================================================--]]
+
+function help()
+    printI [[
+usage: %(basename(arg[0])) options
+
+    %(basename(arg[0])) installs and configures some softwares I use on
+    Linux at home and at work:
+    - zsh, fzf, some plugins
+    - neovim and some plugins
+    - i3 and some personal tools
+    - programming languages (Haskell, OCaml, Rust, Julia, Zig, ...)
+    - pandoc, LaTeX, ...
+    - zoom
+    - and much more (Use the source, Luke!)
+
+options:
+    -h          help
+    -f          force update
+    -u          upgrade packages
+    -r          reset
+
+hooks:
+    ~/.zuser    additional definitions loaded at the end of .zshrc
+]]
+    os.exit()
+end
+
+-- Utilities {{{
+
+function I(s)
+    return (s:gsub("%%(%b())", function(x)
+        return (assert(load("return "..x)))()
+    end))
+end
+
+function dirname(s)
+    return (s:gsub("[^/]*$", ""))
+end
+
+function basename(s)
+    return (s:gsub(".*/([^/]*)$", "%1"))
+end
+
+-- }}}
+
+HOME = os.getenv "HOME"
+USER = os.getenv "USER"
+
+fu_path = I"%(HOME)/.config/fu"
+config_path = I"%(fu_path)/config"
+repo_path = I"%(fu_path)/repos"
+
+TIMEZONE = "Europe/Paris"
+KEYMAP = "fr"
+LOCALE = "fr_FR.UTF-8"
+
+BROWSER = "firefox"
+BROWSER2 = "google-chrome"
+
+LATEST_LTS = "lts-16.20"
+
+RACKET_VERSION = "7.9"
+RACKET_NAME = I"racket-%(RACKET_VERSION)"
+RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux.sh"
+
+JULIA_VERSION = "1.5.2"
+JULIA_NAME = I"julia-%(JULIA_VERSION)"
+JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
+
+ZIG_VERSION = "0.7.0+73f3f0167"
+ZIG_ARCHIVE = I"zig-linux-x86_64-%(ZIG_VERSION).tar.xz"
+ZIG_URL = I"https://ziglang.org/builds/%(ZIG_ARCHIVE)"
+ZIG_DIR = I"%(ZIG_ARCHIVE:gsub('%.tar%.xz$', ''))"
+
+DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
+
+function main()
+    title "Fedora Updater"
+
+    for _, a in ipairs(arg) do
+        if a == "-h" then help() end
+        if a == "-f" then force = true; upgrade = true end
+        if a == "-u" then upgrade = true end
+        if a == "-r" then reset() end
+    end
+
+    identification()
+
+    -- Step 0: essential packages used by this script
+    install_essential_packages()
+
+    install_packages()
+
+    -- Step 1: other packages
+    system_configuration()
+    shell_configuration()
+    network_configuration()
+    if cfg_yesno("dropbox", "Install dropbox?") then dropbox_configuration() end
+    filesystem_configuration()
+    dev_configuration()
+    if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
+    if cfg_yesno("ocaml", "Install OCaml?") then ocaml_configuration() end
+    if cfg_yesno("racket", "Install Racket?") then racket_configuration() end
+    if cfg_yesno("rust", "Install Rust?") then rust_configuration() end
+    if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
+    if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
+    text_edition_configuration()
+    pandoc_configuration()
+    if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
+    if cfg_yesno("mdbook", "Install MDBook?") then mdbook_configuration() end
+    if cfg_yesno("sphinx", "Install Sphinx?") then sphinx_configuration() end
+    neovim_configuration()
+    i3_configuration()
+    graphic_application_configuration()
+    if cfg_yesno("povray", "Install Povray?") then povray_configuration() end
+    internet_configuration()
+    if cfg_yesno("zoom", "Install Zoom?") then zoom_configuration() end
+    if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
+    if cfg_yesno("work", "Install work configuration?") then work_configuration() end
+
+    install_packages()
+    upgrade_packages()
+end
+
+-- Configuration {{{
+
+function reset()
+    sh "rm -rf %(config_path)"
+end
+
+function cfg_yesno(param, question)
+    local answer = nil
+    local config_file = config_path.."/"..param
+    if not file_exist(config_file) then
+        repeat
+            io.write(question.." [y/n] ")
+            answer = io.read("l"):lower():gsub("^%s*(%S).*$", "%1")
+        until answer:match("[yn]")
+        mkdir(config_path)
+        write(config_file, answer)
+    end
+    answer = read(config_file):lower():gsub("^%s*(%S).*$", "%1")
+    return answer:match "y"
+end
+
+function cfg_string(param, question)
+    local answer = nil
+    local config_file = config_path.."/"..param
+    if not file_exist(config_file) then
+        repeat
+            io.write(question.." ")
+            answer = io.read("l"):gsub("^%s+", ""):gsub("%s+$", "")
+        until #answer > 0
+        mkdir(config_path)
+        write(config_file, answer)
+    end
+    answer = read(config_file):gsub("^%s+", ""):gsub("%s+$", "")
+    return answer
+end
+
+-- }}}
+
+-- Utilities {{{
+
+function set()
+    local set = {}
+    local ordered = {}
+    local self = {}
+    function self.len() return #ordered end
+    function self.add(item)
+        item:gsub("%S+", function(name)
+            if set[name] == nil then
+                set[name] = true
+                table.insert(ordered, name)
+            end
+        end)
+    end
+    function self.ipairs() return ipairs(ordered) end
+    function self.concat(sep) return table.concat(ordered, sep) end
+    return self
+end
+
+function printI(s)
+    print(I(s))
+end
+
+function title(s)
+    local cols = pipe "tput cols"
+    local color = string.char(27).."[44m"
+    local normal = string.char(27).."[0m"
+    s = I(s)
+    io.write(string.char(27).."]0;fu: "..s..string.char(7)) -- windows title
+    s = s .. string.rep(" ", cols - #s - 4)
+    io.write(color.."### "..s..normal.."\n")
+end
+
+function log(s)
+    local color = string.char(27).."[44m"
+    local normal = string.char(27).."[0m"
+    s = I(s)
+    io.write(color.."### "..s.." "..normal.."\n")
+end
+
+function file_exist(path)
+    local f = io.open(path, "r")
+    if f then
+        f:close()
+        return true
+    else
+        return false
+    end
+end
+
+function dir_exist(path)
+    return file_exist(path)
+end
+
+function read(path)
+    local f = assert(io.open(path, "r"))
+    local content = f:read("a")
+    f:close()
+    return content
+end
+
+function write(path, content)
+    local f = assert(io.open(path, "w"))
+    f:write(content)
+    f:close()
+end
+
+function rootfile(path, content)
+    with_tmpfile(function(tmp)
+        write(tmp, content)
+        sh("sudo cp "..tmp.." "..path)
+        sh("sudo chmod 644 "..path)
+        sh("sudo chown root:root "..path)
+    end)
+end
+
+function pipe(cmd, stdin)
+    local mode = stdin and "w" or "r"
+    local f = io.popen(cmd, mode)
+    if stdin then
+        f:write(stdin)
+        f:close()
+    else
+        local result = f:read("a"):gsub("^%s+", ""):gsub("%s+$", "")
+        f:close()
+        return result
+    end
+end
+
+function with_tmpfile(f)
+    local tmp = os.tmpname()
+    f(tmp)
+    os.remove(tmp)
+end
+
+function with_tmpdir(f)
+    local tmp = os.tmpname()
+    os.remove(tmp)
+    sh("mkdir "..tmp)
+    f(tmp)
+    sh("rm -rf "..tmp)
+end
+
+function sh(cmd) assert(os.execute(I(cmd))) end
+
+function mkdir(path) sh("mkdir -p "..path) end
+
+function rm(path) os.remove(path) end
+
+function identification()
+    MYHOSTNAME = cfg_string("hostname", "Hostname:")
+    RELEASE = pipe "rpm -E %fedora"
+    log "release : Fedora %(RELEASE)"
+    log "hostname: %(MYHOSTNAME)"
+end
+
+repos = set()
+coprs = set()
+packages = set()
+
+function install_packages()
+    if repos.len() > 0 or coprs.len() > 0 then upgrade = true end
+
+    if force or upgrade then
+        title "Install packages"
+        for _, repo in repos.ipairs() do sh("sudo dnf install -y \""..repo.."\"") end
+        for _, copr in coprs.ipairs() do sh("sudo dnf copr enable \""..copr.."\"") end
+        if packages.len() > 0 then
+            sh("sudo dnf install "..packages.concat(" ").." --skip-broken --best --allowerasing")
+        end
+    end
+
+    repos = set()
+    coprs = set()
+    packages = set()
+end
+
+function upgrade_packages()
+    if force or upgrade then
+        title "Upgrade packages"
+        sh "sudo dnf upgrade"
+    end
+end
+
+function installed(cmd)
+    local found = (os.execute("hash "..cmd.." 2>/dev/null"))
+    return found
+end
+
+function envscript(name, content)
+    log("Create "..name)
+    name = HOME.."/"..name
+    mkdir(dirname(name))
+    write(name, content)
+end
+
+function script(name, content)
+    log("Create "..name)
+    name = HOME.."/.local/bin/"..name
+    mkdir(dirname(name))
+    write(name, content)
+    sh("chmod +x "..name)
+end
+
+function gitclone(url)
+    print("gitclone", url)
+    local name = basename(url)
+    mkdir(repo_path)
+    local path = repo_path.."/"..name:gsub("%.git$", "")
+    if dir_exist(path) then
+        if force or upgrade then
+            log("Upgrade "..url.." to "..path)
+            sh("cd "..path.." && git pull")
+        end
+    else
+        log("Clone "..url.." to "..path)
+        sh("git clone "..url.." "..path)
+    end
+end
+
+-- }}}
+
+-- Essential packages {{{
+
+function install_essential_packages()
+    log "Check essential packages"
+    if not installed("git") then packages.add "git"; upgrade = true end
+    if not installed("pip") then packages.add "python-pip"; upgrade = true end
+    if not installed("autoconf") then packages.add "autoconf"; upgrade = true end
+    if not installed("automake") then packages.add "automake"; upgrade = true end
+end
+
+-- }}}
+
+-- System packages {{{
+
+function system_configuration()
+    title "System configuration"
+
+    if not file_exist("/etc/yum.repos.d/rpmfusion-free.repo") then repos.add(I"https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm") end
+    if not file_exist("/etc/yum.repos.d/rpmfusion-nonfree.repo") then repos.add(I"http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm") end
+
+    packages.add [[
+        dnf-plugins-core dnfdragora
+        fedora-workstation-repositories
+    ]]
+
+    -- Locale and timezone
+    sh "sudo timedatectl set-timezone %(TIMEZONE)"
+    sh "sudo localectl set-keymap %(KEYMAP)"
+    sh "sudo localectl set-locale %(LOCALE)"
+
+    -- No more poweroff
+    sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
+
+    -- crontab
+    pipe("crontab -", I[[
+0 * * * * %(HOME)/.local/bin/wallpaper
+]])
+end
+
+-- }}}
+
+-- Shell configuration {{{
+
+function shell_configuration()
+    title "Shell configuration"
+
+    packages.add [[
+        zsh
+        powerline-fonts
+        grc bat fzf
+        PackageKit-command-not-found
+        util-linux-user
+        inotify-tools
+        htop
+        pwgen
+        ripgrep
+        exa
+        fd-find
+        tmux
+    ]]
+
+    sh(I"chsh -s /bin/zsh %(USER)")
+
+    envscript(".zprofile", I[[
+export PATH=~/.local/bin:$PATH
+
+export EDITOR=nvim
+export VISUAL=nvim
+export BROWSER=%(BROWSER)
+
+# Get the aliases and functions
+if [ -f ~/.zshrc ]; then
+    . ~/.zshrc
+fi
+
+# User specific environment and startup programs
+eval "$(ssh-agent -s)"
+]])
+
+    envscript(".zshrc", I[[
+
+# Aliases
+
+alias ll='ls -lh'
+alias la='ll -a'
+alias lt='ll -rt'
+
+alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
+
+alias more=less
+alias df='df -h'
+alias du='du -h'
+
+alias ocaml='rlwrap ocaml'
+alias luajit='rlwrap luajit'
+
+# OMZ scripts
+
+. %(repo_path)/ohmyzsh/lib/completion.zsh
+. %(repo_path)/ohmyzsh/lib/correction.zsh
+. %(repo_path)/ohmyzsh/lib/history.zsh
+. %(repo_path)/ohmyzsh/lib/key-bindings.zsh
+
+# Completion
+
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+%(cfg_yesno("haskell", "Install Haskell?") and 'eval "$(stack --bash-completion-script stack)"' or '')
+eval "$(pandoc --bash-completion)"
+
+# Third-party configuration
+
+%(cfg_yesno("ocaml", "Install OCaml?") and '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true' or '')
+%(cfg_yesno("racket", "Install Racket?") and 'export PATH=$PATH:~/.local/opt/%(RACKET_NAME)/bin' or '')
+%(cfg_yesno("rust", "Install Rust?") and '. ~/.cargo/env' or '')
+
+# Plugins
+
+export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
+export FZF_DEFAULT_OPTS="-m --height 80% --border --preview='bat --style=numbers --color always --theme Dracula {}'"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Starship: https://starship.rs
+eval "$(starship init zsh)"
+
+function set_win_title(){
+    echo -ne "\033]0;${PWD/#$HOME/~}\007"
+}
+
+precmd_functions+=(set_win_title)
+
+# https://github.com/zsh-users/zsh-syntax-highlighting
+
+. %(repo_path)/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+
+# Enable highlighters
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
+
+# Override highlighter colors
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=red,bold'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=red,bold'
+
+# https://github.com/zsh-users/zsh-autosuggestions
+
+ZSH_AUTOSUGGEST_STRATEGY=(history)
+
+. %(repo_path)/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+%( cfg_yesno("work", "Install work configuration") and [==[
+# Work configuration
+
+#alias docker='docker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -v /dev/bus/usb:/dev/bus/usb --privileged -p host_port:container_port/tcp'
+xhost +local:root > /dev/null
+
+alias subup='git submodule sync && git submodule update --init --recursive'
+
+alias stop_containers="docker ps -q | xargs --no-run-if-empty docker stop"
+alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
+alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-run-if-empty docker rmi"
+alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
+
+. /usr/lib64/ros/setup.zsh
+]==] or ""
+)
+
+# Other user configuration
+
+[ -f ~/.zuser ] && . ~/.zuser
+
+]])
+
+    envscript(".config/starship.toml", [[
+add_newline = true
+
+[line_break]
+disabled = false
+
+[aws]
+disabled = true
+
+[cmake]
+disabled = true
+
+[conda]
+disabled = true
+
+[crystal]
+disabled = true
+
+[dart]
+disabled = true
+
+[directory]
+truncation_length = 0
+truncate_to_repo = false
+
+[docker_context]
+disabled = true
+
+[dotnet]
+disabled = true
+
+[elixir]
+disabled = true
+
+[elm]
+disabled = true
+
+[erlang]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[golang]
+disabled = true
+
+[helm]
+disabled = true
+
+[java]
+disabled = true
+
+[julia]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[lua]
+disabled = true
+
+[nim]
+disabled = true
+
+[nix_shell]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[ocaml]
+disabled = true
+
+[openstack]
+disabled = true
+
+[package]
+disabled = true
+
+[perl]
+disabled = true
+
+[php]
+disabled = true
+
+[purescript]
+disabled = true
+
+[python]
+disabled = true
+
+[ruby]
+disabled = true
+
+[rust]
+disabled = true
+
+[singularity]
+disabled = true
+
+[status]
+disabled = false
+
+[swift]
+disabled = true
+
+[teraform]
+disabled = true
+
+[zig]
+disabled = true
+
+]])
+
+    gitclone "https://github.com/ohmyzsh/ohmyzsh.git" -- not installed, some scripts will be sourced
+    gitclone "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    gitclone "https://github.com/zsh-users/zsh-autosuggestions"
+    if force or upgrade or not file_exist(I"%(HOME)/.local/bin/starship") then
+        with_tmpfile(function(tmp)
+            sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && bash "..tmp.." -f -b ~/.local/bin")
+        end)
+    end
+
+    script("vi", [[
+#!/bin/bash
+if tty -s
+then
+    nvim -p $*
+else
+    konsole -e nvim -p $*
+fi
+]])
+
+    gitclone "https://github.com/junegunn/fzf.git"
+    sh "cd %(repo_path)/fzf && ./install --key-bindings --completion --no-update-rc"
+
+    envscript(".tmux/conf", [[
+# Use C-a instead of C-b
+#set -g prefix C-a
+#unbind-key C-b
+#bind-key C-a send-prefix
+
+# reload config file (change file location to your the tmux.conf you want to use)
+bind r source-file ~/.tmux.conf
+
+set -g base-index 1
+
+# switch panes using Alt-arrow without prefix
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# switch windows using Alt-Shift-arrow without prefix
+bind -n M-S-Left select-window -t:-
+bind -n M-S-Right select-window -t:+
+
+# Enable mouse control (clickable windows, panes, resizable panes)
+#set -g mouse-select-window on
+#set -g mouse-select-pane on
+#set -g mouse-resize-pane on
+
+# Enable mouse mode (tmux 2.1 and above)
+set -g mouse on
+
+# don't rename windows automatically
+#set-option -g allow-rename off
+
+# open new panes on the same directory
+bind c new-window -c "#{pane_current_path}"
+bind '"' split-window -c "#{pane_current_path}"
+bind % split-window -h -c "#{pane_current_path}"
+
+# interface
+
+#------------
+# pane
+#------------
+#set -g mouse-select-pane on
+#set -g pane-border-fg blue
+#set -g pane-active-border-fg green
+
+#------------
+# tabs
+#------------
+setw -g window-status-format "#[fg=white]#[bg=blue] #I #W "
+setw -g window-status-current-format "#[fg=black]#[bg=green] #I #W "
+#setw -g window-status-content-attr bold,blink,reverse
+
+#------------
+# status bar
+#------------
+set-option -g status-position bottom
+set -g status-fg white
+set -g status-bg blue
+set -g status-left-length 16
+set -g status-left ' #S | '
+set -g status-right-length 60
+set -g status-right '%d/%m/%Y | %H:%M '
+]])
+
+end
+
+-- }}}
+
+-- Network configuration {{{
+
+function network_configuration()
+    title "Network configuration"
+
+    packages.add [[
+        nmon
+        openssh openssh-server
+        nmap
+        blueman
+        network-manager-applet NetworkManager-tui
+        socat
+        sshpass
+        minicom
+        wireshark
+        tigervnc
+        can-utils
+        openvpn
+    ]]
+
+    -- hostname
+    sh "sudo hostname %(MYHOSTNAME)"
+    rootfile("/etc/hostname", I"%(MYHOSTNAME)\n")
+
+    -- ssh
+    sh "sudo systemctl start sshd"
+    sh "sudo systemctl enable sshd"
+    sh "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
+    script("ssha", [[
+#!/bin/bash
+
+#eval "$(ssh-agent -s)" >/dev/null
+
+case "$1" in
+    -f|-c)  ssh-add -D ;;
+    *)      ;;
+esac
+
+if ssh-add -L | grep -q $(ls ~/.ssh/id_rsa)
+then
+    echo "ssh key already loaded"
+else
+    ssh-add
+fi
+]])
+
+    -- sshd
+    sh "sudo chkconfig sshd on"
+    sh "sudo service sshd start"
+
+    -- wireshark
+    sh "sudo usermod -a -G wireshark %(USER)"
+
+end
+
+-- }}}
+
+-- Dropbox configuration {{{
+
+function dropbox_configuration()
+
+    packages.add [[ PyQt4 libatomic ]]
+
+    if force or not file_exist(I"%(HOME)/.dropbox-dist/dropboxd") then
+        title "Dropbox configuration"
+        sh "rm -rf ~/.dropbox-dist"
+        sh("cd ~ && wget -O - %(DROPBOXINSTALL) | tar xzf -")
+    end
+
+end
+
+-- }}}
+
+-- Filesystem configuration {{{
+
+function filesystem_configuration()
+    title "Filesystem configuration"
+
+    packages.add [[
+        gparted
+        udftools
+        encfs
+        p7zip p7zip-gui p7zip-plugins
+        mc pcmanfm
+        dolphin
+        krusader kdiff3 krename
+        pmount
+        exfat-utils fuse-exfat
+        syslinux
+        backintime-common backintime-qt4
+        cryptsetup
+        squashfs-tools squashfuse
+        baobab ncdu qdirstat
+        xz unrar
+    ]]
+
+end
+
+-- }}}
+
+-- Development environment configuration {{{
+
+function dev_configuration()
+    title "Development environment configuration"
+
+    if cfg_yesno("R", "Install R?") then packages.add [[ R ]] end
+
+    packages.add [[
+        git git-gui gitk qgit gitg tig git-lfs
+        subversion
+        clang llvm clang-tools-extra
+        cppcheck
+        cmake
+        ncurses-devel
+        readline-devel
+        meld
+        pl pl-xpce
+        libev-devel startup-notification-devel xcb-util-devel xcb-util-cursor-devel xcb-util-keysyms-devel xcb-proto xcb-util-wm-devel xcb-util-xrm-devel libxkbcommon-devel libxkbcommon-x11-devel yajl-devel
+        arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++ arm-none-eabi-gdb
+        mingw64-gcc
+        gcc-gnat
+        python-pip
+        pypy
+        lua lua-filesystem lua-fun lua-lpeg lua-posix lua-socket luajit
+        lua-devel
+        glfw
+        flex bison
+        perl-ExtUtils-MakeMaker
+        SDL2-devel SDL2_ttf-devel SDL2_gfx-devel
+        libpcap-devel
+        libyaml libyaml-devel
+        libubsan libubsan-static libasan libasan-static libtsan libtsan-static
+        expect
+        python3-devel
+        python3-PyYAML python3-termcolor
+        wine
+        pkgconfig
+        boost boost-devel
+        libjpeg-turbo-devel libpng-devel libtiff-devel
+        npm
+        liblzma-devel
+        protobuf-devel python3-protobuf
+        lzma-devel xz-devel zlib-devel
+        blas-devel lapack-devel
+        gnuplot
+        openssl-devel
+        tokei
+    ]]
+
+    -- pip
+    if force or upgrade then sh "python -m pip install --user --upgrade pip" end
+
+    -- git
+    -- https://stackoverflow.com/questions/34119866/setting-up-and-using-meld-as-your-git-difftool-and-mergetool
+    -- use git meld to call git difftool with meld
+    sh "git config --global alias.meld '!git difftool -t meld --dir-diff'"
+    sh "git config --global core.excludesfile ~/.gitignore"
+
+    -- PMcCabe
+    if force or upgrade or not installed "pmccabe" then
+        gitclone "https://github.com/datacom-teracom/pmccabe"
+        sh "cd %(repo_path)/pmccabe && make && cp pmccabe ~/.local/bin"
+    end
+end
+
+-- }}}
+
+-- Haskell configuration {{{
+
+function haskell_configuration()
+    title "Haskell configuration"
+
+    if cfg_yesno("haskell-platform", "Install haskell-platform?") then packages.add [[ haskell-platform ]] end
+
+    if not installed "stack" then
+        sh "curl -sSL https://get.haskellstack.org/ | sh"
+    elseif force or upgrade then
+        sh "stack upgrade"
+    end
+
+    local RESOLVER = LATEST_LTS
+    local HASKELL_PACKAGES = {
+        "hlint",
+        "hoogle",
+        "matplotlib",
+        "gnuplot",
+    }
+    if force or upgrade then
+        for _, package in ipairs(HASKELL_PACKAGES) do
+            sh("stack install --resolver="..RESOLVER.." "..package)
+        end
+    end
+
+    -- hCalc
+    if force or upgrade or not installed "hcalc" then
+        gitclone "http://github.com/cdsoft/hcalc"
+        sh "cd %(repo_path)/hcalc && make install"
+    end
+
+end
+
+-- }}}
+
+-- OCaml configuration {{{
+
+function ocaml_configuration()
+
+    packages.add [[
+        z3
+        cvc4
+    ]]
+
+    if force or not installed "opam" then
+        title "OCaml configuration"
+        sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
+        sh "opam update && opam upgrade"
+        sh "opam install depext"
+        sh "opam depext frama-c"
+        sh "opam install frama-c coq why3 alt-ergo"
+    end
+
+end
+
+-- }}}
+
+-- Racket configuration {{{
+
+function racket_configuration()
+
+    if force or not installed "racket" then
+        title "Racket configuration"
+        mkdir "%(HOME)/.local/opt"
+        sh "rm -rf ~/.local/opt/racket-*"
+        sh "wget %(RACKETINST) -O ~/.local/opt/%(basename(RACKETINST))"
+        sh "sh ~/.local/opt/%(basename(RACKETINST)) --in-place --dest ~/.local/opt/%(RACKET_NAME)"
+    end
+
+end
+
+-- }}}
+
+-- Rust configuration {{{
+
+function rust_configuration()
+
+    if not installed "rustc" then
+        title "Rust configuration"
+        with_tmpfile(function(tmp)
+            sh("curl https://sh.rustup.rs -sSf -o "..tmp.." && sh "..tmp.." -y -v --no-modify-path")
+        end)
+        sh "rustup update stable"
+    elseif force or upgrade then
+        title "Rust configuration"
+        sh "rustup update stable"
+    end
+
+end
+
+-- }}}
+
+-- Julia configuration {{{
+
+function julia_configuration()
+
+    if force or not installed "julia" then
+        title "Julia configuration"
+
+        mkdir(HOME.."/.local/bin")
+        mkdir(HOME.."/.local/opt")
+        sh "wget %(JULIA_ARCHIVE) -O ~/.local/opt/%(basename(JULIA_ARCHIVE))"
+        sh "rm -rf ~/.local/opt/%(JULIA_NAME)"
+        sh "tar xzf ~/.local/opt/%(basename(JULIA_ARCHIVE)) -C ~/.local/opt"
+        sh "ln -f -s ~/.local/opt/%(JULIA_NAME)/bin/julia ~/.local/bin/julia"
+    end
+
+end
+
+-- }}}
+
+-- Zig configuration {{{
+
+function zig_configuration()
+
+    if force or not installed "zig" then
+        title "Zig configuration"
+
+        mkdir(HOME.."/.local/bin")
+        mkdir(HOME.."/.local/opt")
+        sh "wget %(ZIG_URL) -O ~/.local/opt/%(basename(ZIG_URL))"
+        sh "rm -rf ~/.local/opt/%(ZIG_DIR)"
+        sh "tar xJf ~/.local/opt/%(basename(ZIG_URL)) -C ~/.local/opt"
+        sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
+    end
+
+end
+
+-- }}}
+
+-- Text edition configuration {{{
+
+function text_edition_configuration()
+    title "Text edition configuration"
+
+    packages.add [[
+        wkhtmltopdf
+        aspell-fr aspell-en
+        figlet
+        translate-shell
+        doxygen
+        gnuplot
+        graphviz plantuml
+    ]]
+
+end
+
+-- }}}
+
+-- Pandoc configuration {{{
+
+function pandoc_configuration()
+    title "Pandoc configuration"
+
+    packages.add [[
+        pandoc
+    ]]
+
+    -- TODO: modifier l'installation de abp quand il sera écrit en Lua
+    if cfg_yesno("haskell", "Install Haskell?") then
+        if force or upgrade or not installed "abp" then
+            gitclone "http://github.com/cdsoft/abp"
+            sh "cd %(repo_path)/abp && stack install"
+        end
+    end
+
+    if cfg_yesno("haskell", "Install Haskell?") and cfg_yesno("pp", "Install pp?") then
+        if force or upgrade or not installed "pp" then
+            gitclone "http://github.com/cdsoft/pp"
+            sh "cd %(repo_path)/pp && make install"
+        end
+    end
+
+    if force or not file_exist(I"%(HOME)/.local/bin/plantuml.jar") then
+        sh "wget http://sourceforge.net/projects/plantuml/files/plantuml.jar -O ~/.local/bin/plantuml.jar"
+    end
+
+    if force or not file_exist(I"%(HOME)/.local/bin/ditaa.jar") then
+        sh "wget https://github.com/stathissideris/ditaa/releases/download/v0.11.0/ditaa-0.11.0-standalone.jar -O ~/.local/bin/ditaa.jar"
+    end
+
+    if force or upgrade or not installed "blockdiag" then
+        sh "pip3 install --user blockdiag seqdiag actdiag nwdiag"
+    end
+
+    if force or upgrade or not file_exist(I"%(HOME)/.local/opt/mermaid/node_modules/.bin/mmdc") then
+        mkdir "%(HOME)/.local/opt/mermaid"
+        sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
+    end
+
+end
+
+-- }}}
+
+-- LaTeX configuration {{{
+
+function latex_configuration()
+    title "LaTeX configuration"
+
+    packages.add [[
+        texlive texlive-scheme-full
+        graphviz plantuml asymptote
+    ]]
+
+end
+
+-- }}}
+
+-- MDBook configuration {{{
+
+function mdbook_configuration()
+    title "MDBook configuration"
+
+    local MDBOOK_PACKAGES = {
+        "mdbook",
+        "mdbook-toc",
+        "mdbook-latex",
+        "mdbook-plantuml",
+        "mdbook-mermaid",
+        "mdbook-checklist",
+        "mdbook-presentation-preprocessor",
+    }
+    for _, package in ipairs(MDBOOK_PACKAGES) do
+        if force or not installed(package) then
+            sh("cargo install %(force and '--force' or '') "..package)
+        end
+    end
+end
+
+-- }}}
+
+-- Sphinx configuration {{{
+
+function sphinx_configuration()
+
+    if force or upgrade or not installed "sphinx-build" then
+        title "Sphinx configuration"
+        sh "pip3 install --user sphinx==2.4.4 sphinxcontrib-plantuml breathe recommonmark sphinx-rtd-theme pyaml"
+        sh "pip3 install --user scipy matplotlib"
+    end
+
+end
+
+-- }}}
+
+-- neovim configuration {{{
+
+function neovim_configuration()
+    title "neovim configuration"
+
+    packages.add [[
+        neovim
+        fzf
+        ccrypt pwgen
+        gzip
+    ]]
+
+    envscript(".config/nvim/init.vim", [==[
+" Nvim configuration
+
+" Plugins {{{
+call plug#begin()
+
+Plug 'git@github.com:CDSoft/pwd.git'
+Plug 'git@github.com:CDSoft/todo.git'
+Plug 'https://github.com/thinca/vim-localrc.git'
+Plug 'https://github.com/w0rp/ale.git'
+Plug 'https://github.com/ziglang/zig.vim'
+Plug 'https://github.com/JuliaEditorSupport/julia-vim.git'
+Plug 'https://github.com/godlygeek/tabular.git'
+Plug 'https://github.com/vim-pandoc/vim-pandoc.git'
+Plug 'https://github.com/vim-pandoc/vim-pandoc-syntax.git'
+Plug 'https://github.com/junegunn/fzf.vim.git'
+Plug 'https://github.com/NLKNguyen/papercolor-theme.git'
+Plug 'https://github.com/luochen1990/rainbow.git'
+Plug 'https://github.com/jiangmiao/auto-pairs.git'
+
+call plug#end()
+" }}}
+
+" Startup {{{
+syntax on
+set nocompatible " use vim power
+set loadplugins
+filetype plugin on
+filetype indent on
+filetype on
+" }}}
+
+" File types {{{
+au BufRead,BufNewFile *.md,*.i set filetype=markdown
+autocmd Filetype markdown setlocal spell
+autocmd Filetype markdown set spelllang=en,fr
+
+au BufRead,BufNewFile *.rst set filetype=rst
+autocmd Filetype rst setlocal spell
+autocmd Filetype rst set spelllang=en,fr
+
+au BufRead,BufNewFile *.pl set filetype=prolog
+" }}}
+
+" Keyboard {{{
+let mapleader = "²"
+let g:mapleader = "²"
+" }}}
+
+" Firefox like navigation {{{
+" (https://vim.fandom.com/wiki/Alternative_tab_navigation)
+nnoremap <C-S-tab> :tabprevious<CR>
+nnoremap <C-tab>   :tabnext<CR>
+nnoremap <C-t>     :tabnew<CR>
+inoremap <C-S-tab> <Esc>:tabprevious<CR>i
+inoremap <C-tab>   <Esc>:tabnext<CR>i
+inoremap <C-t>     <Esc>:tabnew<CR>
+" }}}
+
+" Automatic layout {{{
+set autoindent
+set backspace=indent,eol,start
+set expandtab
+set shiftround " round indent to multiple of shiftwidth
+set shiftwidth=4
+set smartindent
+set smarttab
+set softtabstop=4
+set tabstop=4
+" }}}
+
+" Selection {{{
+set clipboard+=unnamed
+set clipboard+=unnamedplus
+if !has('nvim')
+    set clipboard+=autoselect
+endif
+set mouse=a
+" }}}
+
+" Search {{{
+set hlsearch
+" set ignorecase
+set incsearch
+set infercase " when ignorecase, the completion also modifies the case
+set magic
+set showmatch
+set smartcase
+" }}}
+
+" Netrw {{{
+"let g:netrw_liststyle= 4 " tree style
+" Tweaks for browsing
+"let g:netrw_banner=0        " disable annoying banner
+"let g:netrw_browse_split=4  " open in prior window
+"let g:netrw_altv=1          " open splits to the right
+let g:netrw_liststyle=3     " tree view
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+" }}}
+
+" Directories {{{
+"set autochdir " the current directory is the directory of the current file
+set browsedir=buffer " browse the directory of the buffer
+set path+=** " do not use with autochdir
+" }}}
+
+" Files {{{
+set nobomb " add a BOM when writing a UTF-8 file
+set encoding=utf-8
+set fileencoding=utf-8
+set fsync
+" }}}
+
+" ctags / hasktags {{{
+" Create the `tags` file (may need to install ctags first)
+command! CTags !ctags -R .
+command! HTags !hasktags --ignore-close-implementation --ctags .
+" }}}
+
+" fzf {{{
+nnoremap <silent> <Leader>b :Buffers<CR>
+nnoremap <silent> <Leader>f :Rg<CR>
+if system("git rev-parse --is-inside-work-tree 2>/dev/null") == ""
+    nnoremap <silent> <C-f> :Files<CR>
+else
+    nnoremap <silent> <C-f> :GFiles<CR>
+endif
+
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
+" [[B]Commits] Customize the options used by 'git log':
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+" [Tags] Command to generate tags file
+let g:fzf_tags_command = 'ctags -R'
+
+" [Commands] --expect expression for directly executing the command
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+" }}}
+
+" Make {{{
+set makeprg=make " '%' '#' : current and alternate file name
+" }}}
+
+" Vimgrep {{{
+
+set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+
+" Search the word under the cursor in all files
+map <F4> :execute "vimgrep /" . expand("<cword>") . "/j ../**" <Bar> cw<CR>
+
+" When you press gv you vimgrep after the selected text
+vnoremap <silent> gv :call VisualSelection('gv')<CR>
+
+" Open vimgrep and put the cursor in the right position
+map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+
+" Vimgreps in the current file
+map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
+
+" When you press <leader>r you can search and replace the selected text
+vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
+
+" Do :help cope if you are unsure what cope is. It's super useful!
+"
+" When you search with vimgrep, display your results in cope by doing:
+"   <leader>cc
+"
+" To go to the next search result do:
+"   <leader>n
+"
+" To go to the previous search results do:
+"   <leader>p
+"
+map <leader>cc :botright cope<cr>
+map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
+map <leader>n :cn<cr>
+map <leader>p :cp<cr>
+
+function! CmdLine(str)
+    exe "menu Foo.Bar :" . a:str
+    emenu Foo.Bar
+    unmenu Foo
+endfunction
+
+
+function! VisualSelection(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+" }}}
+
+" HTML export {{{
+let g:html_number_lines = 0
+" }}}
+
+" ALE {{{
+let g:ale_sh_shellcheck_options = "-x"
+let g:ale_sh_shellcheck_exclusions = 'SC1090,SC2029'
+
+let g:ale_linters = {
+    \ 'c': ["gcc", "clang", "clang-tidy", "cppcheck"],
+    \ 'h': [],
+    \ 'cpp': ["gcc", "clang", "clang-tidy", "cppcheck"],
+    \ 'haskell': ["stack-ghc", "hlint"],
+    \ 'rust': ["cargo", "rls"],
+    \ 'shell': ["shellcheck"],
+    \ }
+
+let g:ale_linters_explicit = 1
+
+let g:ale_haskell_hdevtools_options = '-g -Wall'
+" }}}
+
+" Markdown {{{
+
+" https://github.com/plasticboy/vim-markdown
+let g:vim_markdown_folding_disabled = 1
+
+" https://github.com/vim-pandoc/vim-pandoc-syntax
+let g:pandoc#syntax#conceal#use=0
+hi link pandocAtxHeader Directory
+hi link pandocSetexHeader Directory
+augroup pandoc_syntax
+    au! BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
+augroup END
+
+" }}}
+
+" ghc-mod {{{
+"map <silent> tw :GhcModTypeInsert<CR>
+"map <silent> ts :GhcModSplitFunCase<CR>
+"map <silent> tq :GhcModType<CR>
+"map <silent> te :GhcModTypeClear<CR>
+" }}}
+
+" hdevtools {{{
+"let g:hdevtools_stack = 1
+"let g:hdevtools_options = '-g-Wall -g-fdefer-type-errors'
+
+"au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
+"au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsInfo<CR>
+"au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsClear<CR>
+" }}}
+
+" nerdtree {{{
+map <Leader>n :NERDTreeToggle<CR>
+" }}}
+
+" tabularize {{{
+" }}}
+
+" Pathogen {{{
+"execute pathogen#infect()
+" }}}
+
+" ALE {{{
+" Load all plugins now.
+" Plugins need to be added to runtimepath before helptags can be generated.
+packloadall
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
+" }}}
+
+" Display {{{
+set title " enable setting title
+set titlestring=%f%m
+syntax enable
+
+set t_Co=256
+set termguicolors     " enable true colors support
+set background=dark
+colorscheme PaperColor
+highlight Normal ctermbg=Black guibg=Black
+highlight NonText ctermbg=Black guibg=Black
+highlight StatusLine cterm=bold,reverse gui=bold,reverse guifg=#1f5757 guibg=White
+highlight LineNr ctermfg=11 guifg=#686868 guibg=#1c1c1c
+highlight TabLineSel guifg=Black guibg=#00afaf
+
+"let g:molokai_original = 1
+"let g:rehash256 = 1
+"colorscheme molokai
+"highlight Normal ctermbg=Black guibg=Black
+"highlight NonText ctermbg=Black guibg=Black
+
+if !has('nvim')
+    set antialias
+endif
+" show the current line and column in the current window
+au WinLeave * set nocursorline nocursorcolumn
+au WinEnter * set cursorline nocursorcolumn
+set cursorline nocursorcolumn
+set noequalalways " do not resize other windows when splitting
+"set foldcolumn=3
+"set foldenable
+
+"set foldmethod=syntax
+"set guifont=Inconsolata\ 10
+set guifont=Source\ Code\ Pro\ Medium\ 10
+set guioptions+=a " autoselect
+set guioptions-=m " no menu bar
+set guioptions+=t " tearoff menu items
+set guioptions-=T " no tool bar
+set guioptions+=r " right-hand scrollbar
+set guioptions+=L " left-hand scrollbar is vertical split
+set guioptions+=b " bottom scrollbar
+set laststatus=2
+set number
+set numberwidth=4
+set ruler
+set showcmd
+set suffixes+=.pyc
+set visualbell
+set wildignore=*.o,*~,*.pyc,*.bak,
+set wildignore+=*\\tmp\\*,*.swp,*.swo,*.zip,.git,.cabal-sandbox
+set wildmenu
+set wildmode=longest,list,full
+set nowrap
+set showmode
+set completeopt=menuone,menu,longest
+set cmdheight=1
+set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+set list
+set colorcolumn=120
+" }}}
+
+" Rainbow {{{
+let g:rainbow_active = 1 " set to 0 if you want to enable it later via :RainbowToggle
+"}}}
+
+" Check file modifications {{{
+set autoread
+au BufEnter,BufWinEnter,CmdlineEnter,CmdwinEnter,CursorHold,CursorHoldI,FileChangedShell,FocusGained,WinEnter * checktime
+"}}}
+
+" Debug {{{
+packadd termdebug
+let g:termdebug_wide=1
+"}}}
+
+" Project specific configuration {{{
+set exrc
+set secure
+" }}}
+
+" neovim terminal setup
+tnoremap <Esc> <C-\><C-n>
+autocmd TermOpen * startinsert
+
+" auto reload modified files
+autocmd BufEnter,FocusGained * checktime
+
+" nvim startup may be too long to catch the initial SIGWINCH and resize the window
+autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
+
+" vim: set ts=4 sw=4 foldmethod=marker :
+]==])
+
+    -- vim-plug
+    gitclone "https://github.com/junegunn/vim-plug.git"
+    mkdir "%(HOME)/.config/nvim/autoload"
+    sh "cp %(repo_path)/vim-plug/plug.vim %(HOME)/.config/nvim/autoload/"
+
+    -- Asymptote syntax
+    mkdir "%(HOME)/.config/nvim/syntax"
+    mkdir "%(HOME)/.config/nvim/ftdetect"
+    sh "cp /usr/share/asymptote/asy.vim ~/.config/nvim/syntax/"
+    sh "cp /usr/share/asymptote/asy_filetype.vim ~/.config/nvim/ftdetect/asy.vim"
+
+    -- update all plugins
+    if force or upgrade then
+        sh "nvim -c PlugInstall -c qa"
+    end
+
+    if cfg_yesno("haskell", "Install Haskell?") then
+        if force or upgrade or not installed "shellcheck" then
+            sh "stack install --resolver=lts-14.27 ShellCheck"
+        end
+    end
+
+end
+
+-- }}}
+
+-- i3 configuration {{{
+
+function i3_configuration()
+    title "i3 configuration"
+
+    packages.add [[
+        rxvt-unicode-256color-ml
+        konsole
+        numlockx
+        rlwrap
+        i3 i3status i3lock dmenu xbacklight feh
+        i3-ipc
+        arandr
+        sox
+        fortune-mod ImageMagick
+        beesu
+        st sxiv
+        volumeicon pavucontrol
+    ]]
+
+    -- Default programs
+    sh "xdg-mime default okularApplication_pdf.desktop application/pdf"
+    sh "xdg-mime default org.kde.gwenview.desktop image/jpg"
+    sh "xdg-mime default org.kde.gwenview.desktop image/jpeg"
+    sh "xdg-mime default org.kde.gwenview.desktop image/png"
+    sh "xdg-mime default vlc.desktop video/mp4"
+    sh "xdg-mime default vlc.desktop video/webm"
+    sh "xdg-mime default vlc.desktop video/ogg"
+    sh "xdg-mime default vlc.desktop video/mpeg"
+    sh "xdg-mime default vlc.desktop video/mpg"
+    sh "xdg-mime default vlc.desktop video/x-matroska"
+    sh "xdg-mime default vlc.desktop audio/mpeg"
+    sh "xdg-mime default vlc.desktop audio/x-vorbis+ogg"
+    sh "xdg-mime default vlc.desktop audio/x-opus+ogg"
+    sh "xdg-mime default vlc.desktop audio/mp3"
+    sh "xdg-mime default vlc.desktop audio/ogg"
+    sh "xdg-mime default vlc.desktop audio/opus"
+    sh "xdg-mime default vlc.desktop audio/x-mod"
+    sh "xdg-mime default vlc.desktop audio/x-xm"
+    sh "xdg-mime default vlc.desktop audio/x-it"
+
+    envscript(".config/konsolerc", [[
+[Desktop Entry]
+DefaultProfile=CDSoft.profile
+
+[KonsoleWindow]
+ShowAppNameOnTitleBar=false
+ShowMenuBarByDefault=false
+ShowWindowTitleOnTitleBar=true
+]])
+    mkdir "%(HOME)/.local/share/konsole"
+    envscript(".local/share/konsole/CDSoft.profile", [[
+[Appearance]
+ColorScheme=Linux
+Font=Source Code Pro ExtraLight,10,-1,5,57,0,0,0,0,0,Medium
+
+[General]
+DimWhenInactive=false
+Name=CDSoft
+Parent=FALLBACK/
+ShowTerminalSizeHint=false
+
+[Scrolling]
+HistorySize=10000
+]])
+
+    mkdir "%(HOME)/.config/i3"
+    envscript(".config/i3/config", I[[
+# This file has been auto-generated by i3-config-wizard(1).
+# It will not be overwritten, so edit it as you like.
+#
+# Should you change your keyboard layout some time, delete
+# this file and re-run i3-config-wizard(1).
+#
+
+# i3 config file (v4)
+#
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
+force_xinerama yes
+
+set $alt Mod1
+set $ctrl Control
+set $win Mod4
+set $mod Mod4
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+#font pango:monospace 8
+
+# This font is widely installed, provides lots of unicode glyphs, right-to-left
+# text rendering and scalability on retina/hidpi displays (thanks to pango).
+#font pango:DejaVu Sans Mono 8
+font xft:Source Code Pro Medium 10
+
+# The combination of xss-lock, nm-applet and pactl is a popular choice, so
+# they are included here as an example. Modify as you see fit.
+
+# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
+# screen before suspend. Use loginctl lock-session to lock your screen.
+#exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# NetworkManager is the most popular way to manage wireless networks on Linux,
+# and nm-applet is a desktop environment-independent system tray GUI for it.
+#exec --no-startup-id nm-applet
+
+# Volume control
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Brightness
+bindsym XF86MonBrightnessDown exec brightness -5
+bindsym XF86MonBrightnessUp   exec brightness +5
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+#bindsym $mod+Return exec urxvt256c-ml -cd "`xcwd`"
+#bindsym $mod+Return exec terminator -b --working-directory="`xcwd`"
+#bindsym $mod+Return exec gnome-terminal --working-directory="`xcwd`"
+bindsym $mod+Return exec konsole --workdir="`xcwd`"
+
+# Filemanagers
+#bindsym $mod+Ctrl+Return exec urxvt256c-ml -e mc "`xcwd`" "`xcwd`"
+bindsym $mod+Ctrl+Return exec konsole -e mc "`xcwd`" "`xcwd`"
+#bindsym $mod+Ctrl+Return exec alacritty -t mc -e mc "`xcwd`" "`xcwd`"
+#bindsym $mod+$alt+Return exec pcmanfm "`xcwd`"
+#bindsym $mod+$alt+Return exec krusader --left "`xcwd`" --right "`xcwd`"
+#bindsym $mod+$alt+Return exec nautilus -w "`xcwd`"
+bindsym $mod+$alt+Return exec dolphin "`xcwd`"
+#bindsym $mod+$alt+Return exec fmmenu
+
+# pmount
+#bindsym $mod+Ctrl+m exec dmenu-pmount -f sd -- -i -l 32
+#bindsym $mod+$alt+Ctrl+m exec dmenu-pmount -f sd -u -- -i -l 32
+#bindsym $mod+Ctrl+k exec dmenu-pkill -cpu -- -i -l 32
+
+# scratchpad
+bindsym $mod+Shift+o    move scratchpad
+bindsym $mod+o          scratchpad show
+
+# some useful shortcuts
+
+bindsym $mod+w                  exec %(BROWSER)
+bindsym $mod+Shift+w            exec %(BROWSER2)
+bindsym $mod+t                  exec konsole -e vi ~/todo.txt
+bindsym $mod+n                  exec konsole -e vi ~/notes.txt
+bindsym $mod+p                  exec konsole -e vi ~/secret.pwd
+bindsym $mod+equal              exec urxvt $(hash hcalc 2>/dev/null && echo "-T hCalc -e rlwrap hcalc" || echo "-T bc -e bc")
+bindsym $mod+c                  exec urxvt $(hash hcalc 2>/dev/null && echo "-T hCalc -e rlwrap hcalc" || echo "-T bc -e bc")
+bindsym Print                   exec screenshot root
+bindsym $win+Print              exec screenshot active
+bindsym $mod+x                  exec menu
+bindsym $mod+Delete             exec menu
+bindsym $mod+$alt+Ctrl+i        exec menu single # single internal monitor
+bindsym $mod+$alt+Ctrl+e        exec menu dual # dual external + internal monitor
+bindsym $mod+$alt+Ctrl+c        exec menu clone # dual internal monitor cloned to the external one
+
+bindsym $mod+l                  exec lock
+
+# custom window settings
+for_window [window_role="pop-up"]                   floating enable
+for_window [window_role="task_dialog"]              floating enable
+for_window [title="^Bye$"]                          floating enable, border 1pixel
+for_window [title="^QEMU"]                          floating enable
+for_window [title="^hCalc$"]                        floating enable
+for_window [title="^bc$"]                           floating enable
+for_window [title="^Reconnection$"]                 floating enable
+for_window [title="^ssh-agent$"]                    floating enable
+for_window [class="^URxvt$" instance="scratchpad"]  border 1pixel; move scratchpad
+for_window [title="% Copying"]                      floating enable
+for_window [title="% Moving"]                       floating enable
+for_window [title="% Copie"]                        floating enable
+for_window [title="% Déplacement"]                  floating enable
+for_window [title="% Extracting"]                   floating enable
+for_window [title="Contrôle du volume"]             floating enable
+for_window [title="VM VirtualBox$"]                 floating enable
+for_window [title="Waiting for low CPU and network activity"]                 floating enable; border 1pixel
+for_window [title="Network Manager"]                floating enable
+for_window [title="Configuration Center"]           floating enable
+
+# kill focused window
+bindsym $mod+q          kill
+bindsym $alt+F4         kill
+
+# start dmenu (a program launcher)
+bindsym $mod+Escape  exec dmenu_run -i
+# There also is the (new) i3-dmenu-desktop which only displays applications
+# shipping a .desktop file. It is a wrapper around dmenu, so you need that
+# installed.
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+# change focus
+#bindsym $mod+j focus left
+#bindsym $mod+k focus down
+#bindsym $mod+l focus up
+#bindsym $mod+m focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+#bindsym $mod+Shift+j move left
+#bindsym $mod+Shift+k move down
+#bindsym $mod+Shift+l move up
+#bindsym $mod+Shift+m move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+m fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+z layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+f floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+less focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+bindsym $mod+Shift+a focus child
+
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+set $ws11 "11"
+set $ws12 "12"
+
+# switch to workspace
+bindsym $mod+ampersand  workspace number $ws1
+bindsym $mod+eacute     workspace number $ws2
+bindsym $mod+quotedbl   workspace number $ws3
+bindsym $mod+apostrophe workspace number $ws4
+bindsym $mod+parenleft  workspace number $ws5
+bindsym $mod+minus      workspace number $ws6
+bindsym $mod+egrave     workspace number $ws7
+bindsym $mod+underscore workspace number $ws8
+bindsym $mod+ccedilla   workspace number $ws9
+bindsym $mod+agrave     workspace number $ws10
+bindsym $mod+F1         workspace number $ws1
+bindsym $mod+F2         workspace number $ws2
+bindsym $mod+F3         workspace number $ws3
+bindsym $mod+F4         workspace number $ws4
+bindsym $mod+F5         workspace number $ws5
+bindsym $mod+F6         workspace number $ws6
+bindsym $mod+F7         workspace number $ws7
+bindsym $mod+F8         workspace number $ws8
+bindsym $mod+F9         workspace number $ws9
+bindsym $mod+F10        workspace number $ws10
+bindsym $mod+F11        workspace number $ws11
+bindsym $mod+F12        workspace number $ws12
+
+# move focused container to workspace
+bindsym $mod+Shift+ampersand    move container to workspace number $ws1
+bindsym $mod+Shift+eacute       move container to workspace number $ws2
+bindsym $mod+Shift+quotedbl     move container to workspace number $ws3
+bindsym $mod+Shift+apostrophe   move container to workspace number $ws4
+bindsym $mod+Shift+5            move container to workspace number $ws5
+bindsym $mod+Shift+minus        move container to workspace number $ws6
+bindsym $mod+Shift+egrave       move container to workspace number $ws7
+bindsym $mod+Shift+underscore   move container to workspace number $ws8
+bindsym $mod+Shift+ccedilla     move container to workspace number $ws9
+bindsym $mod+Shift+agrave       move container to workspace number $ws10
+bindsym $mod+Shift+F1           move container to workspace number $ws1
+bindsym $mod+Shift+F2           move container to workspace number $ws2
+bindsym $mod+Shift+F3           move container to workspace number $ws3
+bindsym $mod+Shift+F4           move container to workspace number $ws4
+bindsym $mod+Shift+F5           move container to workspace number $ws5
+bindsym $mod+Shift+F6           move container to workspace number $ws6
+bindsym $mod+Shift+F7           move container to workspace number $ws7
+bindsym $mod+Shift+F8           move container to workspace number $ws8
+bindsym $mod+Shift+F9           move container to workspace number $ws9
+bindsym $mod+Shift+F10          move container to workspace number $ws10
+bindsym $mod+Shift+F11          move container to workspace number $ws11
+bindsym $mod+Shift+F12          move container to workspace number $ws12
+
+# move workspace to another monitor
+bindsym $mod+$alt+$ctrl+Left    move workspace to output left
+bindsym $mod+$alt+$ctrl+Right   move workspace to output right
+bindsym $mod+$alt+$ctrl+Up      move workspace to output up
+bindsym $mod+$alt+$ctrl+Down    move workspace to output down
+
+# next/previous workspace
+bindsym $alt+Tab            workspace back_and_forth
+bindsym $mod+Tab            workspace back_and_forth
+bindsym $alt+$ctrl+Left     workspace prev
+bindsym $alt+$ctrl+Right    workspace next
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        #bindsym j resize shrink width 10 px or 10 ppt
+        #bindsym k resize grow height 10 px or 10 ppt
+        #bindsym l resize shrink height 10 px or 10 ppt
+        #bindsym m resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+focus_follows_mouse no
+force_focus_wrapping no
+workspace_auto_back_and_forth yes
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+    output            xinerama-0
+    output            xinerama-1
+    #tray_output       none
+    position          bottom
+    status_command    i3status -c ~/.config/i3/status
+}
+
+# Autostart some applications
+
+#exec --no-startup-id /usr/libexec/gnome-settings-daemon
+#exec --no-startup-id gnome-session
+
+exec --no-startup-id numlockx %(cfg_yesno("numlockx", "Enable numclockx?") and "on" or "off")
+exec --no-startup-id dunst -key y
+exec --no-startup-id xsetroot -solid black
+exec --no-startup-id nm-applet
+exec --no-startup-id blueman-applet
+exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'
+#exec --no-startup-id conky -c ~/.conkyrc
+
+exec --no-startup-id xset dpms 600
+exec --no-startup-id xautolock -time 15 -locker '~/.local/bin/lock' &
+
+exec --no-startup-id urxvt -T ssh-agent -e ~/.local/bin/ssha &
+
+# Wallpaper
+exec --no-startup-id ~/.local/bin/wallpaper &
+
+# Time tracker
+exec --no-startup-id tt -d
+
+# run specific scripts at i3 startup
+%(cfg_yesno("dropbox", "Install Dropbox?") and "exec --no-startup-id ~/.dropbox-dist/dropboxd &" or "")
+]])
+
+    script("xi3", [[
+#!/bin/bash
+
+export NEW_DISPLAY=:9
+Xephyr -br -ac -noreset -screen 1600x900 $NEW_DISPLAY &
+sleep 2
+DISPLAY=$NEW_DISPLAY i3
+EOF
+]])
+
+    if force or upgrade or not installed "xcwd" then
+        gitclone "https://github.com/schischi-a/xcwd.git"
+        sh "cd %(repo_path)/xcwd && make && sudo make install"
+    end
+
+    pipe("base64 -d > ~/.config/i3/empty.wav", "UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=")
+
+    envscript(".config/i3/status", I[[
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        output_format = "i3bar"
+        colors = true
+        interval = 5
+}
+
+#order += "ipv6"
+order += "disk /"
+order += "disk /tmp"
+order += "disk /home"
+#order += "run_watch DHCP"
+#order += "run_watch VPNC"
+#order += "path_exists VPN"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "battery all"
+order += "cpu_temperature 0"
+order += "cpu_usage"
+order += "load"
+order += "volume master"
+order += "time"
+#order += "tztime paris"
+
+wireless _first_ {
+    format_up = "📶 %ip (%quality, %essid, %bitrate)"
+    #format_down = "📶 down"
+    format_down = ""
+}
+
+ethernet _first_ {
+    # if you use %speed, i3status requires the cap_net_admin capability
+    format_up = "🌐 %ip (%speed)"
+    #format_down = "🌐 down"
+    format_down = ""
+}
+
+battery all {
+    format = "%status %percentage %remaining %emptytime"
+    format_down = ""
+    path = "/sys/class/power_supply/BAT%d/uevent"
+    low_threshold = 15
+    last_full_capacity = true
+    status_chr = "⚡ CHR"
+    status_bat = "🔋 BAT"
+    status_unk = "? UNK"
+    status_full = "☻ FULL"
+}
+
+run_watch DHCP {
+    pidfile = "/var/run/dhclient*.pid"
+}
+
+run_watch VPNC {
+    # file containing the PID of a vpnc process
+    pidfile = "/var/run/vpnc/pid"
+}
+
+#path_exists VPN {
+#    # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+#    path = "/proc/sys/net/ipv4/conf/tun0"
+#}
+
+time {
+    format = "%a %e/%m/%Y - %H:%M"
+}
+
+tztime paris {
+    format = "%A %e %B %Y - %H:%M:%S %Z"
+    timezone = "Europe/Paris"
+}
+
+cpu_usage {
+    format = "⚙ %usage"
+}
+
+load {
+    format = "⚙ %5min"
+}
+
+cpu_temperature 0 {
+    format = "🌡 %degrees °C"
+    path = "%(pipe 'find /sys/devices/platform/ -name "temp*input" | sort -n | head -1')"
+}
+
+disk "/" {
+    format = "/ %avail"
+}
+
+disk "/tmp" {
+    format = "/tmp %avail"
+}
+
+disk "/home" {
+    format = "/home %avail"
+}
+
+volume master {
+        format = "🔊 %volume"
+        format_muted = "🔇"
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}
+]])
+    sh "sudo setcap cap_net_admin=ep %(pipe 'which i3status')"
+
+    script("wallpaper", I[[
+#!/bin/bash
+test -f /tmp/wallpaper.jpg || convert -size 960x540 -blur 4 plasma:fractal /tmp/wallpaper.jpg
+DISPLAY=%(os.getenv "DISPLAY") feh --no-fehbg --bg-fill /tmp/wallpaper.jpg
+]])
+
+    script("lock", I[[
+#!/bin/bash
+test -f /tmp/lock.png || convert -size 240x135 plasma:black-black -colorspace Gray /tmp/lock.png
+i3lock -e -t -i /tmp/lock.png
+]])
+
+    script("screenshot", [[
+#!/bin/bash
+tmpfile=/tmp/screenshot-$(date +%Y_%m_%d-%H:%M:%S).png
+case "$1" in
+    active) window=`xprop -root | awk '$1~"_NET_ACTIVE_WINDOW" {print $5}'`;;
+    *)      window=root;;
+esac
+import -border -window $window $tmpfile
+gimp $tmpfile
+]])
+
+    script("menu", [[
+#!/bin/bash
+
+_menu()
+{
+    local action=$(cat <<EndOfMenu | dmenu -i -l 30 -p "$(hostname)"
+suspend             : lock screen & suspend to memory
+suspend when idle   : lock screen & suspend to memory when the OS is idle
+hibernate           : suspend to disk
+power-off           : switch the computer off
+reboot              : reboot the computer
+exit                : exit i3
+lock                : lock screen
+
+single              : internal monitor only
+right               : external monitor on the right
+left                : external monitor on the left
+above               : external monitor on the top
+clone               : clone the internal monitor to the external one
+
+mute                : mute the main audio output
+unmute              : unmute the main audio output
+mixer               : audio mixer
+
+nm                  : network manager
+bt                  : bluetooth manager
+
+renws               : rename the active workspace
+newws               : create a new workspace
+EndOfMenu
+)
+    test -n "$action" && $0 "$action"
+}
+
+# monitor management {{{
+
+move_to_int()
+{
+    i3-msg "[class=\".*\"] move workspace to output xinerama-0"
+}
+
+rename_workspace()
+{
+    PREFIX=$( i3-msg -t get_workspaces |
+              jq '.[] | select(.focused==true).name' |
+              tr -d "\"" |
+              awk -F: '$1 ~ /[0-9]+/ {print $1": "}'
+            )
+
+    i3-input -F "rename workspace to \"${PREFIX}%s\"" -P 'New name of the current workspace: '
+
+    CLEAN_NAME=$( i3-msg -t get_workspaces |
+                  jq '.[] | select(.focused==true).name' |
+                  tr -d "\"" |
+                  awk -F: '$1 ~ /[0-9]+/ && $2 ~ /^ *$/ {print $1}'
+                )
+
+    test -n "$CLEAN_NAME" && i3-msg "rename workspace to \"${CLEAN_NAME}\""
+}
+
+new_workspace()
+{
+    i3-input -F "workspace \"%s\"" -P 'New workspace: '
+}
+
+# }}}
+
+# connection / power management {{{
+
+cat <<\EndOfIdleScript > /tmp/idle
+#!/bin/bash
+
+period=10
+confirm=6
+low=0
+netthr=1500
+cputhr=30
+
+net0=$(awk '{split($0, n, " "); for (i=1; i<=NF; i++) s+=n[i]} END {print s}' /proc/net/netstat)
+while [ $low -lt $confirm ]
+do
+    net=$(awk '{split($0, n, " "); for (i=1; i<=NF; i++) s+=n[i]} END {print s}' /proc/net/netstat)
+    dnet=$(( (net-net0) / period ))
+    net0=$net
+    cpu=$(awk '{print $2*100}' /proc/loadavg)
+    clear
+    cat <<.
+Waiting for low CPU and network activity
+========================================
+
+$(date)
+
+CPU load: $cpu
+Network : $dnet/s
+
+Type Ctrl-C to cancel.
+.
+
+    if [ $dnet -lt $netthr ] && [ $cpu -lt $cputhr ]
+    then
+        low=$((low+1))
+    else
+        low=0
+    fi
+    sleep $period
+done
+EndOfIdleScript
+chmod +x /tmp/idle
+
+idle()
+{
+    urxvt -T "Waiting for low CPU and network activity" -e bash -c "/tmp/idle && $1"
+}
+
+fix_r8169()
+{
+    case $(hostname) in
+        useless_now_desktop) urxvt -T "Reconnection" -e sh -c "figlet 'Reconnection...'; sudo rmmod r8169; sudo modprobe r8169";;
+    esac
+}
+
+# }}}
+
+EXT_RES=1920x1200
+
+case "$1" in
+    single*)        move_to_int; xrandr --output HDMI-1 --off
+                    i3-msg reload
+                    ;;
+    clone*)         move_to_int; xrandr --output HDMI-1 --auto --same-as eDP-1 --scale-from 1920x1080
+                    i3-msg reload
+                    ;;
+    left*)          xrandr --output HDMI-1 --mode $EXT_RES --left-of eDP-1
+                    i3-msg move workspace to output left
+                    i3-msg reload
+                    ;;
+    dual*|right*)   xrandr --output HDMI-1 --mode $EXT_RES --right-of eDP-1
+                    i3-msg move workspace to output right
+                    i3-msg reload
+                    ;;
+    above*)         xrandr --output HDMI-1 --mode $EXT_RES --above eDP-1
+                    i3-msg move workspace to output up
+                    i3-msg reload
+                    ;;
+
+    mute*)          pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;
+    unmute*)        pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` false ;;
+    mixer*)         pavucontrol ;;
+
+    nm*)            nm-connection-editor ;;
+    bt*)            blueman-manager ;;
+
+    renws*)         rename_workspace ;;
+    newws*)         new_workspace ;;
+
+    "lock"*)                lock ;;
+    "suspend when idle"*)   idle "lock && systemctl suspend" && fix_r8169 ;;
+    "suspend"*)             lock && systemctl suspend && fix_r8169 ;;
+    "hibernate"*)           lock && systemctl hybrid-sleep && fix_r8169 ;;
+    "power-off"*)           systemctl poweroff ;;
+    "reboot"*)              systemctl reboot ;;
+    "exit"*)                i3-msg exit ;;
+
+    "") _menu ;;
+esac
+]])
+
+    script("brightness", [[
+#!/bin/bash
+
+MIN=5
+MAX=100
+
+backlight=`echo /sys/class/backlight/*/`
+
+if ! [ -e $backlight/brightness ]
+then
+    echo "no backlight configuration in /sys/class"
+    exit 1
+fi
+
+echo "Brightness configuration: $backlight"
+
+cur=`cat $backlight/brightness`
+max=`cat $backlight/max_brightness`
+cur_p=$((100*cur/max))
+echo "Current brightness      : $cur_p %"
+
+set_brightness()
+{
+    new_p=$1
+    if [ $new_p -lt $MIN ]; then new_p=$MIN; fi
+    if [ $new_p -gt $MAX ]; then new_p=$MAX; fi
+    new=$((max*new_p/100))
+    echo "New brightness          : $new_p %"
+    echo $new > $backlight/brightness
+}
+
+case "$1" in
+    \+*|\-*)    set_brightness $(($cur_p$1)) ;;
+    ?*)         set_brightness $1 ;;
+esac
+]])
+
+    if cfg_yesno("haskell", "Install Haskell?") then
+        if force or upgrade or not installed "tt" then
+            gitclone "http://github.com/CDSoft/tt"
+            sh "cd %(repo_path)/tt && make"
+        end
+    end
+
+end
+
+-- }}}
+
+-- Graphic applications configuration {{{
+
+function graphic_application_configuration()
+    title "Graphic applications configuration"
+
+    packages.add [[
+        shutter feh gimp ImageMagick scribus inkscape
+        krita gwenview
+        qt5-qtx11extras
+        gnuplot
+        qrencode
+        libreoffice libreoffice-langpack-fr libreoffice-help-fr
+        vokoscreenNG
+        simple-scan
+        evince okular mupdf qpdfview
+
+        vlc ffmpeg
+        gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
+    ]]
+
+end
+
+-- }}}
+
+-- Povray configuration {{{
+
+function povray_configuration()
+    title "Povray configuration"
+
+    if force or not installed "povray" then
+        gitclone "https://github.com/pov-ray/povray.git"
+        sh "cd %(repo_path)/povray/unix && ./prebuild.sh"
+        sh [[cd %(repo_path)/povray/ && ./configure --prefix="$(realpath ~/.local)" compiled_by="christophe delord <http://cdelord.fr>"]]
+        sh "cd %(repo_path)/povray/ && make check install"
+    end
+end
+
+-- }}}
+
+-- Internet configuration {{{
+
+function internet_configuration()
+    title "Internet configuration"
+
+    sh "sudo dnf config-manager --set-enabled google-chrome"
+
+    packages.add [[
+        firefox
+        google-chrome-stable
+        surf
+        thunderbird
+    ]]
+
+    --[[
+    if cfg_yesno("google-chrome", "Install Google Chrome?") then
+        if force or upgrade or not installed "google-chrome" then
+            with_tmpdir(function(tmp)
+                sh("wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm -O "..tmp.."/google-chrome-stable_current_x86_64.rpm")
+                sh("sudo dnf install "..tmp.."/google-chrome-stable_current_x86_64.rpm")
+            end)
+        end
+    end
+    --]]
+
+    -- Default browser
+    sh "BROWSER= xdg-settings set default-web-browser %(BROWSER).desktop"
+    sh "BROWSER= xdg-mime default %(BROWSER).desktop text/html"
+    sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/http"
+    sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/https"
+    sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/about"
+
+    -- Thunderbird extensions
+    if force or update or not file_exist(I"%(repo_path)/reply_as_original_recipient.xpi") then
+        gitclone "https://github.com/qiqitori/reply_as_original_recipient.git"
+        sh "cd %(repo_path)/reply_as_original_recipient && zip -r ../reply_as_original_recipient.xpi *"
+    end
+
+    -- Remove unecessary language symlinks
+    sh "sudo find /usr/share/myspell -type l -exec rm -v {} \\;"
+
+end
+
+-- }}}
+
+-- Zoom configuration {{{
+
+function zoom_configuration()
+    title "Zoom configuration"
+
+    if force or not installed "zoom" then
+        with_tmpdir(function(tmp)
+            sh("wget https://zoom.us/client/latest/zoom_x86_64.rpm -O "..tmp.."/zoom_x86_64.rpm")
+            sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
+        end)
+    end
+
+end
+
+-- }}}
+
+-- Virtualization configuration {{{
+
+function virtualization_configuration()
+    title "Virtualization configuration"
+
+    packages.add [[
+        VirtualBox
+        virtualbox-guest-additions
+    ]]
+    packages.add(I"akmod-VirtualBox kernel-devel-%(pipe 'uname -r')")
+
+end
+
+-- }}}
+
+-- Work configuration {{{
+
+function work_configuration()
+    title "Work configuration"
+
+    if not file_exist "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo" then coprs.add("thofmann/ros") end
+
+    packages.add [[
+        moby-engine grubby
+        python-devel python3-devel
+        ros-rosbag
+        xterm
+        minicom
+        patch yices z3 cvc4 zenon eqp E gtksourceview2-devel libgnomecanvas-devel gmp
+        xorg-x11-server-Xephyr
+        sqlite-devel fuse-devel libcurl-devel zlib-devel m4
+    ]]
+
+    -- AWS
+    if force or upgrade then
+        sh "pip3 install --user awscli boto3"
+        sh "sudo groupadd docker || true"
+        sh "sudo usermod -a -G docker %(USER)"
+        sh "sudo systemctl enable docker"
+    end
+    script("aws-login", [[
+eval $(aws ecr get-login --no-include-email)
+]])
+
+    -- Frama-C
+    if force or upgrade then
+        sh "why3 config --detect"
+        --sh "pip2 install --user json-query"
+    end
+
+    -- Docker
+    if force or upgrade then
+        -- https://github.com/docker/cli/issues/2104
+        sh "sudo grubby --update-kernel=ALL --args=\"systemd.unified_cgroup_hierarchy=0\""
+
+        sh "sudo systemctl start docker"
+        sh "sudo usermod -a -G docker %(USER)"
+    end
+
+    if cfg_yesno("move-docker-to-home", "Move /var/lib/docker to /home/docker?") then
+        if not dir_exist "/home/docker" then
+            sh "sudo service docker stop"
+            sh "sudo rm -rf /home/docker"
+            sh "sudo mv /var/lib/docker /home/docker"
+            sh "sudo ln -s /home/docker /var/lib/docker"
+            sh "sudo service docker start"
+        end
+    end
+
+    if installed "opam" then
+        if force or upgrade or not installed "google-drive-ocamlfuse" then
+            sh "opam install google-drive-ocamlfuse"
+        end
+    end
+
+end
+
+-- }}}
+
+main()
