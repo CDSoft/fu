@@ -1554,10 +1554,12 @@ autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
     sh "cp %(repo_path)/vim-plug/plug.vim %(HOME)/.config/nvim/autoload/"
 
     -- Asymptote syntax
-    mkdir "%(HOME)/.config/nvim/syntax"
-    mkdir "%(HOME)/.config/nvim/ftdetect"
-    sh "cp /usr/share/asymptote/asy.vim ~/.config/nvim/syntax/"
-    sh "cp /usr/share/asymptote/asy_filetype.vim ~/.config/nvim/ftdetect/asy.vim"
+    if file_exist "/usr/share/asymptote/asy.vim" and file_exist "/usr/share/asymptote/asy_filetype.vim" then
+        mkdir "%(HOME)/.config/nvim/syntax"
+        mkdir "%(HOME)/.config/nvim/ftdetect"
+        sh "cp /usr/share/asymptote/asy.vim ~/.config/nvim/syntax/"
+        sh "cp /usr/share/asymptote/asy_filetype.vim ~/.config/nvim/ftdetect/asy.vim"
+    end
 
     -- update all plugins
     if force or upgrade then
