@@ -920,7 +920,6 @@ function racket_configuration()
 
     if force or not installed "racket" then
         title "Racket configuration"
-        sh "rm -rf ~/.local/opt/racket-*"
         sh "wget %(RACKETINST) -c -O ~/.local/opt/%(basename(RACKETINST))"
         sh "sh ~/.local/opt/%(basename(RACKETINST)) --in-place --dest ~/.local/opt/%(RACKET_NAME)"
     end
