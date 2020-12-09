@@ -2395,17 +2395,6 @@ function internet_configuration()
         thunderbird
     ]]
 
-    --[[
-    if cfg_yesno("google-chrome", "Install Google Chrome?") then
-        if force or upgrade or not installed "google-chrome" then
-            with_tmpdir(function(tmp)
-                sh("wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm -O "..tmp.."/google-chrome-stable_current_x86_64.rpm")
-                sh("sudo dnf install "..tmp.."/google-chrome-stable_current_x86_64.rpm")
-            end)
-        end
-    end
-    --]]
-
     -- Default browser
     sh "BROWSER= xdg-settings set default-web-browser %(BROWSER).desktop"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop text/html"
