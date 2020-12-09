@@ -325,7 +325,7 @@ end
 function upgrade_packages()
     if force or upgrade then
         title "Upgrade packages"
-        sh "sudo dnf upgrade"
+        sh "sudo dnf upgrade --best --allowerasing"
     end
 end
 
@@ -521,7 +521,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 # Work configuration
 
 #alias docker='docker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -v /dev/bus/usb:/dev/bus/usb --privileged -p host_port:container_port/tcp'
-xhost +local:root > /dev/null
+xhost +local:root >/dev/null 2>/dev/null
 
 alias subup='git submodule sync && git submodule update --init --recursive'
 
@@ -962,7 +962,7 @@ function ocaml_configuration()
         sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
         sh "opam update && opam upgrade"
         sh "opam install depext"
-        sh "opam depext frama-c"
+        sh "opam depext frama-c || true"
         sh "opam install frama-c coq why3 alt-ergo"
     end
 
@@ -2497,7 +2497,7 @@ eval $(aws ecr get-login --no-include-email)
         -- https://github.com/docker/cli/issues/2104
         sh "sudo grubby --update-kernel=ALL --args=\"systemd.unified_cgroup_hierarchy=0\""
 
-        sh "sudo systemctl start docker"
+        sh "sudo systemctl start docker || true"
         sh "sudo usermod -a -G docker %(USER)"
     end
 
@@ -2507,7 +2507,7 @@ eval $(aws ecr get-login --no-include-email)
             sh "sudo rm -rf /home/docker"
             sh "sudo mv /var/lib/docker /home/docker"
             sh "sudo ln -s /home/docker /var/lib/docker"
-            sh "sudo service docker start"
+            sh "sudo service docker start || true"
         end
     end
 
