@@ -375,6 +375,11 @@ function install_essential_packages()
     if not installed("pip") then packages.add "python-pip"; upgrade = true end
     if not installed("autoconf") then packages.add "autoconf"; upgrade = true end
     if not installed("automake") then packages.add "automake"; upgrade = true end
+
+    mkdir "%(HOME)/.local/bin"
+    mkdir "%(HOME)/.local/opt"
+    mkdir "%(config_path)"
+    mkdir "%(repo_path)"
 end
 
 -- }}}
@@ -976,7 +981,6 @@ function racket_configuration()
 
     if force or not installed "racket" then
         title "Racket configuration"
-        mkdir "%(HOME)/.local/opt"
         sh "rm -rf ~/.local/opt/racket-*"
         sh "wget %(RACKETINST) -c -O ~/.local/opt/%(basename(RACKETINST))"
         sh "sh ~/.local/opt/%(basename(RACKETINST)) --in-place --dest ~/.local/opt/%(RACKET_NAME)"
@@ -1012,8 +1016,6 @@ function julia_configuration()
     if force or not installed "julia" then
         title "Julia configuration"
 
-        mkdir(HOME.."/.local/bin")
-        mkdir(HOME.."/.local/opt")
         sh "wget %(JULIA_ARCHIVE) -c -O ~/.local/opt/%(basename(JULIA_ARCHIVE))"
         sh "rm -rf ~/.local/opt/%(JULIA_NAME)"
         sh "tar xzf ~/.local/opt/%(basename(JULIA_ARCHIVE)) -C ~/.local/opt"
@@ -1031,8 +1033,6 @@ function zig_configuration()
     if force or not installed "zig" then
         title "Zig configuration"
 
-        mkdir(HOME.."/.local/bin")
-        mkdir(HOME.."/.local/opt")
         sh "wget %(ZIG_URL) -c -O ~/.local/opt/%(basename(ZIG_URL))"
         sh "rm -rf ~/.local/opt/%(ZIG_DIR)"
         sh "tar xJf ~/.local/opt/%(basename(ZIG_URL)) -C ~/.local/opt"
