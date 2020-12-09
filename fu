@@ -546,117 +546,56 @@ alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run
 ]])
 
     envscript(".config/starship.toml", [[
+# Disable most of the packages
+aws            = {disabled = true}
+cmake          = {disabled = true}
+conda          = {disabled = true}
+crystal        = {disabled = true}
+dart           = {disabled = true}
+docker_context = {disabled = true}
+dotnet         = {disabled = true}
+elixir         = {disabled = true}
+elm            = {disabled = true}
+erlang         = {disabled = true}
+gcloud         = {disabled = true}
+golang         = {disabled = true}
+helm           = {disabled = true}
+java           = {disabled = true}
+julia          = {disabled = true}
+kubernetes     = {disabled = true}
+lua            = {disabled = true}
+memory_usage   = {disabled = true}
+hg_branch      = {disabled = true}
+nim            = {disabled = true}
+nix_shell      = {disabled = true}
+nodejs         = {disabled = true}
+ocaml          = {disabled = true}
+openstack      = {disabled = true}
+package        = {disabled = true}
+perl           = {disabled = true}
+php            = {disabled = true}
+purescript     = {disabled = true}
+python         = {disabled = true}
+ruby           = {disabled = true}
+rust           = {disabled = true}
+shlvl          = {disabled = true}
+singularity    = {disabled = true}
+swift          = {disabled = true}
+teraform       = {disabled = true}
+zig            = {disabled = true}
+
+# 2-line prompt
+
 add_newline = true
 
 [line_break]
 disabled = false
 
-[aws]
-disabled = true
-
-[cmake]
-disabled = true
-
-[conda]
-disabled = true
-
-[crystal]
-disabled = true
-
-[dart]
-disabled = true
+# Complete directory name
 
 [directory]
 truncation_length = 0
 truncate_to_repo = false
-
-[docker_context]
-disabled = true
-
-[dotnet]
-disabled = true
-
-[elixir]
-disabled = true
-
-[elm]
-disabled = true
-
-[erlang]
-disabled = true
-
-[gcloud]
-disabled = true
-
-[golang]
-disabled = true
-
-[helm]
-disabled = true
-
-[java]
-disabled = true
-
-[julia]
-disabled = true
-
-[kubernetes]
-disabled = true
-
-[lua]
-disabled = true
-
-[nim]
-disabled = true
-
-[nix_shell]
-disabled = true
-
-[nodejs]
-disabled = true
-
-[ocaml]
-disabled = true
-
-[openstack]
-disabled = true
-
-[package]
-disabled = true
-
-[perl]
-disabled = true
-
-[php]
-disabled = true
-
-[purescript]
-disabled = true
-
-[python]
-disabled = true
-
-[ruby]
-disabled = true
-
-[rust]
-disabled = true
-
-[singularity]
-disabled = true
-
-[status]
-disabled = false
-
-[swift]
-disabled = true
-
-[teraform]
-disabled = true
-
-[zig]
-disabled = true
-
 ]])
 
     gitclone "https://github.com/ohmyzsh/ohmyzsh.git" -- not installed, some scripts will be sourced
