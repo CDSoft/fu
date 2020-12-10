@@ -1,0 +1,9 @@
+#!/bin/bash
+
+tmpfile=/tmp/screenshot-$(date +%Y_%m_%d-%H:%M:%S).png
+case "$1" in
+    active) window=`xprop -root | awk '$1~"_NET_ACTIVE_WINDOW" {print $5}'`;;
+    *)      window=root;;
+esac
+import -border -window $window $tmpfile
+gimp $tmpfile

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+test -f /tmp/wallpaper.jpg || convert -size 960x540 -blur 4 plasma:fractal /tmp/wallpaper.jpg
+DISPLAY=%(os.getenv "DISPLAY") feh --no-fehbg --bg-fill /tmp/wallpaper.jpg

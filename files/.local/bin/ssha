@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#eval "$(ssh-agent -s)" >/dev/null
+
+case "$1" in
+    -f|-c)  ssh-add -D ;;
+    *)      ;;
+esac
+
+if ssh-add -L | grep -q $(ls ~/.ssh/id_rsa)
+then
+    echo "ssh key already loaded"
+else
+    ssh-add
+fi

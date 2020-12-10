@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if tty -s
+then
+    nvim -p $*
+else
+    konsole -e nvim -p $*
+fi

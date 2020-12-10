@@ -1,0 +1,34 @@
+#!/bin/bash
+
+MIN=5
+MAX=100
+
+backlight=`echo /sys/class/backlight/*/`
+
+if ! [ -e $backlight/brightness ]
+then
+    echo "no backlight configuration in /sys/class"
+    exit 1
+fi
+
+echo "Brightness configuration: $backlight"
+
+cur=`cat $backlight/brightness`
+max=`cat $backlight/max_brightness`
+cur_p=$((100*cur/max))
+echo "Current brightness      : $cur_p %"
+
+set_brightness()
+{
+    new_p=$1
+    if [ $new_p -lt $MIN ]; then new_p=$MIN; fi
+    if [ $new_p -gt $MAX ]; then new_p=$MAX; fi
+    new=$((max*new_p/100))
+    echo "New brightness          : $new_p %"
+    echo $new > $backlight/brightness
+}
+
+case "$1" in
+    \+*|\-*)    set_brightness $(($cur_p$1)) ;;
+    ?*)         set_brightness $1 ;;
+esac
