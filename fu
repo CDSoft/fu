@@ -943,6 +943,10 @@ function i3_configuration()
 
     if force or upgrade or not installed "xcwd" then
         gitclone "https://github.com/schischi-a/xcwd.git"
+        -- patch to reject "/"
+        local xcwd = read(I"%(repo_path)/xcwd/xcwd.c")
+        xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', '(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0)')
+        write(I"%(repo_path)/xcwd/xcwd.c", xcwd)
         sh "cd %(repo_path)/xcwd && make && sudo make install"
     end
 
