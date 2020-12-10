@@ -350,7 +350,6 @@ function script(name, content)
 end
 
 function gitclone(url)
-    print("gitclone", url)
     local name = basename(url)
     mkdir(repo_path)
     local path = repo_path.."/"..name:gsub("%.git$", "")
@@ -497,11 +496,16 @@ export FZF_DEFAULT_OPTS="-m --height 80% --border --preview='bat --style=numbers
 # Starship: https://starship.rs
 eval "$(starship init zsh)"
 
-function set_win_title(){
+function precmd_set_win_title(){
     echo -ne "\033]0;${PWD/#$HOME/~}\007"
 }
 
-precmd_functions+=(set_win_title)
+function preexec_set_win_title(){
+    echo -ne "\033]0;$1\007"
+}
+
+precmd_functions+=(precmd_set_win_title)
+preexec_functions+=(preexec_set_win_title)
 
 # https://github.com/zsh-users/zsh-syntax-highlighting
 
