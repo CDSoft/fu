@@ -16,6 +16,7 @@ Plug 'https://github.com/junegunn/fzf.vim.git'
 Plug 'https://github.com/NLKNguyen/papercolor-theme.git'
 Plug 'https://github.com/luochen1990/rainbow.git'
 "Plug 'https://github.com/jiangmiao/auto-pairs.git'
+Plug 'metakirby5/codi.vim'
 
 call plug#end()
 " }}}

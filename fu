@@ -607,6 +607,10 @@ function dev_configuration()
         gitclone "https://github.com/datacom-teracom/pmccabe"
         sh "cd %(repo_path)/pmccabe && make && cp pmccabe ~/.local/bin"
     end
+
+    -- interactive scratchpad: https://github.com/metakirby5/codi.vim
+    script "codi"
+
 end
 
 -- }}}
