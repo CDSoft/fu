@@ -83,8 +83,8 @@ bindsym $mod+Shift+w            exec %(BROWSER2)
 bindsym $mod+t                  exec konsole -e vi ~/todo.txt
 bindsym $mod+n                  exec konsole -e vi ~/notes.txt
 bindsym $mod+p                  exec konsole -e vi ~/secret.pwd
-bindsym $mod+equal              exec urxvt $(hash hcalc 2>/dev/null && echo "-T hCalc -e rlwrap hcalc" || echo "-T bc -e bc")
-bindsym $mod+c                  exec urxvt $(hash hcalc 2>/dev/null && echo "-T hCalc -e rlwrap hcalc" || echo "-T bc -e bc")
+bindsym $mod+equal              exec urxvt %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-T hCalc -e rlwrap hcalc" or "-T bc -e bc")
+bindsym $mod+c                  exec urxvt %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-T hCalc -e rlwrap hcalc" or "-T bc -e bc")
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
 bindsym $mod+x                  exec menu
