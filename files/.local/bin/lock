@@ -1,4 +1,10 @@
 #!/bin/bash
 
-test -f /tmp/lock.png || convert -size 240x135 plasma:black-black -colorspace Gray /tmp/lock.png
+convert -size 96x96 \
+    plasma:black-black \
+    -virtual-pixel tile \
+    -blur 0x8 \
+    -colorspace Gray \
+    /tmp/lock.png
+
 i3lock -e -t -i /tmp/lock.png
