@@ -47,7 +47,7 @@ let mapleader = "²"
 let g:mapleader = "²"
 " }}}
 
-" Firefox like navigation {{{
+" Firefox like tab navigation {{{
 " (https://vim.fandom.com/wiki/Alternative_tab_navigation)
 nnoremap <C-S-tab> :tabprevious<CR>
 nnoremap <C-tab>   :tabnext<CR>
@@ -55,6 +55,13 @@ nnoremap <C-t>     :tabnew<CR>
 inoremap <C-S-tab> <Esc>:tabprevious<CR>i
 inoremap <C-tab>   <Esc>:tabnext<CR>i
 inoremap <C-t>     <Esc>:tabnew<CR>
+" }}}
+
+" Windows navigation {{{
+map <C-Left>  <C-w>h
+map <C-Down>  <C-w>j
+map <C-Up>    <C-w>k
+map <C-Right> <C-w>l
 " }}}
 
 " Automatic layout {{{
@@ -342,6 +349,7 @@ set cmdheight=1
 set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 set list
 set colorcolumn=120
+set splitbelow splitright
 " }}}
 
 " Rainbow {{{
