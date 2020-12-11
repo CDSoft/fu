@@ -46,7 +46,6 @@ options:
 hooks:
     ~/.zuser    additional definitions loaded at the end of .zshrc
 ]]
-    os.exit()
 end
 
 -- Utilities {{{
@@ -102,10 +101,12 @@ function main()
     title "Fedora Updater"
 
     for _, a in ipairs(arg) do
-        if a == "-h" then help() end
-        if a == "-f" then force = true; upgrade = true end
-        if a == "-u" then upgrade = true end
-        if a == "-r" then reset() end
+        if a == "-h" then help(); return;
+        elseif a == "-f" then force = true; upgrade = true
+        elseif a == "-u" then upgrade = true
+        elseif a == "-r" then reset()
+        else io.stderr:write("Error: Unknown argument: "..a.."\n\n"); help(); return 1
+        end
     end
 
     identification()
@@ -1145,4 +1146,4 @@ end
 
 -- }}}
 
-main()
+os.exit(main())
