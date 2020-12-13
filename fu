@@ -634,6 +634,7 @@ function haskell_configuration()
 
     local RESOLVER = LATEST_LTS
     local HASKELL_PACKAGES = {
+        "hasktags",
         "hlint",
         "hoogle",
         "matplotlib",
