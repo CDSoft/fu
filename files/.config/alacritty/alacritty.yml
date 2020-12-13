@@ -2,9 +2,12 @@
 
 # Import additional configuration files
 #
-# These configuration files will be loaded in order, replacing values in files
-# loaded earlier with those loaded later in the chain. The file itself will
-# always be loaded last.
+# Imports are loaded in order, skipping all missing files, with the importing
+# file being loaded last. If a field is already present in a previous import, it
+# will be replaced.
+#
+# All imports must either be absolute paths starting with `/`, or paths relative
+# to the user's home directory starting with `~/`.
 #import:
 #  - /path/to/alacritty.yml
 
@@ -99,16 +102,16 @@
   #multiplier: 3
 
 # Font configuration
-font:
+#font:
   # Normal (roman) font face
-  normal:
+  #normal:
     # Font family
     #
     # Default:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: Source Code Pro Medium
+    #family: monospace
 
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -147,7 +150,7 @@ font:
     #style: Bold Italic
 
   # Point size
-  size: 10.0
+  #size: 11.0
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
@@ -173,11 +176,11 @@ font:
 #draw_bold_text_with_bright_colors: false
 
 # Colors (Tomorrow Night)
-colors:
+#colors:
   # Default colors
-  primary:
-    background: '#000000'
-    foreground: '#c5c8c6'
+  #primary:
+  #  background: '#1d1f21'
+  #  foreground: '#c5c8c6'
 
     # Bright and dim foreground colors
     #
@@ -284,7 +287,7 @@ colors:
 # Bell
 #
 # The bell is rung every time the BEL control character is received.
-bell:
+#bell:
   # Visual Bell Animation
   #
   # Animation effect for flashing the screen when the visual bell is rung.
@@ -304,7 +307,7 @@ bell:
 
   # Duration of the visual bell flash in milliseconds. A `duration` of `0` will
   # disable the visual bell animation.
-  duration: 100
+  #duration: 0
 
   # Visual bell animation color.
   #color: '#ffffff'
@@ -338,12 +341,23 @@ bell:
 
 #cursor:
   # Cursor style
-  #
-  # Values for `style`:
-  #   - ▇ Block
-  #   - _ Underline
-  #   - | Beam
-  #style: Block
+  #style:
+    # Cursor shape
+    #
+    # Values for `shape`:
+    #   - ▇ Block
+    #   - _ Underline
+    #   - | Beam
+    #shape: Block
+
+    # Cursor blinking state
+    #
+    # Values for `blinking`:
+    #   - Never: Prevent the cursor from ever blinking
+    #   - Off: Disable blinking by default
+    #   - On: Enable blinking by default
+    #   - Always: Force the cursor to always blink
+    #blinking: Off
 
   # Vi mode cursor style
   #
@@ -352,6 +366,9 @@ bell:
   #
   # See `cursor.style` for available options.
   #vi_mode_style: None
+
+  # Cursor blinking interval in milliseconds.
+  #blink_interval: 750
 
   # If this is `true`, the cursor will be rendered as a hollow box when the
   # window is not focused.
@@ -362,7 +379,7 @@ bell:
   #thickness: 0.15
 
 # Live config reload (changes require restart)
-live_config_reload: false
+#live_config_reload: true
 
 # Shell
 #
@@ -763,3 +780,53 @@ live_config_reload: false
 
   # Print all received window events.
   #print_events: false
+
+####################################################################
+# Alacritty configuration
+####################################################################
+
+env:
+  TERM: xterm-256color # otherwise mc freezes???
+
+# Font configuration
+font:
+  # Normal (roman) font face
+  normal:
+    # Font family
+    #
+    # Default:
+    #   - (macOS) Menlo
+    #   - (Linux/BSD) monospace
+    #   - (Windows) Consolas
+    family: Source Code Pro Medium
+  size: 10.0
+
+# Colors: https://github.com/alacritty/alacritty/wiki/Color-schemes
+# VSCode's integrated terminal default colors
+# Primary and dimmed colors needed
+colors:
+  # Default colors
+  primary:
+    background: '#000000'
+
+  # Normal colors
+  normal:
+    black:   '#000000'
+    red:     '#cd3131'
+    green:   '#0dbc79'
+    yellow:  '#e5e510'
+    blue:    '#2472c8'
+    magenta: '#bc3fbc'
+    cyan:    '#11a8cd'
+    white:   '#e5e5e5'
+
+  # Bright colors
+  bright:
+    black:   '#666666'
+    red:     '#f14c4c'
+    green:   '#23d18b'
+    yellow:  '#f5f543'
+    blue:    '#3b8eea'
+    magenta: '#d670d6'
+    cyan:    '#29b8db'
+    white:   '#e5e5e5'
