@@ -104,7 +104,7 @@ for_window [title="^hCalc$"]                        floating enable
 for_window [title="^bc$"]                           floating enable
 for_window [title="^Reconnection$"]                 floating enable
 for_window [title="^ssh-agent$"]                    floating enable
-for_window [class="^URxvt$" instance="scratchpad"]  border 1pixel; move scratchpad
+for_window [class="^URxvt$" instance="scratchpad"]  border 1pixel, move scratchpad
 for_window [title="% Copying"]                      floating enable
 for_window [title="% Moving"]                       floating enable
 for_window [title="% Copie"]                        floating enable
@@ -112,9 +112,10 @@ for_window [title="% Déplacement"]                  floating enable
 for_window [title="% Extracting"]                   floating enable
 for_window [title="Contrôle du volume"]             floating enable
 for_window [title="VM VirtualBox$"]                 floating enable
-for_window [title="Waiting for low CPU and network activity"]                 floating enable; border 1pixel
+for_window [title="Waiting for low CPU and network activity"]                 floating enable, border 1pixel
 for_window [title="Network Manager"]                floating enable
 for_window [title="Configuration Center"]           floating enable
+for_window [title="^floating fzfmenu$"]             border 1pixel, floating enable
 
 # kill focused window
 bindsym $mod+q          kill

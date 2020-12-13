@@ -457,6 +457,8 @@ function shell_configuration()
 
     script ".tmux/conf"
 
+    script "fzfmenu"
+
 end
 
 -- }}}
