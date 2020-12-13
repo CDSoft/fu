@@ -1,14 +1,16 @@
 # Aliases
 
+alias ls="exa --classify"
 alias ll='ls -lh'
 alias la='ll -a'
-alias lt='ll -rt'
+#alias lt='ll -rt'
+alias lt='ll --sort newest'
 
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 
 alias more=less
-alias df='df -h'
-alias du='du -h'
+alias df='grc df -h'
+alias du='grc du -h'
 
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
