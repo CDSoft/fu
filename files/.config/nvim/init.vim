@@ -269,15 +269,7 @@ augroup END
 "au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsClear<CR>
 " }}}
 
-" nerdtree {{{
-map <Leader>n :NERDTreeToggle<CR>
-" }}}
-
 " tabularize {{{
-" }}}
-
-" Pathogen {{{
-"execute pathogen#infect()
 " }}}
 
 " ALE {{{
