@@ -136,6 +136,7 @@ function main()
     if cfg_yesno("sphinx", "Install Sphinx?") then sphinx_configuration() end
     neovim_configuration()
     i3_configuration()
+    st_configuration()
     graphic_application_configuration()
     if cfg_yesno("povray", "Install Povray?") then povray_configuration() end
     internet_configuration()
@@ -978,6 +979,22 @@ function i3_configuration()
         end
     end
 
+end
+
+-- }}}
+
+-- Suckless simple terminal configuration {{{
+
+function st_configuration()
+    title "st configuration"
+
+    if force or upgrade or not file_exist(I"%(HOME)/.local/bin/st") then
+        gitclone "git://git.suckless.org/st"
+        local config = read(I"%(repo_path)/st/config.def.h")
+        config = config:gsub("font = \".-\";", "font = \"Source Code Pro Medium:size=10:antialias=true:autohint=true\";")
+        write(I"%(repo_path)/st/config.h", config)
+        sh "cd %(repo_path)/st && make && cp st %(HOME)/.local/bin/"
+    end
 end
 
 -- }}}
