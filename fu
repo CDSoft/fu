@@ -907,7 +907,7 @@ function i3_configuration()
     title "i3 configuration"
 
     packages.add [[
-        rxvt-unicode-256color-ml
+        rxvt-unicode
         konsole
         numlockx
         rlwrap
@@ -944,6 +944,8 @@ function i3_configuration()
 
     script ".config/konsolerc"
     script ".local/share/konsole/CDSoft.profile"
+
+    script ".config/alacritty/alacritty.yml"
 
     script ".config/i3/config"
 

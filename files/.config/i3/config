@@ -54,15 +54,17 @@ bindsym XF86MonBrightnessUp   exec brightness +5
 floating_modifier $mod
 
 # start a terminal
-#bindsym $mod+Return exec urxvt256c-ml -cd "`xcwd`"
+#bindsym $mod+Return exec urxvt -cd "`xcwd`"
 #bindsym $mod+Return exec terminator -b --working-directory="`xcwd`"
 #bindsym $mod+Return exec gnome-terminal --working-directory="`xcwd`"
-bindsym $mod+Return exec konsole --workdir="`xcwd`"
+#bindsym $mod+Return exec konsole --workdir="`xcwd`"
+bindsym $mod+Return exec cd "`xcwd`" && alacritty
 
 # Filemanagers
-#bindsym $mod+Ctrl+Return exec urxvt256c-ml -e mc "`xcwd`" "`xcwd`"
-bindsym $mod+Ctrl+Return exec konsole -e mc "`xcwd`" "`xcwd`"
+#bindsym $mod+Ctrl+Return exec urxvt -e mc "`xcwd`" "`xcwd`"
+#bindsym $mod+Ctrl+Return exec konsole -e mc "`xcwd`" "`xcwd`"
 #bindsym $mod+Ctrl+Return exec alacritty -t mc -e mc "`xcwd`" "`xcwd`"
+bindsym $mod+Ctrl+Return exec cd "`xcwd`" && alacritty -e mc . .
 #bindsym $mod+$alt+Return exec pcmanfm "`xcwd`"
 #bindsym $mod+$alt+Return exec krusader --left "`xcwd`" --right "`xcwd`"
 #bindsym $mod+$alt+Return exec nautilus -w "`xcwd`"
@@ -82,11 +84,11 @@ bindsym $mod+o          scratchpad show
 
 bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec %(BROWSER2)
-bindsym $mod+t                  exec konsole -e vi ~/todo.txt
-bindsym $mod+n                  exec konsole -e vi ~/notes.txt
-bindsym $mod+p                  exec konsole -e vi ~/secret.pwd
-bindsym $mod+equal              exec urxvt %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-T hCalc -e rlwrap hcalc" or "-T bc -e bc")
-bindsym $mod+c                  exec urxvt %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-T hCalc -e rlwrap hcalc" or "-T bc -e bc")
+bindsym $mod+t                  exec alacritty -e vi ~/todo.txt
+bindsym $mod+n                  exec alacritty -e vi ~/notes.txt
+bindsym $mod+p                  exec alacritty -e vi ~/secret.pwd
+bindsym $mod+equal              exec alacritty %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-T hCalc -e rlwrap hcalc" or "-T bc -e bc")
+bindsym $mod+c                  exec alacritty %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-T hCalc -e rlwrap hcalc" or "-T bc -e bc")
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
 bindsym $mod+x                  exec menu
