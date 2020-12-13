@@ -58,10 +58,10 @@ inoremap <C-t>     <Esc>:tabnew<CR>
 " }}}
 
 " Windows navigation {{{
-map <C-Left>  <C-w>h
-map <C-Down>  <C-w>j
-map <C-Up>    <C-w>k
-map <C-Right> <C-w>l
+"map <C-Left>  <C-w>h
+"map <C-Down>  <C-w>j
+"map <C-Up>    <C-w>k
+"map <C-Right> <C-w>l
 " }}}
 
 " Automatic layout {{{
