@@ -1,7 +1,9 @@
 #!/bin/bash
 
+color="srgb(2,4,12)"
+
 convert -size 96x96 \
-    plasma:black-black \
+    plasma:$color-$color \
     -virtual-pixel tile \
     -blur 0x8 \
     -colorspace Gray \
