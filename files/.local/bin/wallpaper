@@ -1,11 +1,11 @@
 #!/bin/bash
 
-color="srgb(16,32,96)"
+color="srgb(8,16,48)"
 
 convert -size 640x360 \
     plasma:$color-$color \
     -virtual-pixel tile \
-    -blur 0x4 \
+    -blur 0x8 \
     /tmp/wallpaper.png
 
 DISPLAY=%(os.getenv "DISPLAY") feh --no-fehbg --bg-fill /tmp/wallpaper.png
