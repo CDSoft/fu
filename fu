@@ -433,6 +433,7 @@ function shell_configuration()
         exa
         fd-find
         tmux
+        tldr
     ]]
 
     sh(I"chsh -s /bin/zsh %(USER)")
