@@ -595,6 +595,7 @@ function dev_configuration()
         gnuplot
         openssl-devel
         tokei
+        golang
     ]]
 
     -- pip
@@ -889,7 +890,7 @@ function neovim_configuration()
 
     -- update all plugins
     if force or upgrade then
-        sh "nvim -c PlugInstall -c qa"
+        sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
     end
 
     if cfg_yesno("haskell", "Install Haskell?") then
