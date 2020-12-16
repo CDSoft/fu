@@ -1166,6 +1166,8 @@ function work_configuration()
         end
     end
 
+    sh "pip3 install --user tftpy"
+
 end
 
 -- }}}
