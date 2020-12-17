@@ -24,8 +24,11 @@ alias luajit='rlwrap luajit'
 
 # Completion
 
+zstyle ':completion:*:*:make:*' tag-order 'targets'
+
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
+
 %(cfg_yesno("haskell", "Install Haskell?") and 'eval "$(stack --bash-completion-script stack)"' or '')
 eval "$(pandoc --bash-completion)"
 

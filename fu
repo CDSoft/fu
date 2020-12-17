@@ -276,6 +276,16 @@ function pipe(cmd, stdin)
     end
 end
 
+function ls(pattern)
+    local files = dirname(pipe(I"realpath %(arg[0])")).."/files/"
+    local p = io.popen("ls "..files..pattern)
+    return function()
+        local name = p:read("l")
+        if name then return name:sub(#files+1) end
+        p:close()
+    end
+end
+
 function with_tmpfile(f)
     local tmp = os.tmpname()
     f(tmp)
@@ -874,8 +884,15 @@ function neovim_configuration()
         gzip
     ]]
 
-    script ".config/nvim/init.vim"
-    script ".config/nvim/lua/nvim-colorizer-config.lua"
+    for config_file in ls ".config/nvim/*.vim" do
+        script(config_file)
+    end
+    for config_file in ls ".config/nvim/vim/*.vim" do
+        script(config_file)
+    end
+    for config_file in ls ".config/nvim/lua/*.lua" do
+        script(config_file)
+    end
 
     -- vim-plug
     gitclone "https://github.com/junegunn/vim-plug.git"
