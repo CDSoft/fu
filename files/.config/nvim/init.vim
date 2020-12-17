@@ -17,7 +17,8 @@ Plug 'https://github.com/NLKNguyen/papercolor-theme.git'
 Plug 'https://github.com/luochen1990/rainbow.git'
 "Plug 'https://github.com/jiangmiao/auto-pairs.git'
 Plug 'metakirby5/codi.vim'
-Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+"Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+Plug 'https://github.com/norcalli/nvim-colorizer.lua.git'
 
 call plug#end()
 " }}}
@@ -348,6 +349,12 @@ set splitbelow splitright
 " Rainbow {{{
 let g:rainbow_active = 1 " set to 0 if you want to enable it later via :RainbowToggle
 "}}}
+
+" colorizer {{{
+
+lua require'nvim-colorizer-config'
+
+" }}}
 
 " Check file modifications {{{
 set autoread

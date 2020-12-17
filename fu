@@ -875,6 +875,7 @@ function neovim_configuration()
     ]]
 
     script ".config/nvim/init.vim"
+    script ".config/nvim/lua/nvim-colorizer-config.lua"
 
     -- vim-plug
     gitclone "https://github.com/junegunn/vim-plug.git"
