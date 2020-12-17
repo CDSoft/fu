@@ -19,6 +19,7 @@ Plug 'https://github.com/luochen1990/rainbow.git'
 Plug 'metakirby5/codi.vim'
 "Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'https://github.com/norcalli/nvim-colorizer.lua.git'
+Plug 'airblade/vim-rooter'
 
 call plug#end()
 " }}}
