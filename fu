@@ -111,12 +111,8 @@ function main()
 
     identification()
 
-    -- Step 0: essential packages used by this script
-    install_essential_packages()
+    create_directories()
 
-    install_packages()
-
-    -- Step 1: other packages
     system_configuration()
     shell_configuration()
     network_configuration()
@@ -144,7 +140,6 @@ function main()
     if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
     if cfg_yesno("work", "Install work configuration?") then work_configuration() end
 
-    install_packages()
     upgrade_packages()
 end
 
@@ -188,7 +183,7 @@ end
 
 -- Utilities {{{
 
-function set()
+function set(init)
     local set = {}
     local ordered = {}
     local self = {}
@@ -202,7 +197,9 @@ function set()
         end)
     end
     function self.ipairs() return ipairs(ordered) end
+    function self.has(name)return set[name] end
     function self.concat(sep) return table.concat(ordered, sep) end
+    if init then self.add(init) end
     return self
 end
 
@@ -313,25 +310,39 @@ function identification()
     log "hostname: %(MYHOSTNAME)"
 end
 
-repos = set()
-coprs = set()
-packages = set()
-
-function install_packages()
-    if repos.len() > 0 or coprs.len() > 0 then upgrade = true end
-
-    if force or upgrade then
-        title "Install packages"
-        for _, repo in repos.ipairs() do sh("sudo dnf install -y \""..repo.."\"") end
-        for _, copr in coprs.ipairs() do sh("sudo dnf copr enable \""..copr.."\"") end
-        if packages.len() > 0 then
-            sh("sudo dnf install "..packages.concat(" ").." --skip-broken --best --allowerasing")
-        end
+function repo(local_name, name)
+    if not file_exist(local_name) then
+        log("Install repo "..name)
+        sh("sudo dnf install -y \""..name.."\"")
     end
+end
 
-    repos = set()
-    coprs = set()
-    packages = set()
+function copr(local_name, name)
+    if not file_exist(local_name) then
+        log("Install copr "..name)
+        sh("sudo dnf copr enable \""..name.."\"")
+    end
+end
+
+function packages(names)
+    local all = set(names)
+    local new_packages = set(names)
+    local already_installed = set()
+    if file_exist(I"%(config_path)/packages") then
+        local old_names = read(I"%(config_path)/packages")
+        already_installed.add(old_names)
+        all.add(old_names)
+    end
+    local new = false
+    for _, name in new_packages.ipairs() do
+        new = new or not already_installed.has(name)
+    end
+    if new then
+        names = new_packages.concat(" ")
+        log("Install packages: "..names)
+        sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
+        write(I"%(config_path)/packages", all.concat("\n").."\n")
+    end
 end
 
 function upgrade_packages()
@@ -369,7 +380,7 @@ function gitclone(url)
     if dir_exist(path) then
         if force or upgrade then
             log("Upgrade "..url.." to "..path)
-            sh("cd "..path.." && git pull")
+            sh("cd "..path.." && git reset --hard master && git pull")
         end
     else
         log("Clone "..url.." to "..path)
@@ -379,15 +390,9 @@ end
 
 -- }}}
 
--- Essential packages {{{
+-- Create fu directories {{{
 
-function install_essential_packages()
-    log "Check essential packages"
-    if not installed("git") then packages.add "git"; upgrade = true end
-    if not installed("pip") then packages.add "python-pip"; upgrade = true end
-    if not installed("autoconf") then packages.add "autoconf"; upgrade = true end
-    if not installed("automake") then packages.add "automake"; upgrade = true end
-
+function create_directories()
     mkdir "%(HOME)/.local/bin"
     mkdir "%(HOME)/.local/opt"
     mkdir "%(config_path)"
@@ -401,10 +406,10 @@ end
 function system_configuration()
     title "System configuration"
 
-    if not file_exist("/etc/yum.repos.d/rpmfusion-free.repo") then repos.add(I"https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm") end
-    if not file_exist("/etc/yum.repos.d/rpmfusion-nonfree.repo") then repos.add(I"http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm") end
+    repo("/etc/yum.repos.d/rpmfusion-free.repo", I"https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm")
+    repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", I"http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
 
-    packages.add [[
+    packages [[
         dnf-plugins-core dnfdragora
         fedora-workstation-repositories
     ]]
@@ -430,7 +435,7 @@ end
 function shell_configuration()
     title "Shell configuration"
 
-    packages.add [[
+    packages [[
         zsh
         powerline-fonts
         grc bat fzf
@@ -480,7 +485,7 @@ end
 function network_configuration()
     title "Network configuration"
 
-    packages.add [[
+    packages [[
         nmon
         openssh openssh-server
         nmap
@@ -520,7 +525,7 @@ end
 
 function dropbox_configuration()
 
-    packages.add [[ PyQt4 libatomic ]]
+    packages [[ PyQt4 libatomic ]]
 
     if force or not file_exist(I"%(HOME)/.dropbox-dist/dropboxd") then
         title "Dropbox configuration"
@@ -537,7 +542,7 @@ end
 function filesystem_configuration()
     title "Filesystem configuration"
 
-    packages.add [[
+    packages [[
         gparted
         udftools
         encfs
@@ -564,9 +569,9 @@ end
 function dev_configuration()
     title "Development environment configuration"
 
-    if cfg_yesno("R", "Install R?") then packages.add [[ R ]] end
+    if cfg_yesno("R", "Install R?") then packages [[ R ]] end
 
-    packages.add [[
+    packages [[
         git git-gui gitk qgit gitg tig git-lfs
         subversion
         clang llvm clang-tools-extra
@@ -607,6 +612,8 @@ function dev_configuration()
         openssl-devel
         tokei
         golang
+        libX11-devel
+        libXft-devel
     ]]
 
     -- pip
@@ -636,7 +643,7 @@ end
 function haskell_configuration()
     title "Haskell configuration"
 
-    if cfg_yesno("haskell-platform", "Install haskell-platform?") then packages.add [[ haskell-platform ]] end
+    if cfg_yesno("haskell-platform", "Install haskell-platform?") then packages [[ haskell-platform ]] end
 
     if not installed "stack" then
         sh "curl -sSL https://get.haskellstack.org/ | sh"
@@ -672,7 +679,7 @@ end
 
 function ocaml_configuration()
 
-    packages.add [[
+    packages [[
         z3
         cvc4
     ]]
@@ -680,10 +687,11 @@ function ocaml_configuration()
     if force or not installed "opam" then
         title "OCaml configuration"
         sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
+        sh "opam init"
         sh "opam update && opam upgrade"
         sh "opam install depext"
         sh "opam depext frama-c || true"
-        sh "opam install frama-c coq why3 alt-ergo"
+        sh "opam install frama-c coq why3 alt-ergo || true"
     end
 
 end
@@ -713,7 +721,7 @@ function rust_configuration()
         with_tmpfile(function(tmp)
             sh("curl https://sh.rustup.rs -sSf -o "..tmp.." && sh "..tmp.." -y -v --no-modify-path")
         end)
-        sh "rustup update stable"
+        sh "PATH=$PATH:$HOME/.cargo/bin rustup update stable"
     elseif force or upgrade then
         title "Rust configuration"
         sh "rustup update stable"
@@ -762,7 +770,7 @@ end
 function text_edition_configuration()
     title "Text edition configuration"
 
-    packages.add [[
+    packages [[
         wkhtmltopdf
         aspell-fr aspell-en
         figlet
@@ -781,7 +789,7 @@ end
 function pandoc_configuration()
     title "Pandoc configuration"
 
-    packages.add [[
+    packages [[
         pandoc
     ]]
 
@@ -826,7 +834,7 @@ end
 function latex_configuration()
     title "LaTeX configuration"
 
-    packages.add [[
+    packages [[
         texlive texlive-scheme-full
         graphviz plantuml asymptote
     ]]
@@ -877,7 +885,7 @@ end
 function neovim_configuration()
     title "neovim configuration"
 
-    packages.add [[
+    packages [[
         neovim
         fzf
         ccrypt pwgen
@@ -927,9 +935,10 @@ end
 function i3_configuration()
     title "i3 configuration"
 
-    packages.add [[
+    packages [[
         rxvt-unicode
         konsole
+        alacritty
         numlockx
         rlwrap
         i3 i3status i3lock dmenu xbacklight feh
@@ -1027,7 +1036,7 @@ end
 function graphic_application_configuration()
     title "Graphic applications configuration"
 
-    packages.add [[
+    packages [[
         shutter feh gimp ImageMagick scribus inkscape
         krita gwenview
         qt5-qtx11extras
@@ -1068,7 +1077,7 @@ function internet_configuration()
 
     sh "sudo dnf config-manager --set-enabled google-chrome"
 
-    packages.add [[
+    packages [[
         firefox
         google-chrome-stable
         surf
@@ -1116,11 +1125,11 @@ end
 function virtualization_configuration()
     title "Virtualization configuration"
 
-    packages.add [[
+    packages [[
         VirtualBox
         virtualbox-guest-additions
     ]]
-    packages.add(I"akmod-VirtualBox kernel-devel-%(pipe 'uname -r')")
+    packages(I"akmod-VirtualBox kernel-devel-%(pipe 'uname -r')")
 
 end
 
@@ -1131,9 +1140,9 @@ end
 function work_configuration()
     title "Work configuration"
 
-    if not file_exist "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo" then coprs.add("thofmann/ros") end
+    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo", "thofmann/ros")
 
-    packages.add [[
+    packages [[
         moby-engine grubby
         python-devel python3-devel
         ros-rosbag
@@ -1142,6 +1151,50 @@ function work_configuration()
         patch yices z3 cvc4 zenon eqp E gtksourceview2-devel libgnomecanvas-devel gmp
         xorg-x11-server-Xephyr
         sqlite-devel fuse-devel libcurl-devel zlib-devel m4
+    ]]
+    packages [[
+        asymptote
+        can-utils
+        clang
+        clang-tools-extra
+        cmake
+        curl
+        doxygen
+        gcc
+        git
+        graphviz
+        ImageMagick
+        libasan
+        libasan-static
+        libpcap-devel
+        libtsan
+        libtsan-static
+        libubsan
+        libubsan-static
+        llvm
+        ncurses
+        plantuml
+        protobuf-devel
+        python3
+        python3-protobuf
+        SDL2-devel
+        SDL2_ttf-devel
+        socat
+        texlive
+        texlive-scheme-full
+        tcpdump
+        tcpreplay
+        wget
+        xz-devel
+        zlib-devel
+        minicom
+        xterm
+        blas-devel
+        lapack-devel
+        @virtualization
+        vim-common
+        python3-pygame
+        gnu-free-mono-fonts
     ]]
 
     -- AWS
@@ -1180,7 +1233,7 @@ function work_configuration()
 
     if installed "opam" then
         if force or upgrade or not installed "google-drive-ocamlfuse" then
-            sh "opam install google-drive-ocamlfuse"
+            sh "opam install google-drive-ocamlfuse || true"
         end
     end
 
