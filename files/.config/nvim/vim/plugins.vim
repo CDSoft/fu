@@ -17,5 +17,6 @@ Plug 'metakirby5/codi.vim'
 "Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'https://github.com/norcalli/nvim-colorizer.lua.git'
 Plug 'airblade/vim-rooter'
+Plug 'https://github.com/vim-scripts/DrawIt'
 
 call plug#end()
