@@ -1214,7 +1214,7 @@ function work_configuration()
 
     -- Frama-C
     if force or upgrade then
-        sh "why3 config --detect"
+        sh "why3 config --detect || true"
         --sh "pip2 install --user json-query"
     end
 
