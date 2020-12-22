@@ -98,4 +98,7 @@ alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run
 
 # Other user configuration
 
-[ -f ~/.zuser ] && . ~/.zuser
+if [ -f ~/.zuser ]
+then
+    . ~/.zuser
+fi
