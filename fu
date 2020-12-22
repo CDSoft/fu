@@ -949,6 +949,12 @@ function i3_configuration()
         beesu
         st sxiv
         volumeicon pavucontrol
+        adobe-source-code-pro-fonts
+        mozilla-fira-mono-fonts
+        mozilla-fira-sans-fonts
+        fira-code-fonts
+        google-droid-sans-mono-fonts
+        dejavu-sans-mono-fonts
     ]]
 
     -- Default programs
