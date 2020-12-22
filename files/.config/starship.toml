@@ -36,15 +36,28 @@ swift          = {disabled = true}
 teraform       = {disabled = true}
 zig            = {disabled = true}
 
-# 2-line prompt
+# Prompt format
 
 add_newline = true
 
 [line_break]
-disabled = false
+disabled = false    # 2-line prompt
+
+# Prompt character
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
 
 # Complete directory name
 
 [directory]
 truncation_length = 0
 truncate_to_repo = false
+
+# Last command status
+
+[status]
+disabled = false
+symbol = "✗"
+format = "[$symbol $status]($style) "
