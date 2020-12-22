@@ -80,7 +80,7 @@ LOCALE = "fr_FR.UTF-8"
 BROWSER = "firefox"
 BROWSER2 = "google-chrome"
 
-LATEST_LTS = "lts-16.20"
+LATEST_LTS = "lts-16.26"
 
 RACKET_VERSION = "7.9"
 RACKET_NAME = I"racket-%(RACKET_VERSION)"
