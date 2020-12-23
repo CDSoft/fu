@@ -95,6 +95,10 @@ ZIG_ARCHIVE = I"zig-linux-x86_64-%(ZIG_VERSION).tar.xz"
 ZIG_URL = I"https://ziglang.org/download/%(ZIG_VERSION)/%(ZIG_ARCHIVE)"
 ZIG_DIR = I"%(ZIG_ARCHIVE:gsub('%.tar%.xz$', ''))"
 
+CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
+CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
+CLING_DIR = I"%(CLING_ARCHIVE:gsub('%.tar%.bz2$', ''))"
+
 DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
 function main()
@@ -125,6 +129,7 @@ function main()
     if cfg_yesno("rust", "Install Rust?") then rust_configuration() end
     if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
     if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
+    if cfg_yesno("cling", "Install cling?") then cling_configuration() end
     text_edition_configuration()
     pandoc_configuration()
     if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
@@ -759,6 +764,23 @@ function zig_configuration()
         sh "rm -rf ~/.local/opt/%(ZIG_DIR)"
         sh "tar xJf ~/.local/opt/%(basename(ZIG_URL)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
+    end
+
+end
+
+-- }}}
+
+-- Cling configuration {{{
+
+function cling_configuration()
+
+    if force or not installed "cling" then
+        title "Cling configuration"
+
+        sh "wget %(CLING_URL) -c -O ~/.local/opt/%(basename(CLING_URL))"
+        sh "rm -rf ~/.local/opt/%(CLING_DIR)"
+        sh "tar xjf ~/.local/opt/%(basename(CLING_URL)) -C ~/.local/opt"
+        sh "ln -f -s ~/.local/opt/%(CLING_DIR)/bin/cling ~/.local/bin/cling"
     end
 
 end
