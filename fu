@@ -57,11 +57,11 @@ function I(s)
 end
 
 function dirname(s)
-    return (s:gsub("[^/]*$", ""))
+    return (I(s):gsub("[^/]*$", ""))
 end
 
 function basename(s)
-    return (s:gsub(".*/([^/]*)$", "%1"))
+    return (I(s):gsub(".*/([^/]*)$", "%1"))
 end
 
 -- }}}
@@ -160,8 +160,8 @@ function cfg_yesno(param, question)
     if not file_exist(config_file) then
         repeat
             io.write(question.." [y/n] ")
-            answer = io.read("l"):lower():gsub("^%s*(%S).*$", "%1")
-        until answer:match("[yn]")
+            answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
+        until answer:match "[yn]"
         mkdir(config_path)
         write(config_file, answer)
     end
@@ -175,7 +175,7 @@ function cfg_string(param, question)
     if not file_exist(config_file) then
         repeat
             io.write(question.." ")
-            answer = io.read("l"):gsub("^%s+", ""):gsub("%s+$", "")
+            answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
         until #answer > 0
         mkdir(config_path)
         write(config_file, answer)
@@ -230,7 +230,7 @@ function log(s)
 end
 
 function file_exist(path)
-    local f = io.open(path, "r")
+    local f = io.open(I(path), "r")
     if f then
         f:close()
         return true
@@ -244,21 +244,22 @@ function dir_exist(path)
 end
 
 function read(path)
-    local f = assert(io.open(path, "r"))
-    local content = f:read("a")
+    local f = assert(io.open(I(path), "r"))
+    local content = f:read "a"
     f:close()
-    return content
+    return I(content)
 end
 
 function write(path, content)
-    local f = assert(io.open(path, "w"))
-    f:write(content)
+    local f = assert(io.open(I(path), "w"))
+    f:write(I(content))
     f:close()
 end
 
 function rootfile(path, content)
     with_tmpfile(function(tmp)
         write(tmp, content)
+        path = I(path)
         sh("sudo cp "..tmp.." "..path)
         sh("sudo chmod 644 "..path)
         sh("sudo chown root:root "..path)
@@ -267,22 +268,22 @@ end
 
 function pipe(cmd, stdin)
     local mode = stdin and "w" or "r"
-    local f = io.popen(cmd, mode)
+    local f = io.popen(I(cmd), mode)
     if stdin then
-        f:write(stdin)
+        f:write(I(stdin))
         f:close()
     else
-        local result = f:read("a"):gsub("^%s+", ""):gsub("%s+$", "")
+        local result = f:read "a":gsub("^%s+", ""):gsub("%s+$", "")
         f:close()
-        return result
+        return I(result)
     end
 end
 
 function ls(pattern)
-    local files = dirname(pipe(I"realpath %(arg[0])")).."/files/"
-    local p = io.popen("ls "..files..pattern)
+    local files = dirname(pipe "realpath %(arg[0])").."/files/"
+    local p = io.popen("ls "..files..I(pattern))
     return function()
-        local name = p:read("l")
+        local name = p:read "l"
         if name then return name:sub(#files+1) end
         p:close()
     end
@@ -306,7 +307,7 @@ function sh(cmd) assert(os.execute(I(cmd))) end
 
 function mkdir(path) sh("mkdir -p "..path) end
 
-function rm(path) os.remove(path) end
+function rm(path) os.remove(I(path)) end
 
 function identification()
     MYHOSTNAME = cfg_string("hostname", "Hostname:")
@@ -316,7 +317,8 @@ function identification()
 end
 
 function repo(local_name, name)
-    if not file_exist(local_name) then
+    if not file_exist(I(local_name)) then
+        name = I(name)
         log("Install repo "..name)
         sh("sudo dnf install -y \""..name.."\"")
     end
@@ -324,17 +326,19 @@ end
 
 function copr(local_name, name)
     if not file_exist(local_name) then
+        name = I(name)
         log("Install copr "..name)
         sh("sudo dnf copr enable \""..name.."\"")
     end
 end
 
 function packages(names)
+    names = I(names)
     local all = set(names)
     local new_packages = set(names)
     local already_installed = set()
-    if file_exist(I"%(config_path)/packages") then
-        local old_names = read(I"%(config_path)/packages")
+    if file_exist "%(config_path)/packages" then
+        local old_names = read "%(config_path)/packages"
         already_installed.add(old_names)
         all.add(old_names)
     end
@@ -343,10 +347,10 @@ function packages(names)
         new = new or not already_installed.has(name)
     end
     if new then
-        names = new_packages.concat(" ")
+        names = new_packages.concat " "
         log("Install packages: "..names)
         sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
-        write(I"%(config_path)/packages", all.concat("\n").."\n")
+        write("%(config_path)/packages", all.concat("\n").."\n")
     end
 end
 
@@ -358,7 +362,7 @@ function upgrade_packages()
 end
 
 function installed(cmd)
-    local found = (os.execute("hash "..cmd.." 2>/dev/null"))
+    local found = (os.execute("hash "..I(cmd).." 2>/dev/null"))
     return found
 end
 
@@ -367,18 +371,20 @@ function script(name)
         if file_exist(file_name) then
             log("Create "..dest_name)
             mkdir(dirname(dest_name))
-            write(dest_name, I(read(file_name)))
+            write(dest_name, read(file_name))
             if exe then sh("chmod +x "..dest_name) end
             return true
         end
     end
-    local files = dirname(pipe(I"realpath %(arg[0])")).."/files"
+    name = I(name)
+    local files = dirname(pipe "realpath %(arg[0])").."/files"
     if template(files.."/"..name, HOME.."/"..name) then return end
     if template(files.."/.local/bin/"..name, HOME.."/.local/bin/"..name, true) then return end
     error("Template not found: "..name)
 end
 
 function gitclone(url)
+    url = I(url)
     local name = basename(url)
     mkdir(repo_path)
     local path = repo_path.."/"..name:gsub("%.git$", "")
@@ -411,8 +417,8 @@ end
 function system_configuration()
     title "System configuration"
 
-    repo("/etc/yum.repos.d/rpmfusion-free.repo", I"https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm")
-    repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", I"http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
+    repo("/etc/yum.repos.d/rpmfusion-free.repo", "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm")
+    repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", "http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
 
     packages [[
         dnf-plugins-core dnfdragora
@@ -428,7 +434,7 @@ function system_configuration()
     sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
 
     -- crontab
-    pipe("crontab -", I[[
+    pipe("crontab -", [[
 0 * * * * %(HOME)/.local/bin/wallpaper
 ]])
 end
@@ -456,7 +462,7 @@ function shell_configuration()
         tldr
     ]]
 
-    sh(I"chsh -s /bin/zsh %(USER)")
+    sh "chsh -s /bin/zsh %(USER)"
 
     script ".zprofile"
     script ".zshrc"
@@ -466,7 +472,7 @@ function shell_configuration()
     gitclone "https://github.com/ohmyzsh/ohmyzsh.git" -- not installed, some scripts will be sourced
     gitclone "https://github.com/zsh-users/zsh-syntax-highlighting.git"
     gitclone "https://github.com/zsh-users/zsh-autosuggestions"
-    if force or upgrade or not file_exist(I"%(HOME)/.local/bin/starship") then
+    if force or upgrade or not file_exist "%(HOME)/.local/bin/starship" then
         with_tmpfile(function(tmp)
             sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && bash "..tmp.." -f -b ~/.local/bin")
         end)
@@ -507,7 +513,7 @@ function network_configuration()
 
     -- hostname
     sh "sudo hostname %(MYHOSTNAME)"
-    rootfile("/etc/hostname", I"%(MYHOSTNAME)\n")
+    rootfile("/etc/hostname", "%(MYHOSTNAME)\n")
 
     -- ssh
     sh "sudo systemctl start sshd"
@@ -532,10 +538,10 @@ function dropbox_configuration()
 
     packages [[ PyQt4 libatomic ]]
 
-    if force or not file_exist(I"%(HOME)/.dropbox-dist/dropboxd") then
+    if force or not file_exist "%(HOME)/.dropbox-dist/dropboxd" then
         title "Dropbox configuration"
         sh "rm -rf ~/.dropbox-dist"
-        sh("cd ~ && wget -O - %(DROPBOXINSTALL) | tar xzf -")
+        sh "cd ~ && wget -O - %(DROPBOXINSTALL) | tar xzf -"
     end
 
 end
@@ -830,11 +836,11 @@ function pandoc_configuration()
         end
     end
 
-    if force or not file_exist(I"%(HOME)/.local/bin/plantuml.jar") then
+    if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
         sh "wget http://sourceforge.net/projects/plantuml/files/plantuml.jar -O ~/.local/bin/plantuml.jar"
     end
 
-    if force or not file_exist(I"%(HOME)/.local/bin/ditaa.jar") then
+    if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
         sh "wget https://github.com/stathissideris/ditaa/releases/download/v0.11.0/ditaa-0.11.0-standalone.jar -O ~/.local/bin/ditaa.jar"
     end
 
@@ -842,7 +848,7 @@ function pandoc_configuration()
         sh "pip3 install --user blockdiag seqdiag actdiag nwdiag"
     end
 
-    if force or upgrade or not file_exist(I"%(HOME)/.local/opt/mermaid/node_modules/.bin/mmdc") then
+    if force or upgrade or not file_exist "%(HOME)/.local/opt/mermaid/node_modules/.bin/mmdc" then
         mkdir "%(HOME)/.local/opt/mermaid"
         sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
     end
@@ -1012,9 +1018,9 @@ function i3_configuration()
     if force or upgrade or not installed "xcwd" then
         gitclone "https://github.com/schischi-a/xcwd.git"
         -- patch to reject "/"
-        local xcwd = read(I"%(repo_path)/xcwd/xcwd.c")
+        local xcwd = read "%(repo_path)/xcwd/xcwd.c"
         xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', '(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0)')
-        write(I"%(repo_path)/xcwd/xcwd.c", xcwd)
+        write("%(repo_path)/xcwd/xcwd.c", xcwd)
         sh "cd %(repo_path)/xcwd && make && sudo make install"
     end
 
@@ -1048,11 +1054,11 @@ end
 function st_configuration()
     title "st configuration"
 
-    if force or upgrade or not file_exist(I"%(HOME)/.local/bin/st") then
+    if force or upgrade or not file_exist "%(HOME)/.local/bin/st" then
         gitclone "git://git.suckless.org/st"
-        local config = read(I"%(repo_path)/st/config.def.h")
+        local config = read "%(repo_path)/st/config.def.h"
         config = config:gsub("font = \".-\";", "font = \"Source Code Pro Medium:size=10:antialias=true:autohint=true\";")
-        write(I"%(repo_path)/st/config.h", config)
+        write("%(repo_path)/st/config.h", config)
         sh "cd %(repo_path)/st && make && cp st %(HOME)/.local/bin/"
     end
 end
@@ -1120,7 +1126,7 @@ function internet_configuration()
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/about"
 
     -- Thunderbird extensions
-    if force or update or not file_exist(I"%(repo_path)/reply_as_original_recipient.xpi") then
+    if force or update or not file_exist "%(repo_path)/reply_as_original_recipient.xpi" then
         gitclone "https://github.com/qiqitori/reply_as_original_recipient.git"
         sh "cd %(repo_path)/reply_as_original_recipient && zip -r ../reply_as_original_recipient.xpi *"
     end
@@ -1157,7 +1163,7 @@ function virtualization_configuration()
         VirtualBox
         virtualbox-guest-additions
     ]]
-    packages(I"akmod-VirtualBox kernel-devel-%(pipe 'uname -r')")
+    packages "akmod-VirtualBox kernel-devel-%(pipe 'uname -r')"
 
 end
 

@@ -86,8 +86,8 @@ bindsym $mod+Shift+w            exec %(BROWSER2)
 bindsym $mod+t                  exec alacritty -e vi ~/todo.txt
 bindsym $mod+n                  exec alacritty -e vi ~/notes.txt
 bindsym $mod+p                  exec alacritty -e vi ~/secret.pwd
-bindsym $mod+equal              exec alacritty -d 80 24 %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-t hCalc -e rlwrap hcalc" or "-T bc -e bc")
-bindsym $mod+c                  exec alacritty -d 80 24 %(file_exist(I"%(HOME)/.local/bin/hcalc") and "-t hCalc -e rlwrap hcalc" or "-T bc -e bc")
+bindsym $mod+equal              exec alacritty -d 80 24 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t hCalc -e rlwrap hcalc" or "-T bc -e bc")
+bindsym $mod+c                  exec alacritty -d 80 24 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t hCalc -e rlwrap hcalc" or "-T bc -e bc")
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
 bindsym $mod+x                  exec menu
@@ -331,4 +331,4 @@ exec --no-startup-id tt -d
 # run specific scripts at i3 startup
 %(cfg_yesno("dropbox", "Install Dropbox?") and "exec --no-startup-id ~/.dropbox-dist/dropboxd &" or "")
 
-%(file_exist(I"%(HOME)/.config/i3/custom-config") and read(I"%(HOME)/.config/i3/custom-config") or "")
+%(file_exist "%(HOME)/.config/i3/custom-config" and read "%(HOME)/.config/i3/custom-config" or "")
