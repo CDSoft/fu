@@ -330,3 +330,5 @@ exec --no-startup-id tt -d
 
 # run specific scripts at i3 startup
 %(cfg_yesno("dropbox", "Install Dropbox?") and "exec --no-startup-id ~/.dropbox-dist/dropboxd &" or "")
+
+%(file_exist(I"%(HOME)/.config/i3/custom-config") and read(I"%(HOME)/.config/i3/custom-config") or "")
