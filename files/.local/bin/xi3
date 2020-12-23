@@ -4,4 +4,3 @@ export NEW_DISPLAY=:9
 Xephyr -br -ac -noreset -screen 1600x900 $NEW_DISPLAY &
 sleep 2
 DISPLAY=$NEW_DISPLAY i3
-EOF
