@@ -986,6 +986,10 @@ function i3_configuration()
         fira-code-fonts
         google-droid-sans-mono-fonts
         dejavu-sans-mono-fonts
+        rofi
+        rofi-themes
+        fontawesome-fonts
+        fontawesome-fonts-web
     ]]
 
     -- Default programs
@@ -1015,6 +1019,8 @@ function i3_configuration()
     script ".config/alacritty/alacritty.yml"
 
     script ".config/i3/config"
+
+    script ".config/rofi/config.rasi"
 
     script "xi3"
 
