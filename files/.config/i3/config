@@ -103,8 +103,8 @@ for_window [window_role="pop-up"]                   floating enable
 for_window [window_role="task_dialog"]              floating enable
 for_window [title="^Bye$"]                          floating enable, border pixel 1
 for_window [title="^QEMU"]                          floating enable
-for_window [title="^hCalc$"]                        floating enable
-for_window [title="^bc$"]                           floating enable
+for_window [title="^hCalc$"]                        floating enable, border normal 4
+for_window [title="^bc$"]                           floating enable, border normal 4
 for_window [title="^Reconnection$"]                 floating enable
 for_window [title="^ssh-agent$"]                    floating enable
 for_window [class="^URxvt$" instance="scratchpad"]  border pixel 1, move scratchpad

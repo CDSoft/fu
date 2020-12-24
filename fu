@@ -48,58 +48,45 @@ hooks:
 ]]
 end
 
--- Utilities {{{
 
-function I(s)
-    return (s:gsub("%%(%b())", function(x)
-        return (assert(load("return "..x)))()
-    end))
+function configuration()
+
+    HOME = os.getenv "HOME"
+    USER = os.getenv "USER"
+
+    fu_path = I"%(HOME)/.config/fu"
+    config_path = I"%(fu_path)/config"
+    repo_path = I"%(fu_path)/repos"
+
+    TIMEZONE = "Europe/Paris"
+    KEYMAP = "fr"
+    LOCALE = "fr_FR.UTF-8"
+
+    BROWSER = "firefox"
+    BROWSER2 = "google-chrome"
+
+    LATEST_LTS = "lts-16.26"
+
+    RACKET_VERSION = "7.9"
+    RACKET_NAME = I"racket-%(RACKET_VERSION)"
+    RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux.sh"
+
+    JULIA_VERSION = "1.5.3"
+    JULIA_NAME = I"julia-%(JULIA_VERSION)"
+    JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
+
+    ZIG_VERSION = "0.7.1"
+    ZIG_ARCHIVE = I"zig-linux-x86_64-%(ZIG_VERSION).tar.xz"
+    ZIG_URL = I"https://ziglang.org/download/%(ZIG_VERSION)/%(ZIG_ARCHIVE)"
+    ZIG_DIR = I"%(ZIG_ARCHIVE:gsub('%.tar%.xz$', ''))"
+
+    CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
+    CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
+    CLING_DIR = I"%(CLING_ARCHIVE:gsub('%.tar%.bz2$', ''))"
+
+    DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
+
 end
-
-function dirname(s)
-    return (I(s):gsub("[^/]*$", ""))
-end
-
-function basename(s)
-    return (I(s):gsub(".*/([^/]*)$", "%1"))
-end
-
--- }}}
-
-HOME = os.getenv "HOME"
-USER = os.getenv "USER"
-
-fu_path = I"%(HOME)/.config/fu"
-config_path = I"%(fu_path)/config"
-repo_path = I"%(fu_path)/repos"
-
-TIMEZONE = "Europe/Paris"
-KEYMAP = "fr"
-LOCALE = "fr_FR.UTF-8"
-
-BROWSER = "firefox"
-BROWSER2 = "google-chrome"
-
-LATEST_LTS = "lts-16.26"
-
-RACKET_VERSION = "7.9"
-RACKET_NAME = I"racket-%(RACKET_VERSION)"
-RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux.sh"
-
-JULIA_VERSION = "1.5.3"
-JULIA_NAME = I"julia-%(JULIA_VERSION)"
-JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
-
-ZIG_VERSION = "0.7.1"
-ZIG_ARCHIVE = I"zig-linux-x86_64-%(ZIG_VERSION).tar.xz"
-ZIG_URL = I"https://ziglang.org/download/%(ZIG_VERSION)/%(ZIG_ARCHIVE)"
-ZIG_DIR = I"%(ZIG_ARCHIVE:gsub('%.tar%.xz$', ''))"
-
-CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
-CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
-CLING_DIR = I"%(CLING_ARCHIVE:gsub('%.tar%.bz2$', ''))"
-
-DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
 function main()
     title "Fedora Updater"
@@ -112,6 +99,8 @@ function main()
         else io.stderr:write("Error: Unknown argument: "..a.."\n\n"); help(); return 1
         end
     end
+
+    configuration()
 
     identification()
 
@@ -188,6 +177,12 @@ end
 
 -- Utilities {{{
 
+function I(s)
+    return (s:gsub("%%(%b())", function(x)
+        return (assert(load("return "..x)))()
+    end))
+end
+
 function set(init)
     local set = {}
     local ordered = {}
@@ -227,6 +222,14 @@ function log(s)
     local normal = string.char(27).."[0m"
     s = I(s)
     io.write(color.."### "..s.." "..normal.."\n")
+end
+
+function dirname(s)
+    return (I(s):gsub("[^/]*$", ""))
+end
+
+function basename(s)
+    return (I(s):gsub(".*/([^/]*)$", "%1"))
 end
 
 function file_exist(path)
