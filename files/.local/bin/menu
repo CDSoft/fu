@@ -108,14 +108,7 @@ chmod +x /tmp/idle
 
 idle()
 {
-    urxvt -T "Waiting for low CPU and network activity" -e bash -c "/tmp/idle && $1"
-}
-
-fix_r8169()
-{
-    case $(hostname) in
-        useless_now_desktop) urxvt -T "Reconnection" -e sh -c "figlet 'Reconnection...'; sudo rmmod r8169; sudo modprobe r8169";;
-    esac
+    alacritty -d 41 10 -o "colors.primary.background='#660000'" -t "Waiting for low CPU and network activity" -e bash -c "/tmp/idle && $1"
 }
 
 # }}}
@@ -153,9 +146,9 @@ case "$1" in
     newws*)         new_workspace ;;
 
     "lock"*)                lock ;;
-    "suspend when idle"*)   idle "lock && systemctl suspend" && fix_r8169 ;;
-    "suspend"*)             lock && systemctl suspend && fix_r8169 ;;
-    "hibernate"*)           lock && systemctl hybrid-sleep && fix_r8169 ;;
+    "suspend when idle"*)   idle "lock && systemctl suspend" ;;
+    "suspend"*)             lock && systemctl suspend ;;
+    "hibernate"*)           lock && systemctl hybrid-sleep ;;
     "power-off"*)           systemctl poweroff ;;
     "reboot"*)              systemctl reboot ;;
     "exit"*)                i3-msg exit ;;
