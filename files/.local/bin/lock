@@ -1,12 +1,25 @@
 #!/bin/bash
 
-color="srgb(2,4,12)"
+LOCK=/tmp/lock.png
 
-convert -size 96x96 \
-    plasma:$color-$color \
-    -virtual-pixel tile \
-    -blur 0x8 \
-    -colorspace Gray \
-    /tmp/lock.png
+plasma()
+{
+    color="srgb(2,4,12)"
 
-i3lock -e -t -i /tmp/lock.png
+    convert -size 96x96 \
+        plasma:$color-$color \
+        -virtual-pixel tile \
+        -blur 0x8 \
+        -colorspace Gray \
+        $LOCK
+}
+
+pixelization()
+{
+    import -window root $LOCK
+    convert $LOCK -scale 10% -scale 1000% $LOCK
+}
+
+plasma
+
+i3lock -e -t -i $LOCK

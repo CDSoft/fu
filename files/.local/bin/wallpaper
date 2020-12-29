@@ -1,11 +1,24 @@
 #!/bin/bash
 
-color="srgb(8,16,48)"
+WALLPAPER=/tmp/wallpaper.png
 
-convert -size 640x360 \
-    plasma:$color-$color \
-    -virtual-pixel tile \
-    -blur 0x8 \
-    /tmp/wallpaper.png
+plasma()
+{
+    local color="srgb(8,16,48)"
 
-DISPLAY=%(os.getenv "DISPLAY") feh --no-fehbg --bg-fill /tmp/wallpaper.png
+    convert -size 640x360 \
+        plasma:$color-$color \
+        -virtual-pixel tile \
+        -blur 0x8 \
+        $WALLPAPER
+}
+
+pixelization()
+{
+    plasma
+    convert $WALLPAPER -scale 10% -scale 1000% $WALLPAPER
+}
+
+plasma
+
+DISPLAY=:0 feh --no-fehbg --bg-fill $WALLPAPER
