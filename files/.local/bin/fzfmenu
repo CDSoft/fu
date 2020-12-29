@@ -1,4 +1,4 @@
 #!/bin/bash
 
 export FZF_DEFAULT_OPTS=""
-urxvt -geometry 160x32 +ss +sb -title "floating fzfmenu" -e sh -c "fzf $* < /proc/$$/fd/0 > /proc/$$/fd/1"
+alacritty -d 160 32 -t "floating fzfmenu" -e sh -c "fzf $* < /proc/$$/fd/0 > /proc/$$/fd/1"
