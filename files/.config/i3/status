@@ -63,10 +63,10 @@ run_watch VPNC {
     pidfile = "/var/run/vpnc/pid"
 }
 
-#path_exists VPN {
-#    # path exists when a VPN tunnel launched by nmcli/nm-applet is active
-#    path = "/proc/sys/net/ipv4/conf/tun0"
-#}
+path_exists VPN {
+    # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+    path = "/proc/sys/net/ipv4/conf/tun0"
+}
 
 time {
     format = "%a %e/%m/%Y - %H:%M"
