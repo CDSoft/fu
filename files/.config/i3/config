@@ -64,10 +64,10 @@ bindsym $mod+Return exec alacritty --working-directory "`xcwd`"
 #bindsym $mod+Ctrl+Return exec urxvt -e mc "`xcwd`" "`xcwd`"
 #bindsym $mod+Ctrl+Return exec konsole -e mc "`xcwd`" "`xcwd`"
 bindsym $mod+Ctrl+Return exec alacritty -t mc -e sh -c "sleep 0.1s && mc \"`xcwd`\" \"`xcwd`\""
-#bindsym $mod+$alt+Return exec pcmanfm "`xcwd`"
+bindsym $mod+$alt+Return exec pcmanfm "`xcwd`"
 #bindsym $mod+$alt+Return exec krusader --left "`xcwd`" --right "`xcwd`"
 #bindsym $mod+$alt+Return exec nautilus -w "`xcwd`"
-bindsym $mod+$alt+Return exec dolphin "`xcwd`"
+#bindsym $mod+$alt+Return exec dolphin "`xcwd`"
 #bindsym $mod+$alt+Return exec fmmenu
 
 # pmount
