@@ -4,5 +4,5 @@ if tty -s
 then
     nvim -p $*
 else
-    konsole -e nvim -p $*
+    alacritty -e nvim -p $*
 fi
