@@ -741,6 +741,15 @@ function rust_configuration()
         sh "rustup update stable"
     end
 
+    local RUST_PACKAGES = {
+        "gitui",
+    }
+    for _, package in ipairs(RUST_PACKAGES) do
+        if force or not installed(package) then
+            sh("cargo install %(force and '--force' or '') "..package)
+        end
+    end
+
 end
 
 -- }}}
