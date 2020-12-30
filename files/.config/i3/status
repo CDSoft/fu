@@ -107,8 +107,8 @@ disk "/home" {
 }
 
 memory {
-    format = "🧠 %free"
-    format_degraded = "🧠 %free"
+    format = "🧠 %available"
+    format_degraded = "🧠 %available"
 }
 
 volume master {
