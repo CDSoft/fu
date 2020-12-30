@@ -16,6 +16,7 @@ runtime vim/display.vim
 runtime vim/rainbow.vim
 runtime vim/autoreload.vim
 runtime vim/terminal.vim
+runtime vim/vim-gitgutter.vim
 
 lua require'nvim-colorizer'
 

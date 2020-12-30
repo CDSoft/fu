@@ -18,5 +18,8 @@ Plug 'metakirby5/codi.vim'
 Plug 'https://github.com/norcalli/nvim-colorizer.lua.git'
 Plug 'airblade/vim-rooter'
 Plug 'https://github.com/vim-scripts/DrawIt'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
 
 call plug#end()
