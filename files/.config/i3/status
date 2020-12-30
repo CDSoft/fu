@@ -22,6 +22,7 @@ order += "disk /home"
 order += "wireless _first_"
 order += "ethernet _first_"
 order += "battery all"
+order += "memory"
 order += "cpu_temperature 0"
 order += "cpu_usage"
 order += "load"
@@ -78,11 +79,14 @@ tztime paris {
 }
 
 cpu_usage {
-    format = "⚙ %usage"
+    format = "💚 %usage"
+    format_above_degraded_threshold = "🧡 %usage"
+    format_above_threshold = "💔 %usage"
 }
 
 load {
-    format = "⚙ %5min"
+    format = "😀 %5min"
+    format_above_threshold = "🥵 %5min"
 }
 
 cpu_temperature 0 {
@@ -91,15 +95,20 @@ cpu_temperature 0 {
 }
 
 disk "/" {
-    format = "/ %avail"
+    format = "🖴 / %avail"
 }
 
 disk "/tmp" {
-    format = "/tmp %avail"
+    format = "🖴 /tmp %avail"
 }
 
 disk "/home" {
-    format = "/home %avail"
+    format = "🖴 /home %avail"
+}
+
+memory {
+    format = "🧠 %free"
+    format_degraded = "🧠 %free"
 }
 
 volume master {
