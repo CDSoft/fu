@@ -583,10 +583,13 @@ end
 function dev_configuration()
     title "Development environment configuration"
 
+    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:atim:lazygit.repo", "atim/lazygit")
+
     if cfg_yesno("R", "Install R?") then packages [[ R ]] end
 
     packages [[
         git git-gui gitk qgit gitg tig git-lfs
+        lazygit
         subversion
         clang llvm clang-tools-extra
         cppcheck
