@@ -4,7 +4,7 @@ WALLPAPER=/tmp/wallpaper.png
 
 plasma()
 {
-    local color="srgb(8,16,48)"
+    local color="srgb(2,8,24)"
 
     convert -size 640x360 \
         plasma:$color-$color \
