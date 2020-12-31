@@ -512,6 +512,7 @@ function network_configuration()
         tigervnc
         can-utils
         openvpn
+        telnet
     ]]
 
     -- hostname
