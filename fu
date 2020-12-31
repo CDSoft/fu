@@ -106,6 +106,8 @@ function main()
 
     create_directories()
 
+    check_last_update()
+
     system_configuration()
     shell_configuration()
     network_configuration()
@@ -135,6 +137,8 @@ function main()
     if cfg_yesno("work", "Install work configuration?") then work_configuration() end
 
     upgrade_packages()
+
+    store_upgrade_date()
 end
 
 -- Configuration {{{
@@ -143,33 +147,43 @@ function reset()
     sh "rm -rf %(config_path)"
 end
 
-function cfg_yesno(param, question)
+function ask_yesno(question)
     local answer = nil
+    repeat
+        io.write(question.." [y/n] ")
+        answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
+    until answer:match "[yn]"
+    return answer:match "y"
+end
+
+function ask_string(question)
+    local answer = nil
+    repeat
+        io.write(question.." ")
+        answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
+    until #answer > 0
+    return answer
+end
+
+function cfg_yesno(param, question)
     local config_file = config_path.."/"..param
     if not file_exist(config_file) then
-        repeat
-            io.write(question.." [y/n] ")
-            answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
-        until answer:match "[yn]"
+        local answer = ask_yesno(question) and "y" or "n"
         mkdir(config_path)
         write(config_file, answer)
     end
-    answer = read(config_file):lower():gsub("^%s*(%S).*$", "%1")
+    local answer = read(config_file):lower():gsub("^%s*(%S).*$", "%1")
     return answer:match "y"
 end
 
 function cfg_string(param, question)
-    local answer = nil
     local config_file = config_path.."/"..param
     if not file_exist(config_file) then
-        repeat
-            io.write(question.." ")
-            answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
-        until #answer > 0
+        local answer = ask_string(question)
         mkdir(config_path)
         write(config_file, answer)
     end
-    answer = read(config_file):gsub("^%s+", ""):gsub("%s+$", "")
+    local answer = read(config_file):gsub("^%s+", ""):gsub("%s+$", "")
     return answer
 end
 
@@ -411,6 +425,33 @@ function create_directories()
     mkdir "%(HOME)/.local/opt"
     mkdir "%(config_path)"
     mkdir "%(repo_path)"
+end
+
+-- }}}
+
+-- Force update when the last update is too old {{{
+
+function check_last_update()
+    if not upgrade then
+        title "Check last update"
+
+        if file_exist "%(config_path)/last_update" then
+            local last_update = tonumber(pipe "date +%s -r %(config_path)/last_update")
+            local now = tonumber(pipe "date +%s")
+            outdated = now - last_update > 15*86400
+        else
+            outdated = true
+        end
+        if outdated then
+            upgrade = ask_yesno "The last upgrade is too old. Force upgrade now?"
+        end
+    end
+end
+
+function store_upgrade_date()
+    if upgrade then
+        sh "touch %(config_path)/last_update"
+    end
 end
 
 -- }}}
