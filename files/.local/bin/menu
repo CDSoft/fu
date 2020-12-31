@@ -2,7 +2,7 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | rofi -dmenu -i -l 30 -p "$(hostname) ➜"
+    local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -l 30 -p "$(hostname) ➜"
 suspend             : lock screen & suspend to memory
 suspend when idle   : lock screen & suspend to memory when the OS is idle
 hibernate           : suspend to disk
@@ -11,11 +11,13 @@ reboot              : reboot the computer
 exit                : exit i3
 lock                : lock screen
 
+%( cfg_yesno("external-monitor", "Add shortcuts for external monitor?") and [=[
 single              : internal monitor only
 right               : external monitor on the right
 left                : external monitor on the left
 above               : external monitor on the top
 clone               : clone the internal monitor to the external one
+]=] or "" )
 
 mute                : mute the main audio output
 unmute              : unmute the main audio output
@@ -68,42 +70,44 @@ idle()
 EXT_RES=1920x1200
 
 case "$1" in
-    single*)        move_to_int; xrandr --output HDMI-1 --off
+%( cfg_yesno("external-monitor", "Add shortcuts for external monitor?") and [=[
+    (single*)       move_to_int; xrandr --output HDMI-1 --off
                     i3-msg reload
                     ;;
-    clone*)         move_to_int; xrandr --output HDMI-1 --auto --same-as eDP-1 --scale-from 1920x1080
+    (clone*)        move_to_int; xrandr --output HDMI-1 --auto --same-as eDP-1 --scale-from 1920x1080
                     i3-msg reload
                     ;;
-    left*)          xrandr --output HDMI-1 --mode $EXT_RES --left-of eDP-1
+    (left*)         xrandr --output HDMI-1 --mode $EXT_RES --left-of eDP-1
                     i3-msg move workspace to output left
                     i3-msg reload
                     ;;
-    dual*|right*)   xrandr --output HDMI-1 --mode $EXT_RES --right-of eDP-1
+    (dual*|right*)  xrandr --output HDMI-1 --mode $EXT_RES --right-of eDP-1
                     i3-msg move workspace to output right
                     i3-msg reload
                     ;;
-    above*)         xrandr --output HDMI-1 --mode $EXT_RES --above eDP-1
+    (above*)        xrandr --output HDMI-1 --mode $EXT_RES --above eDP-1
                     i3-msg move workspace to output up
                     i3-msg reload
                     ;;
+]=] or "" )
 
-    mute*)          pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;
-    unmute*)        pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` false ;;
-    mixer*)         pavucontrol ;;
+    (mute*)         pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;
+    (unmute*)       pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` false ;;
+    (mixer*)        pavucontrol ;;
 
-    nm*)            nm-connection-editor ;;
-    bt*)            blueman-manager ;;
+    (nm*)           nm-connection-editor ;;
+    (bt*)           blueman-manager ;;
 
-    renws*)         rename_workspace ;;
-    newws*)         new_workspace ;;
+    (renws*)        rename_workspace ;;
+    (newws*)        new_workspace ;;
 
-    "lock"*)                lock ;;
-    "suspend when idle"*)   idle "lock && systemctl suspend" ;;
-    "suspend"*)             lock && systemctl suspend ;;
-    "hibernate"*)           lock && systemctl hybrid-sleep ;;
-    "power-off"*)           systemctl poweroff ;;
-    "reboot"*)              systemctl reboot ;;
-    "exit"*)                i3-msg exit ;;
+    ("lock"*)               lock ;;
+    ("suspend when idle"*)  idle "lock && systemctl suspend" ;;
+    ("suspend"*)            lock && systemctl suspend ;;
+    ("hibernate"*)          lock && systemctl hybrid-sleep ;;
+    ("power-off"*)          systemctl poweroff ;;
+    ("reboot"*)             systemctl reboot ;;
+    ("exit"*)               i3-msg exit ;;
 
-    "") _menu ;;
+    ("") _menu ;;
 esac
