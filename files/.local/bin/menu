@@ -31,8 +31,6 @@ EndOfMenu
     test -n "$action" && $0 "$action"
 }
 
-# monitor management {{{
-
 move_to_int()
 {
     i3-msg "[class=\".*\"] move workspace to output xinerama-0"
@@ -62,56 +60,10 @@ new_workspace()
     i3-input -F "workspace \"%s\"" -P 'New workspace: '
 }
 
-# }}}
-
-# connection / power management {{{
-
-cat <<\EndOfIdleScript > /tmp/idle
-#!/bin/bash
-
-period=10
-confirm=6
-low=0
-netthr=1500
-cputhr=30
-
-net0=$(awk '{split($0, n, " "); for (i=1; i<=NF; i++) s+=n[i]} END {print s}' /proc/net/netstat)
-while [ $low -lt $confirm ]
-do
-    net=$(awk '{split($0, n, " "); for (i=1; i<=NF; i++) s+=n[i]} END {print s}' /proc/net/netstat)
-    dnet=$(( (net-net0) / period ))
-    net0=$net
-    cpu=$(awk '{print $2*100}' /proc/loadavg)
-    clear
-    cat <<.
-Waiting for low CPU and network activity
-========================================
-
-$(date)
-
-CPU load: $cpu
-Network : $dnet/s
-
-Type Ctrl-C to cancel.
-.
-
-    if [ $dnet -lt $netthr ] && [ $cpu -lt $cputhr ]
-    then
-        low=$((low+1))
-    else
-        low=0
-    fi
-    sleep $period
-done
-EndOfIdleScript
-chmod +x /tmp/idle
-
 idle()
 {
-    alacritty -d 41 10 -o "colors.primary.background='#660000'" -t "Waiting for low CPU and network activity" -e bash -c "/tmp/idle && $1"
+    alacritty -d 41 10 -o "colors.primary.background='#660000'" -t "Waiting for low CPU and network activity" -e bash -c "idle && $1"
 }
-
-# }}}
 
 EXT_RES=1920x1200
 

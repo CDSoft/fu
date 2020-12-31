@@ -1,0 +1,37 @@
+#!/bin/bash
+
+period=10
+confirm=6
+low=0
+netthr=1500
+cputhr=30
+
+net0=$(awk '{split($0, n, " "); for (i=1; i<=NF; i++) s+=n[i]} END {print s}' /proc/net/netstat)
+while [ $low -lt $confirm ]
+do
+    net=$(awk '{split($0, n, " "); for (i=1; i<=NF; i++) s+=n[i]} END {print s}' /proc/net/netstat)
+    dnet=$(( (net-net0) / period ))
+    net0=$net
+    cpu=$(awk '{print $2*100}' /proc/loadavg)
+    clear
+    cat <<.
+Waiting for low CPU and network activity
+========================================
+
+$(date)
+
+CPU load: $cpu
+Network : $dnet/s
+
+Type Ctrl-C to cancel.
+.
+
+    if [ $dnet -lt $netthr ] && [ $cpu -lt $cputhr ]
+    then
+        low=$((low+1))
+    else
+        low=0
+    fi
+    sleep $period
+done
+

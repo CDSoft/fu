@@ -1056,6 +1056,7 @@ function i3_configuration()
     script "screenshot"
 
     script "menu"
+    script "idle"
 
     script "brightness"
 
