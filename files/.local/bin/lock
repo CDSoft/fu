@@ -10,7 +10,6 @@ plasma()
         plasma:$color-$color \
         -virtual-pixel tile \
         -blur 0x8 \
-        -colorspace Gray \
         $LOCK
 }
 
