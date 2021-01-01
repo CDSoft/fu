@@ -48,7 +48,6 @@ hooks:
 ]]
 end
 
-
 function configuration()
 
     HOME = os.getenv "HOME"
@@ -1111,6 +1110,20 @@ function i3_configuration()
             sh "cd %(repo_path)/tt && make"
         end
     end
+
+    -- TODO: fix VSync or tearing issues
+    -- (this seems to work but both screens are cloned)
+    --[==[
+    rootfile("/etc/X11/xorg.conf.d/20-intel.conf", [[
+Section "Device"
+    Identifier "Intel Graphics"
+    Driver "intel"
+    Option "TearFree" "true"
+    Option "AccelMethod" "uxa"
+    Option "TripleBuffer" "true"
+EndSection
+]])
+    --]==]
 
 end
 
