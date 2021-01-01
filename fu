@@ -1081,9 +1081,12 @@ function i3_configuration()
     if force or upgrade or not installed "xcwd" then
         gitclone "https://github.com/schischi-a/xcwd.git"
         -- patch to reject "/"
+    -- this patch does not work...
+    --[==[
         local xcwd = read "%(repo_path)/xcwd/xcwd.c"
-        xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', '(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0)')
+        xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', I'(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0 || strcmp(%1, "%(HOME)") == 0 || strcmp(%1, "%(HOME)/") == 0 || strcmp(%1, "~") == 0)')
         write("%(repo_path)/xcwd/xcwd.c", xcwd)
+    --]==]
         sh "cd %(repo_path)/xcwd && make && sudo make install"
     end
 
