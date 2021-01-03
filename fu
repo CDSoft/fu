@@ -475,11 +475,6 @@ function system_configuration()
 
     -- No more poweroff
     sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
-
-    -- crontab
-    pipe("crontab -", [[
-0 * * * * %(HOME)/.local/bin/wallpaper
-]])
 end
 
 -- }}}
@@ -1093,6 +1088,11 @@ function i3_configuration()
 
     script "wallpaper"
     script "lock"
+
+    if force or upgrade or not file_exist "%(HOME)/.config/i3/wallpaper.png" then
+        log "Wallpaper generation"
+        sh "~/.local/bin/wallpaper"
+    end
 
     script "screenshot"
 

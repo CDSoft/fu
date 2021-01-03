@@ -271,7 +271,7 @@ exec --no-startup-id xautolock -time 15 -locker '~/.local/bin/lock' &
 exec --no-startup-id st -T ssh-agent -e ~/.local/bin/ssha &
 
 # Wallpaper
-exec --no-startup-id ~/.local/bin/wallpaper &
+exec --no-startup-id feh --no-fehbg --bg-fill ~/.config/i3/wallpaper.png &
 
 # Time tracker
 exec --no-startup-id tt -d
