@@ -415,6 +415,20 @@ function gitclone(url)
     end
 end
 
+function mime_default(desktop_file)
+    desktop_file = I(desktop_file)
+    local config_flag = I("%(config_path)/"..desktop_file..".already_configured")
+    local path = "/usr/share/applications/"..desktop_file
+    if file_exist(path) and (force or upgrade or not file_exist(config_flag)) then
+        read(path):gsub("MimeType=([^\n]*)", function(mimetypes)
+            mimetypes:gsub("[^;]+", function(mimetype)
+                sh("xdg-mime default "..desktop_file.." "..mimetype)
+            end)
+        end)
+        sh("touch "..config_flag)
+    end
+end
+
 -- }}}
 
 -- Create fu directories {{{
@@ -1041,25 +1055,28 @@ function i3_configuration()
     ]]
 
     -- Default programs
-    sh "xdg-mime default okularApplication_pdf.desktop application/pdf"
-    sh "xdg-mime default org.kde.gwenview.desktop image/jpg"
-    sh "xdg-mime default org.kde.gwenview.desktop image/jpeg"
-    sh "xdg-mime default org.kde.gwenview.desktop image/png"
-    sh "xdg-mime default vlc.desktop video/mp4"
-    sh "xdg-mime default vlc.desktop video/webm"
-    sh "xdg-mime default vlc.desktop video/ogg"
-    sh "xdg-mime default vlc.desktop video/mpeg"
-    sh "xdg-mime default vlc.desktop video/mpg"
-    sh "xdg-mime default vlc.desktop video/x-matroska"
-    sh "xdg-mime default vlc.desktop audio/mpeg"
-    sh "xdg-mime default vlc.desktop audio/x-vorbis+ogg"
-    sh "xdg-mime default vlc.desktop audio/x-opus+ogg"
-    sh "xdg-mime default vlc.desktop audio/mp3"
-    sh "xdg-mime default vlc.desktop audio/ogg"
-    sh "xdg-mime default vlc.desktop audio/opus"
-    sh "xdg-mime default vlc.desktop audio/x-mod"
-    sh "xdg-mime default vlc.desktop audio/x-xm"
-    sh "xdg-mime default vlc.desktop audio/x-it"
+
+    mime_default "%(BROWSER).desktop"
+    mime_default "libreoffice-base.desktop"
+    mime_default "libreoffice-calc.desktop"
+    mime_default "libreoffice-draw.desktop"
+    mime_default "libreoffice-impress.desktop"
+    mime_default "libreoffice-math.desktop"
+    mime_default "libreoffice-startcenter.desktop"
+    mime_default "libreoffice-writer.desktop"
+    mime_default "libreoffice-xsltfilter.desktop"
+    if cfg_yesno("thunderbird-mailer", "Use Thunderbird as the default mailer?") then
+        mime_default "mozilla-thunderbird.desktop"
+    end
+    mime_default "org.pwmt.zathura-cb.desktop"
+    mime_default "org.pwmt.zathura-djvu.desktop"
+    mime_default "org.pwmt.zathura-pdf-poppler.desktop"
+    mime_default "org.pwmt.zathura-ps.desktop"
+    mime_default "org.pwmt.zathura.desktop"
+    mime_default "pcmanfm.desktop"
+    mime_default "sxiv.desktop"
+    mime_default "vlc.desktop"
+    mime_default "wireshark.desktop"
 
     script ".config/konsolerc"
     script ".local/share/konsole/CDSoft.profile"
@@ -1157,6 +1174,7 @@ function graphic_application_configuration()
         vokoscreenNG
         simple-scan
         evince okular mupdf qpdfview
+        zathura zathura-plugins-all
 
         vlc ffmpeg
         gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
@@ -1224,6 +1242,7 @@ function zoom_configuration()
         with_tmpdir(function(tmp)
             sh("wget https://zoom.us/client/latest/zoom_x86_64.rpm -O "..tmp.."/zoom_x86_64.rpm")
             sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
+            mime_default "Zoom.desktop"
         end)
     end
 
