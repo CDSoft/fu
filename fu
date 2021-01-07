@@ -612,8 +612,6 @@ function filesystem_configuration()
         encfs
         p7zip p7zip-gui p7zip-plugins
         mc pcmanfm
-        dolphin
-        krusader kdiff3 krename
         pmount
         exfat-utils fuse-exfat
         syslinux
@@ -1043,7 +1041,6 @@ function i3_configuration()
         arandr
         sox
         fortune-mod ImageMagick
-        beesu
         st sxiv
         volumeicon pavucontrol
         adobe-source-code-pro-fonts
@@ -1167,7 +1164,6 @@ function graphic_application_configuration()
 
     packages [[
         shutter feh gimp ImageMagick scribus inkscape
-        krita gwenview
         qt5-qtx11extras
         gnuplot
         qrencode
