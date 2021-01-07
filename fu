@@ -85,6 +85,9 @@ function configuration()
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
+    EATON_IPP_VERSION = "1.67.162-1"
+    EATON_IPP_URL = I"https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/software/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
+
 end
 
 function main()
@@ -134,6 +137,7 @@ function main()
     if cfg_yesno("zoom", "Install Zoom?") then zoom_configuration() end
     if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
     if cfg_yesno("work", "Install work configuration?") then work_configuration() end
+    if cfg_yesno("eaton", "Install Eaton Intelligent Power Protector?") then eaton_configuration() end
 
     upgrade_packages()
 
@@ -1365,6 +1369,21 @@ function work_configuration()
     end
 
     sh "pip3 install --user tftpy"
+
+end
+
+-- }}}
+
+-- Eaton configuration {{{
+
+function eaton_configuration()
+
+    if force or not file_exist "/usr/local/Eaton/IntelligentPowerProtector/mc2" then
+        log "Eaton Intelligent Power Protector configuration"
+
+        sh "wget %(EATON_IPP_URL) -c -O ~/.local/opt/%(basename(EATON_IPP_URL))"
+        sh "sudo dnf install ~/.local/opt/%(basename(EATON_IPP_URL))"
+    end
 
 end
 
