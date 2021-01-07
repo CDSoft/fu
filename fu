@@ -105,7 +105,7 @@ function main()
 
     create_directories()
 
-    check_last_update()
+    check_last_upgrade()
 
     system_configuration()
     shell_configuration()
@@ -442,16 +442,16 @@ end
 
 -- }}}
 
--- Force update when the last update is too old {{{
+-- Force upgrade when the last upgrade is too old {{{
 
-function check_last_update()
+function check_last_upgrade()
     if not upgrade then
-        title "Check last update"
+        title "Check last upgrade"
 
-        if file_exist "%(config_path)/last_update" then
-            local last_update = tonumber(pipe "date +%s -r %(config_path)/last_update")
+        if file_exist "%(config_path)/last_upgrade" then
+            local last_upgrade = tonumber(pipe "date +%s -r %(config_path)/last_upgrade")
             local now = tonumber(pipe "date +%s")
-            outdated = now - last_update > 15*86400
+            outdated = now - last_upgrade > 15*86400
         else
             outdated = true
         end
@@ -463,7 +463,7 @@ end
 
 function store_upgrade_date()
     if upgrade then
-        sh "touch %(config_path)/last_update"
+        sh "touch %(config_path)/last_upgrade"
     end
 end
 
