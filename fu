@@ -1035,7 +1035,6 @@ function i3_configuration()
 
     packages [[
         rxvt-unicode
-        konsole
         alacritty
         numlockx
         rlwrap
@@ -1082,9 +1081,6 @@ function i3_configuration()
     mime_default "sxiv.desktop"
     mime_default "vlc.desktop"
     mime_default "wireshark.desktop"
-
-    script ".config/konsolerc"
-    script ".local/share/konsole/CDSoft.profile"
 
     script ".config/alacritty/alacritty.yml"
 
