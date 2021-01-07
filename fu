@@ -90,6 +90,8 @@ end
 function main()
     title "Fedora Updater"
 
+    configuration()
+
     for _, a in ipairs(arg) do
         if a == "-h" then help(); return;
         elseif a == "-f" then force = true; upgrade = true
@@ -98,8 +100,6 @@ function main()
         else io.stderr:write("Error: Unknown argument: "..a.."\n\n"); help(); return 1
         end
     end
-
-    configuration()
 
     identification()
 
