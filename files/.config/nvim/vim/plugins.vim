@@ -21,7 +21,7 @@ Plug 'https://github.com/vim-scripts/DrawIt'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
-
+Plug 'https://github.com/vifm/vifm.vim.git'
 
 %( cfg_yesno("work", "Install work configuration?") and "Plug 'https://github.com/m42e/trace32-practice.vim'" or "" )
 

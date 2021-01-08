@@ -96,6 +96,18 @@ alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run
 ]==] or ""
 )
 
+# cd with vifm
+
+vicd()
+{
+    local dst="$(command vifm -c only --choose-dir - "$@")"
+    if [ -z "$dst" ]; then
+        echo 'Directory picking cancelled/failed'
+        return 1
+    fi
+    cd "$dst"
+}
+
 # Other user configuration
 
 if [ -f ~/.zuser ]

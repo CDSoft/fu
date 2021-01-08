@@ -616,6 +616,7 @@ function filesystem_configuration()
         encfs
         p7zip p7zip-gui p7zip-plugins
         mc pcmanfm
+        vifm
         pmount
         exfat-utils fuse-exfat
         syslinux
@@ -624,7 +625,13 @@ function filesystem_configuration()
         squashfs-tools squashfuse
         baobab ncdu qdirstat
         xz unrar
+        archivemount fuseiso sshfs curlftpfs fuse-7z
     ]]
+
+    gitclone "https://github.com/vifm/vifm-colors"
+    script ".config/vifm/vifmrc"
+    mkdir "%(HOME)/.config/vifm/colors"
+    sh "cp %(repo_path)/vifm-colors/*.vifm %(HOME)/.config/vifm/colors/"
 
 end
 
