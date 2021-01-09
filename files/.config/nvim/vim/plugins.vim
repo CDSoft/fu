@@ -1,7 +1,7 @@
 call plug#begin()
 
-Plug 'git@github.com:CDSoft/pwd.git'
-Plug 'git@github.com:CDSoft/todo.git'
+Plug 'https://github.com/CDSoft/pwd.git'
+Plug 'https://github.com/CDSoft/todo.git'
 Plug 'https://github.com/thinca/vim-localrc.git'
 Plug 'https://github.com/w0rp/ale.git'
 Plug 'https://github.com/ziglang/zig.vim'
