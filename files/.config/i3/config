@@ -277,6 +277,11 @@ exec --no-startup-id feh --no-fehbg --bg-fill ~/.config/i3/wallpaper.png &
 # Time tracker
 exec --no-startup-id tt -d
 
+%( cfg_yesno("startvlc", "Autostart VLC in the systray?") and [=[
+# VLC minimized
+exec --no-startup-id vlc --qt-start-minimized &
+]=] or "" )
+
 # run specific scripts at i3 startup
 
 %(cfg_yesno("dropbox", "Install Dropbox?") and "exec --no-startup-id ~/.dropbox-dist/dropboxd &" or "")

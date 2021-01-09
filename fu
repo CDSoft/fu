@@ -1134,6 +1134,13 @@ function i3_configuration()
         end
     end
 
+    -- start VLC in a single instance
+    if file_exist "%(HOME)/.config/vlc/vlcrc" then
+        local vlcrc = read "%(HOME)/.config/vlc/vlcrc"
+        vlcrc = vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
+        write("%(HOME)/.config/vlc/vlcrc", vlcrc)
+    end
+
     -- TODO: fix VSync or tearing issues
     -- (this seems to work but both screens are cloned)
     --[==[
