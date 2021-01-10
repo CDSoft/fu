@@ -249,19 +249,9 @@ function basename(s)
     return (I(s):gsub(".*/([^/]*)$", "%1"))
 end
 
-function file_exist(path)
-    local f = io.open(I(path), "r")
-    if f then
-        f:close()
-        return true
-    else
-        return false
-    end
-end
-
-function dir_exist(path)
-    return file_exist(path)
-end
+function file_exist(path) return (os.execute("test -f "..I(path))) end
+function dir_exist(path) return (os.execute("test -d "..I(path))) end
+function link_exist(path) return (os.execute("test -L "..I(path))) end
 
 function read(path)
     local f = assert(io.open(I(path), "r"))
@@ -1347,7 +1337,7 @@ function work_configuration()
         sh "pip3 install --user awscli boto3"
         sh "sudo groupadd docker || true"
         sh "sudo usermod -a -G docker %(USER)"
-        sh "sudo systemctl enable docker"
+        sh "sudo systemctl enable docker || true"
     end
     script "aws-login"
 
@@ -1368,10 +1358,17 @@ function work_configuration()
 
     if cfg_yesno("move-docker-to-home", "Move /var/lib/docker to /home/docker?") then
         if not dir_exist "/home/docker" then
+            log "Move /var/lib/docker to /home/docker"
             sh "sudo service docker stop"
-            sh "sudo rm -rf /home/docker"
-            sh "sudo mv /var/lib/docker /home/docker"
-            sh "sudo ln -s /home/docker /var/lib/docker"
+            if dir_exist "/var/lib/docker" then
+                log "Copy /var/lib/docker to /home/docker"
+                sh "sudo mv /var/lib/docker /home/docker"
+            else
+                log "Create /home/docker"
+                sh "sudo mkdir /home/docker"
+            end
+            log "Link /var/lib/docker to /home/docker"
+            sh "sudo ln -s -f /home/docker /var/lib/docker"
             sh "sudo service docker start || true"
         end
     end
