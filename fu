@@ -1102,13 +1102,7 @@ function i3_configuration()
     script ".config/i3/status"
     sh "sudo setcap cap_net_admin=ep %(pipe 'which i3status')"
 
-    script "wallpaper"
     script "lock"
-
-    if force or upgrade or not file_exist "%(HOME)/.config/i3/wallpaper.png" then
-        log "Wallpaper generation"
-        sh "~/.local/bin/wallpaper"
-    end
 
     script "screenshot"
 
