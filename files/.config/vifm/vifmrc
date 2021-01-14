@@ -469,7 +469,11 @@ nnoremap ,c :write | edit $MYVIFMRC | restart full<cr>
 " Open nvim in a terminal to edit vifmrc
 nnoremap ,C :!alacritty -e nvim $MYVIFMRC &<cr>
 
+" Thumbnail of all images in the directory
 nnoremap ,i :!sxiv -t %d &<cr>
+
+" Play all sound files in a directory recursively
+nnoremap ,m :!vlc %d &<cr>
 
 " Toggle wrap setting on ,w key
 nnoremap ,w :set wrap!<cr>
