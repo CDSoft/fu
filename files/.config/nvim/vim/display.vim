@@ -58,3 +58,4 @@ set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic white
 set list
 set colorcolumn=120
 set splitbelow splitright
+set lazyredraw
