@@ -22,7 +22,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'https://github.com/vifm/vifm.vim.git'
-Plug 'https://github.com/frace/vim-bubbles'
+"Plug 'https://github.com/frace/vim-bubbles'
 
 %( cfg_yesno("work", "Install work configuration?") and "Plug 'https://github.com/m42e/trace32-practice.vim'" or "" )
 
