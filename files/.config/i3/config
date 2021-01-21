@@ -53,6 +53,9 @@ bindsym $mod+c                  exec alacritty -d 80 24 %(file_exist "%(HOME)/.l
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
 
+bindsym $win+Ctrl+i             exec sxiv -t "`xcwd`" &
+bindsym $win+Ctrl+m             exec vlc "`xcwd`" &
+
 bindsym $mod+x                  exec menu
 %( cfg_yesno("external-monitor", "Add shortcuts for external monitor?") and [=[
 bindsym $mod+$alt+Ctrl+i        exec menu single # single internal monitor
