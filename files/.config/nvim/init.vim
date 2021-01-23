@@ -20,6 +20,10 @@ runtime vim/vim-gitgutter.vim
 runtime vim/vim-bubbles.vim
 runtime vim/neoformat.vim
 
+if exists('g:started_by_firenvim')
+    runtime vim/firenvim.vim " must be run after display.vim
+endif
+
 lua require'nvim-colorizer'
 
 " nvim startup may be too long to catch the initial SIGWINCH and resize the window

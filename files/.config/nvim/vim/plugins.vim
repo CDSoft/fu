@@ -26,6 +26,11 @@ Plug 'https://github.com/vifm/vifm.vim.git'
 Plug 'https://github.com/sbdchd/neoformat'
 Plug 'monkoose/fzf-hoogle.vim'
 
+" firenvim requires
+" - https://addons.mozilla.org/en-US/firefox/addon/firenvim/
+" - https://chrome.google.com/webstore/detail/firenvim/egpjdkipkomnmjhjmdamaniclmdlobbo
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+
 %( cfg_yesno("work", "Install work configuration?") and "Plug 'https://github.com/m42e/trace32-practice.vim'" or "" )
 
 call plug#end()

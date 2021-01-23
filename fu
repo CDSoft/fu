@@ -1010,6 +1010,7 @@ function neovim_configuration()
     -- update all plugins
     if force or upgrade then
         sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
+        sh 'nvim --headless "+call firenvim#install(0) | q"'
     end
 
     -- Fix trace32-practice crlf
