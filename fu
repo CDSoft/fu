@@ -56,6 +56,7 @@ function configuration()
     fu_path = I"%(HOME)/.config/fu"
     config_path = I"%(fu_path)/config"
     repo_path = I"%(fu_path)/repos"
+    src_files = dirname(pipe "realpath %(arg[0])").."/files"
 
     TIMEZONE = "Europe/Paris"
     KEYMAP = "fr"
@@ -200,6 +201,22 @@ function I(s)
     end))
 end
 
+function dedent(s)
+    local n = #s
+    for line in s:gmatch("[^\n]*") do
+        if not line:match "^%s*$" then
+            local indent = line:match "^%s*"
+            n = math.min(n, #indent)
+        end
+    end
+    local lines = {}
+    for line in s:gmatch("[^\n]*") do
+        if line:match "^%s*$" then line = "" end
+        table.insert(lines, line:sub(n+1))
+    end
+    return table.concat(lines, "\n") .. "\n"
+end
+
 function set(init)
     local set = {}
     local ordered = {}
@@ -274,6 +291,15 @@ function rootfile(path, content)
         sh("sudo chmod 644 "..path)
         sh("sudo chown root:root "..path)
     end)
+end
+
+function readlines(path)
+    local f = assert(io.open(I(path), "r"))
+    return function()
+        local line = f:read "l"
+        if line then return line end
+        f:close()
+    end
 end
 
 function pipe(cmd, stdin)
@@ -387,9 +413,8 @@ function script(name)
         end
     end
     name = I(name)
-    local files = dirname(pipe "realpath %(arg[0])").."/files"
-    if template(files.."/"..name, HOME.."/"..name) then return end
-    if template(files.."/.local/bin/"..name, HOME.."/.local/bin/"..name, true) then return end
+    if template(src_files.."/"..name, HOME.."/"..name) then return end
+    if template(src_files.."/.local/bin/"..name, HOME.."/.local/bin/"..name, true) then return end
     error("Template not found: "..name)
 end
 
@@ -1126,20 +1151,6 @@ function i3_configuration()
         write("%(HOME)/.config/vlc/vlcrc", vlcrc)
     end
 
-    -- TODO: fix VSync or tearing issues
-    -- (this seems to work but both screens are cloned)
-    --[==[
-    rootfile("/etc/X11/xorg.conf.d/20-intel.conf", [[
-Section "Device"
-    Identifier "Intel Graphics"
-    Driver "intel"
-    Option "TearFree" "true"
-    Option "AccelMethod" "uxa"
-    Option "TripleBuffer" "true"
-EndSection
-]])
-    --]==]
-
 end
 
 -- }}}
@@ -1219,6 +1230,15 @@ function internet_configuration()
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/http"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/https"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/about"
+
+    -- Firefox configuration
+    -- https://askubuntu.com/questions/313483/how-do-i-change-firefoxs-aboutconfig-from-a-shell-script
+    -- https://askubuntu.com/questions/239543/get-the-default-firefox-profile-directory-from-bash
+    for line in readlines("%(HOME)/.mozilla/firefox/profiles.ini") do
+        for profile in line:gmatch("Path=(.*)") do
+            write("%(HOME)/.mozilla/firefox/"..profile.."/user.js", read "%(src_files)/user.js")
+        end
+    end
 
     -- Thunderbird extensions
     if force or update or not file_exist "%(repo_path)/reply_as_original_recipient.xpi" then
