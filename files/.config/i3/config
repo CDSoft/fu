@@ -204,6 +204,9 @@ bindsym $mod+$alt+$ctrl+Right   move workspace to output right
 bindsym $mod+$alt+$ctrl+Up      move workspace to output up
 bindsym $mod+$alt+$ctrl+Down    move workspace to output down
 
+# move a window to the "Meetings" workspace
+bindsym $mod+Shift+m    move container to workspace "Meetings"; workspace "Meetings"
+
 # next/previous workspace
 bindsym $alt+Tab            workspace back_and_forth
 bindsym $mod+Tab            workspace back_and_forth
@@ -260,7 +263,7 @@ bar {
 
 exec --no-startup-id numlockx %(cfg_yesno("numlockx", "Enable numclockx?") and "on" or "off")
 exec --no-startup-id dunst -key y
-exec --no-startup-id xsetroot -solid '#134'
+exec --no-startup-id xsetroot -solid '#081820'
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'
