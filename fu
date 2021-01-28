@@ -531,6 +531,7 @@ function shell_configuration()
         fd-find
         tmux
         tldr
+        procs
     ]]
 
     sh "chsh -s /bin/zsh %(USER)"

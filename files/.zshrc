@@ -12,6 +12,8 @@ alias more=less
 alias df='grc df -h'
 alias du='grc du -h'
 
+alias top='procs -w --sortd UsageCpu'
+
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
 
