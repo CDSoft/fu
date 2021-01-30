@@ -909,6 +909,7 @@ function pandoc_configuration()
 
     packages [[
         pandoc
+        patat
     ]]
 
     -- TODO: modifier l'installation de abp quand il sera écrit en Lua
