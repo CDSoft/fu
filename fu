@@ -912,7 +912,11 @@ function pandoc_configuration()
         patat
     ]]
 
-    -- TODO: modifier l'installation de abp quand il sera écrit en Lua
+    if force or upgrade or not installed "panda" then
+        gitclone "http://github.com/cdsoft/panda"
+        sh "cd %(repo_path)/panda && make install"
+    end
+
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "abp" then
             gitclone "http://github.com/cdsoft/abp"
