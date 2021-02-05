@@ -76,7 +76,8 @@ bindsym $mod+$alt+Ctrl+c        exec menu clone # dual internal monitor cloned t
 bindsym $mod+l                  exec lock
 
 # custom window settings
-new_window pixel 8
+default_border pixel 8
+default_floating_border pixel 8
 bindsym $mod+b          border pixel 8
 bindsym $mod+Shift+b    border pixel 2
 for_window [window_role="pop-up"]                               floating enable
