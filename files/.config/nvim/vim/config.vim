@@ -37,8 +37,8 @@
 " Keyboard
 """"""""""
 
-    let mapleader = "²"
-    let g:mapleader = "²"
+    let mapleader = ","
+    let g:mapleader = ","
 
 " Navigation
 """"""""""""

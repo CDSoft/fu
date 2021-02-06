@@ -17,7 +17,7 @@ runtime vim/rainbow.vim
 runtime vim/autoreload.vim
 runtime vim/terminal.vim
 runtime vim/vim-gitgutter.vim
-runtime vim/vim-bubbles.vim
+"runtime vim/vim-bubbles.vim
 runtime vim/neoformat.vim
 
 if exists('g:started_by_firenvim')
