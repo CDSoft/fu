@@ -124,6 +124,7 @@ function main()
     if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
     if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
     if cfg_yesno("cling", "Install cling?") then cling_configuration() end
+    if cfg_yesno("swipl", "Install SWI Prolog (from sources)?") then swipl_configuration() end
     text_edition_configuration()
     pandoc_configuration()
     if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
@@ -672,7 +673,7 @@ function dev_configuration()
         ncurses-devel
         readline-devel
         meld
-        pl pl-xpce
+        pl pl-xpce pl-devel
         libev-devel startup-notification-devel xcb-util-devel xcb-util-cursor-devel xcb-util-keysyms-devel xcb-proto xcb-util-wm-devel xcb-util-xrm-devel libxkbcommon-devel libxkbcommon-x11-devel yajl-devel
         arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++ arm-none-eabi-gdb
         mingw64-gcc
@@ -877,6 +878,56 @@ function cling_configuration()
         sh "rm -rf ~/.local/opt/%(CLING_DIR)"
         sh "tar xjf ~/.local/opt/%(basename(CLING_URL)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(CLING_DIR)/bin/cling ~/.local/bin/cling"
+    end
+
+end
+
+-- }}}
+
+-- SWI Prolog {{{
+
+function swipl_configuration()
+
+    if force or not file_exist "%(HOME)/.local/bin/swipl" then
+        title "SWI Prolog configuration"
+
+        -- https://www.swi-prolog.org/build/unix.html
+        packages [[
+            cmake
+            ninja-build
+            libunwind
+            gperftools-devel
+            freetype-devel
+            gmp-devel
+            java-1.8.0-openjdk-devel
+            jpackage-utils
+            libICE-devel
+            libjpeg-turbo-devel
+            libSM-devel
+            libX11-devel
+            libXaw-devel
+            libXext-devel
+            libXft-devel
+            libXinerama-devel
+            libXmu-devel
+            libXpm-devel
+            libXrender-devel
+            libXt-devel
+            ncurses-devel
+            openssl-devel
+            pkgconfig
+            readline-devel
+            libedit-devel
+            unixODBC-devel
+            zlib-devel
+            uuid-devel
+            libarchive-devel
+            libyaml-devel
+        ]]
+        gitclone "https://github.com/SWI-Prolog/swipl-devel.git"
+        sh "cd %(repo_path)/swipl-devel && git submodule update --init"
+        mkdir "%(repo_path)/swipl-devel/build"
+        sh "cd %(repo_path)/swipl-devel/build && cmake -DCMAKE_INSTALL_PREFIX=%(HOME)/.local -G Ninja .. && ninja && ninja install"
     end
 
 end
