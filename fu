@@ -1142,6 +1142,7 @@ function i3_configuration()
     -- Default programs
 
     mime_default "%(BROWSER).desktop"
+    mime_default "transmission-gtk.desktop"
     mime_default "libreoffice-base.desktop"
     mime_default "libreoffice-calc.desktop"
     mime_default "libreoffice-draw.desktop"
@@ -1279,6 +1280,7 @@ function internet_configuration()
         google-chrome-stable
         surf
         thunderbird
+        transmission
     ]]
 
     -- Default browser
