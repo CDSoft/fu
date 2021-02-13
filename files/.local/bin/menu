@@ -64,7 +64,11 @@ new_workspace()
 
 idle()
 {
-    alacritty -d 41 10 -o "colors.primary.background='#660000'" -t "Waiting for low CPU and network activity" -e bash -c "idle && $1"
+    alacritty \
+        -t "Waiting for low CPU and network activity" \
+        -o "window.dimensions.lines=10" -o "window.dimensions.columns=41" \
+        -o colors.primary.background='#660000' \
+        -e bash -c "idle && $1"
 }
 
 EXT_RES=1920x1200

@@ -1,4 +1,7 @@
 #!/bin/bash
 
 export FZF_DEFAULT_OPTS=""
-alacritty -d 160 32 -t "floating fzfmenu" -e sh -c "fzf $* < /proc/$$/fd/0 > /proc/$$/fd/1"
+alacritty \
+    -t "floating fzfmenu" \
+    -o window.dimensions.lines=32 -o window.dimensions.columns=160 \
+    -e sh -c "fzf $* < /proc/$$/fd/0 > /proc/$$/fd/1"
