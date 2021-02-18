@@ -751,6 +751,8 @@ function haskell_configuration()
         "hoogle",
         "matplotlib",
         "gnuplot",
+        "parallel",
+        "MissingH",
     }
     if force or upgrade then
         for _, package in ipairs(HASKELL_PACKAGES) do
