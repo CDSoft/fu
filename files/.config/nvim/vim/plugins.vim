@@ -25,6 +25,7 @@ Plug 'https://github.com/vifm/vifm.vim.git'
 "Plug 'https://github.com/frace/vim-bubbles'
 Plug 'https://github.com/sbdchd/neoformat'
 Plug 'monkoose/fzf-hoogle.vim'
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " firenvim requires
 " - https://addons.mozilla.org/en-US/firefox/addon/firenvim/
