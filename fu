@@ -585,6 +585,50 @@ function network_configuration()
         telnet
     ]]
 
+    packages [[
+        asymptote
+        can-utils
+        clang
+        clang-tools-extra
+        cmake
+        curl
+        doxygen
+        gcc
+        git
+        graphviz
+        ImageMagick
+        libasan
+        libasan-static
+        libpcap-devel
+        libtsan
+        libtsan-static
+        libubsan
+        libubsan-static
+        llvm
+        ncurses
+        plantuml
+        protobuf-devel
+        python3
+        python3-protobuf
+        SDL2-devel
+        SDL2_ttf-devel
+        socat
+        texlive
+        texlive-scheme-full
+        tcpdump
+        tcpreplay
+        wget
+        xz-devel
+        zlib-devel
+        minicom
+        xterm
+        blas-devel
+        lapack-devel
+        @virtualization
+        vim-common
+        python3-pygame
+    ]]
+
     -- hostname
     sh "sudo hostname %(MYHOSTNAME)"
     rootfile("/etc/hostname", "%(MYHOSTNAME)\n")
@@ -1455,7 +1499,22 @@ function work_configuration()
         end
     end
 
-    sh "pip3 install --user tftpy"
+    sh [[ pip3 install --user               \
+                awscli                      \
+                breathe                     \
+                click                       \
+                junit-xml                   \
+                pyaml                       \
+                python-can                  \
+                recommonmark                \
+                sphinxcontrib-globalsubs    \
+                sphinxcontrib-needs         \
+                sphinxcontrib-plantuml      \
+                sphinxcontrib-wavedrom      \
+                sphinx-multibuild           \
+                sphinx_rtd_theme            \
+                tftpy                       \
+    ]]
 
 end
 
