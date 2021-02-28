@@ -1478,7 +1478,7 @@ function work_configuration()
         sh [[ pip3 install '--user'             \
                     breathe                     \
                     recommonmark                \
-                    sphinx                      \
+                    sphinx==2.4.4               \
                     sphinxcontrib-globalsubs    \
                     sphinxcontrib-needs         \
                     sphinxcontrib-plantuml      \
