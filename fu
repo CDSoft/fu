@@ -1048,7 +1048,7 @@ function sphinx_configuration()
 
     if force or upgrade or not installed "sphinx-build" then
         title "Sphinx configuration"
-        sh [[ pip3 install --user           \
+        sh [[ pip3 install '--user'         \
                     sphinx==2.4.4           \
                     sphinxcontrib-plantuml  \
                     breathe                 \
@@ -1271,7 +1271,7 @@ function povray_configuration()
     if force or not installed "povray" then
         gitclone "https://github.com/pov-ray/povray.git"
         sh "cd %(repo_path)/povray/unix && ./prebuild.sh"
-        sh [[cd %(repo_path)/povray/ && ./configure --prefix="$(realpath ~/.local)" compiled_by="christophe delord <http://cdelord.fr>"]]
+        sh [[cd %(repo_path)/povray/ && ./configure '--prefix'="$(realpath ~/.local)" compiled_by="christophe delord <http://cdelord.fr>"]]
         sh "cd %(repo_path)/povray/ && make check install"
     end
 end
@@ -1463,7 +1463,7 @@ function work_configuration()
         end
     end
 
-    sh [[ pip3 install --user               \
+    sh [[ pip3 install '--user'             \
                 awscli                      \
                 click                       \
                 junit-xml                   \
@@ -1475,7 +1475,7 @@ function work_configuration()
     ]]
 
     if cfg_yesno("sphinx", "Install Sphinx?") then
-        sh [[ pip3 install --user               \
+        sh [[ pip3 install '--user'             \
                     breathe                     \
                     recommonmark                \
                     sphinx                      \
