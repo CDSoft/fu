@@ -1164,11 +1164,11 @@ function i3_configuration()
     if cfg_yesno("thunderbird-mailer", "Use Thunderbird as the default mailer?") then
         mime_default "mozilla-thunderbird.desktop"
     end
-    mime_default "org.pwmt.zathura-cb.desktop"
+    --mime_default "org.pwmt.zathura-cb.desktop"
     mime_default "org.pwmt.zathura-djvu.desktop"
     mime_default "org.pwmt.zathura-pdf-poppler.desktop"
     mime_default "org.pwmt.zathura-ps.desktop"
-    mime_default "org.pwmt.zathura.desktop"
+    --mime_default "org.pwmt.zathura.desktop"
     mime_default "pcmanfm.desktop"
     mime_default "sxiv.desktop"
     mime_default "vlc.desktop"
