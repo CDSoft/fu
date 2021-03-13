@@ -76,6 +76,7 @@ bindsym $mod+$alt+Ctrl+c        exec menu clone # dual internal monitor cloned t
 bindsym $mod+l                  exec lock
 
 # custom window settings
+hide_edge_borders smart
 default_border pixel 8
 default_floating_border pixel 8
 bindsym $mod+b          border pixel 8
