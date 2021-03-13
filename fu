@@ -500,6 +500,7 @@ function system_configuration()
     packages [[
         dnf-plugins-core dnfdragora
         fedora-workstation-repositories
+        snapd
     ]]
 
     -- Locale and timezone
