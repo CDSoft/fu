@@ -115,6 +115,7 @@ function main()
     shell_configuration()
     network_configuration()
     if cfg_yesno("dropbox", "Install dropbox?") then dropbox_configuration() end
+    if cfg_yesno("nextcloud", "Install Nextcloud?") then nextcloud_configuration() end
     filesystem_configuration()
     dev_configuration()
     if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
@@ -619,6 +620,28 @@ function dropbox_configuration()
         title "Dropbox configuration"
         sh "rm -rf ~/.dropbox-dist"
         sh "cd ~ && wget -O - %(DROPBOXINSTALL) | tar xzf -"
+    end
+
+end
+
+-- }}}
+
+-- Nextcloud configuration {{{
+
+function nextcloud_configuration()
+
+    local installed = file_exist "%(HOME)/.local/bin/Nextcloud"
+    if force or upgrade or not file_exist "%(HOME)/.local/bin/Nextcloud" then
+        title "Nextcloud configuration"
+        local version, new_version
+        if installed then
+            version = pipe("%(HOME)/.local/bin/Nextcloud -v"):match("version%s+([%d%.]+)")
+        end
+        new_version = pipe("curl -s https://github.com/nextcloud/desktop/releases/latest/"):match("tag/v([%d%.]+)")
+        if new_version ~= version then
+            sh("wget https://github.com/nextcloud/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage -O %(HOME)/.local/bin/Nextcloud")
+            sh("chmod +x %(HOME)/.local/bin/Nextcloud")
+        end
     end
 
 end
