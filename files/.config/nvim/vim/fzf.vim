@@ -2,10 +2,10 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 nnoremap <silent> <Leader>f :Rg<CR>
 nnoremap <silent> <Leader>t :Tags<CR>
 if system("git rev-parse --is-inside-work-tree 2>/dev/null") == ""
-    nnoremap <silent> <C-f> :Files<CR>
+    "nnoremap <silent> <C-f> :Files<CR>
     nnoremap <silent> <Leader>o :Files<CR>
 else
-    nnoremap <silent> <C-f> :GFiles<CR>
+    "nnoremap <silent> <C-f> :GFiles<CR>
     nnoremap <silent> <Leader>o :GFiles<CR>
 endif
 nnoremap <silent> <Leader>O :Files<CR>
