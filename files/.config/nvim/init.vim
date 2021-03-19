@@ -20,6 +20,7 @@ runtime vim/vim-gitgutter.vim
 "runtime vim/vim-bubbles.vim
 runtime vim/neoformat.vim
 runtime vim/vim-rooter.vim
+runtime vim/vimwiki.vim
 
 if exists('g:started_by_firenvim')
     runtime vim/firenvim.vim " must be run after display.vim
