@@ -65,13 +65,13 @@ function configuration()
     BROWSER = "firefox"
     BROWSER2 = "google-chrome"
 
-    LATEST_LTS = "lts-16.26"
+    LATEST_LTS = "lts-17.8"
 
-    RACKET_VERSION = "7.9"
+    RACKET_VERSION = "8.0"
     RACKET_NAME = I"racket-%(RACKET_VERSION)"
-    RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux.sh"
+    RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux-cs.sh"
 
-    JULIA_VERSION = "1.5.3"
+    JULIA_VERSION = "1.6.0"
     JULIA_NAME = I"julia-%(JULIA_VERSION)"
     JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
 
