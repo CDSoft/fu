@@ -994,6 +994,11 @@ function pandoc_configuration()
         sh "cd %(repo_path)/panda && make install"
     end
 
+    if force or upgrade or not installed "upp" then
+        gitclone "http://github.com/cdsoft/upp"
+        sh "cd %(repo_path)/upp && make install"
+    end
+
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "abp" then
             gitclone "http://github.com/cdsoft/abp"
