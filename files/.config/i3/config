@@ -22,6 +22,8 @@ client.placeholder      #000000 #0c0c0c #ffffff #0c0c0c   #0c0c0c
 
 client.background       #ffffff
 
+# xbindkeys --key => get keycodes
+
 # Volume control
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -51,6 +53,7 @@ bindsym $mod+o          scratchpad show
 
 # some useful shortcuts
 #
+bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec %(BROWSER2)
 
@@ -59,6 +62,7 @@ bindsym $mod+t                  exec alacritty -e vi ~/todo.txt
 bindsym $mod+n                  exec alacritty -e vi ~/notes.txt
 bindsym $mod+p                  exec alacritty -e vi ~/secret.pwd
 
+bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap hcalc" or "-t '🖩 bc' -e bc")
 bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap hcalc" or "-t '🖩 bc' -e bc")
 
 bindsym Print                   exec screenshot root

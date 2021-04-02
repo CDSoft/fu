@@ -1171,6 +1171,7 @@ function i3_configuration()
         rofi-themes
         fontawesome-fonts
         fontawesome-fonts-web
+        xbindkeys
     ]]
 
     -- Default programs
