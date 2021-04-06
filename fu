@@ -112,6 +112,7 @@ function main()
     check_last_upgrade()
 
     system_configuration()
+    if cfg_yesno("rust", "Install Rust?") then rust_configuration() end
     shell_configuration()
     network_configuration()
     if cfg_yesno("dropbox", "Install dropbox?") then dropbox_configuration() end
@@ -121,7 +122,6 @@ function main()
     if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
     if cfg_yesno("ocaml", "Install OCaml?") then ocaml_configuration() end
     if cfg_yesno("racket", "Install Racket?") then racket_configuration() end
-    if cfg_yesno("rust", "Install Rust?") then rust_configuration() end
     if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
     if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
     if cfg_yesno("cling", "Install cling?") then cling_configuration() end
@@ -547,10 +547,17 @@ function shell_configuration()
     gitclone "https://github.com/ohmyzsh/ohmyzsh.git" -- not installed, some scripts will be sourced
     gitclone "https://github.com/zsh-users/zsh-syntax-highlighting.git"
     gitclone "https://github.com/zsh-users/zsh-autosuggestions"
-    if force or upgrade or not file_exist "%(HOME)/.local/bin/starship" then
-        with_tmpfile(function(tmp)
-            sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && bash "..tmp.." -f -b ~/.local/bin")
-        end)
+    if force or upgrade or not installed "starship" then
+        -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
+        -- If Rust is installed, building from sources is better.
+        if cfg_yesno("rust", "Install Rust?") then
+            gitclone "https://github.com/starship/starship.git"
+            sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
+        else
+            with_tmpfile(function(tmp)
+                sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && bash "..tmp.." -f -b ~/.local/bin")
+            end)
+        end
     end
 
     script "vi"
@@ -790,8 +797,8 @@ function haskell_configuration()
     -- hCalc
     if force or upgrade or not installed "hcalc" then
         gitclone "http://github.com/cdsoft/hcalc"
-        sh "cd %(repo_path)/hcalc && make install"
-    end
+    sh "cd %(repo_path)/hcalc && make install"
+end
 
 end
 
@@ -853,7 +860,7 @@ function rust_configuration()
     }
     for _, package in ipairs(RUST_PACKAGES) do
         if force or not installed(package) then
-            sh("cargo install %(force and '--force' or '') "..package)
+            sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package)
         end
     end
 
@@ -1067,7 +1074,7 @@ function mdbook_configuration()
     }
     for _, package in ipairs(MDBOOK_PACKAGES) do
         if force or not installed(package) then
-            sh("cargo install %(force and '--force' or '') "..package)
+            sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package)
         end
     end
 end

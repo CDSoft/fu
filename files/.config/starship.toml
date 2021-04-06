@@ -33,7 +33,7 @@ rust           = {disabled = true}
 shlvl          = {disabled = true}
 singularity    = {disabled = true}
 swift          = {disabled = true}
-teraform       = {disabled = true}
+terraform       = {disabled = true}
 zig            = {disabled = true}
 
 # Prompt format
