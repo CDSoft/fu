@@ -653,10 +653,13 @@ end
 function filesystem_configuration()
     title "Filesystem configuration"
 
+    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:fcsm:cryfs.repo", "fcsm/cryfs")
+
     packages [[
         gparted
         udftools
         encfs
+        cryfs
         p7zip p7zip-gui p7zip-plugins
         mc pcmanfm
         vifm
