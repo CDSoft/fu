@@ -850,7 +850,6 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
-        "gitui",
     }
     for _, package in ipairs(RUST_PACKAGES) do
         if force or not installed(package) then
