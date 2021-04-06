@@ -667,6 +667,7 @@ function filesystem_configuration()
         exfat-utils fuse-exfat
         syslinux
         backintime-common backintime-qt4
+        timeshift
         cryptsetup
         squashfs-tools squashfuse
         baobab ncdu qdirstat
