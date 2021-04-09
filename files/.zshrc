@@ -47,7 +47,7 @@ export FZF_DEFAULT_OPTS="-m --height 80% --border"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Starship: https://starship.rs
-eval "$(starship init zsh)"
+hash starship 2>/dev/null && eval "$(starship init zsh)"
 
 function precmd_set_win_title()
 {

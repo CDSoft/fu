@@ -547,7 +547,7 @@ function shell_configuration()
     gitclone "https://github.com/ohmyzsh/ohmyzsh.git" -- not installed, some scripts will be sourced
     gitclone "https://github.com/zsh-users/zsh-syntax-highlighting.git"
     gitclone "https://github.com/zsh-users/zsh-autosuggestions"
-    if force or upgrade or not installed "starship" then
+    if force or not installed "starship" then
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
         if cfg_yesno("rust", "Install Rust?") then
