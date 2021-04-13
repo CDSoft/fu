@@ -741,6 +741,7 @@ function dev_configuration()
         golang
         libX11-devel
         libXft-devel
+        octave
     ]]
 
     -- pip
