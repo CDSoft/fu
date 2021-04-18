@@ -613,6 +613,11 @@ function network_configuration()
     -- wireshark
     sh "sudo usermod -a -G wireshark %(USER)"
 
+    -- Google Drive
+    if force or upgrade then
+        sh "pip install --user --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
+    end
+
 end
 
 -- }}}
