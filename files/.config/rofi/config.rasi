@@ -46,6 +46,7 @@ configuration {
     blue:               #6495ed;
     lightblue:          #87ceeb;
     darkblue:           #2339ef;
+    i3blue:             #285577;
     //
     // Magenta
     magenta:            #deb887;
@@ -72,7 +73,7 @@ window {
     transparency: "screenshot";
     padding: 0px;
     border:  0px;
-    border-radius: 10px;
+    //border-radius: 10px;
     color: @magenta;
     background-color: @transparent;
     spacing: 0;
@@ -89,7 +90,7 @@ mainbox {
 message {
     border-color: @foreground;
     border:  0px 2px 2px 2px;
-//    border-radius: 10px;
+    //border-radius: 10px;
     padding: 5;
     background-color: @tcyan;
 }
@@ -103,7 +104,7 @@ inputbar {
     padding: 10px;
     background-color: @dark;
     border: 2px 2px 2px 2px;
-    border-radius:  10px 10px 0px 0px;
+    //border-radius:  10px 10px 0px 0px;
     border-color: @foreground;
     font: "Source Code Pro 18";
 }
@@ -116,7 +117,7 @@ prompt {
 }
 listview {
     padding: 8px;
-    border-radius: 0px 0px 10px 10px;
+    //border-radius: 0px 0px 10px 10px;
     border-color: @foreground;
     border: 0px 2px 2px 2px;
     background-color: @dark;
@@ -126,14 +127,15 @@ listview {
 element {
     padding: 3px;
     vertical-align: 0.5;
-//    border: 2px;
-    border-radius: 4px;
+    //border: 2px;
+    //border-radius: 4px;
     background-color: transparent;
     color: @foreground;
     font:inherit;
 }
 element selected.normal {
-    background-color: @darkblue;
+    //background-color: @darkblue;
+    background-color: @i3blue;
 }
 element normal active {
     text-color: @lightblue;
@@ -150,7 +152,8 @@ element alternate urgent {
     text-color: @lightred;
 }
 element selected active {
-    background-color: @darkblue;
+    //background-color: @darkblue;
+    background-color: @i3blue;
     //text-color: @dark;
 }
 element selected urgent {
@@ -179,7 +182,7 @@ button {
     font: "FontAwesome 22";
     padding: 6px;
     border: 2px 0px 2px 2px;
-    border-radius: 4px 0px 0px 4px;
+    //border-radius: 4px 0px 0px 4px;
     background-color: @tlightblack;
     border-color: @foreground;
     color: @foreground;
