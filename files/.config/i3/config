@@ -55,7 +55,7 @@ bindsym $mod+o          scratchpad show
 #
 bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
-bindsym $mod+Shift+w            exec %(BROWSER2)
+%(cfg_yesno("chrome", "Install Google Chrome?") and "bindsym $mod+Shift+w            exec %(BROWSER2)" or "")
 
 bindsym $mod+d                  exec alacritty -e vi -c VimwikiIndex
 bindsym $mod+t                  exec alacritty -e vi ~/todo.txt

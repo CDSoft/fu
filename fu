@@ -133,7 +133,7 @@ function main()
     if cfg_yesno("sphinx", "Install Sphinx?") then sphinx_configuration() end
     neovim_configuration()
     i3_configuration()
-    st_configuration()
+    if cfg_yesno("st", "Install Suckless Terminal?") then st_configuration() end
     graphic_application_configuration()
     if cfg_yesno("povray", "Install Povray?") then povray_configuration() end
     internet_configuration()
@@ -1329,15 +1329,17 @@ end
 function internet_configuration()
     title "Internet configuration"
 
-    sh "sudo dnf config-manager --set-enabled google-chrome"
-
     packages [[
         firefox
-        google-chrome-stable
         surf
         thunderbird
         transmission
     ]]
+
+    if cfg_yesno("chrome", "Install Google Chrome?") then
+        sh "sudo dnf config-manager --set-enabled google-chrome"
+        packages "google-chrome-stable"
+    end
 
     -- Default browser
     sh "BROWSER= xdg-settings set default-web-browser %(BROWSER).desktop"
