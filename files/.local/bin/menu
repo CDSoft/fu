@@ -28,6 +28,12 @@ bt                  : bluetooth manager
 
 renws               : rename the active workspace
 newws               : create a new workspace
+
+xfce4-appearance-settings   : change theme with xfce4-appearance-settings
+lxappearance                : change theme with lxappearance
+gnome-tweaks                : change theme with gnome-tweaks
+qtconfig-qt4                : change theme with qtconfig-qt4
+qt5ct                       : change theme with qt5ct
 EndOfMenu
 )
     test -n "$action" && $0 "$action"
@@ -112,6 +118,12 @@ case "$1" in
     ("power-off"*)          systemctl poweroff ;;
     ("reboot"*)             systemctl reboot ;;
     ("exit"*)               i3-msg exit ;;
+
+    ("lxappearance")                lxappearance ;;
+    ("gnome-tweaks")                gnome-tweaks ;;
+    ("qtconfig-qt4")                qtconfig-qt4 ;;
+    ("qt5ct")                       qt5ct ;;
+    ("xfce4-appearance-settings")   xfce4-appearance-settings ;;
 
     ("") _menu ;;
 esac

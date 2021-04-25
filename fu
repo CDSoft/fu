@@ -1192,6 +1192,10 @@ function i3_configuration()
         fontawesome-fonts
         fontawesome-fonts-web
         xbindkeys
+        lxappearance
+        gnome-tweak-tool
+        qt-config
+        qt5ct
     ]]
 
     -- Default programs
