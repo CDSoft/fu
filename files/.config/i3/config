@@ -92,6 +92,7 @@ for_window [title="^🖩 hCalc$"]                                  floating enab
 for_window [title="^🖩 bc$"]                                     floating enable, border pixel 8
 for_window [title="^ssh-agent$"]                                floating enable
 for_window [title="VM VirtualBox$"]                             floating enable, border normal 8
+for_window [title="^QEMU (.*)$"]                                floating enable, border normal 8
 for_window [title="Waiting for low CPU and network activity"]   floating enable, border pixel 8
 for_window [title="Network Manager"]                            floating enable
 for_window [title="Configuration Center"]                       floating enable
