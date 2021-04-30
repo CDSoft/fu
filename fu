@@ -672,7 +672,7 @@ function filesystem_configuration()
         encfs
         cryfs
         p7zip p7zip-gui p7zip-plugins
-        mc pcmanfm
+        mc pcmanfm thunar
         vifm
         pmount
         exfat-utils fuse-exfat
@@ -1179,7 +1179,7 @@ function i3_configuration()
         arandr
         sox
         fortune-mod ImageMagick
-        st sxiv
+        st sxiv ristretto
         volumeicon pavucontrol
         adobe-source-code-pro-fonts
         mozilla-fira-mono-fonts
@@ -1196,6 +1196,8 @@ function i3_configuration()
         gnome-tweak-tool
         qt-config
         qt5ct
+        xfce4-settings
+        xfce4-screenshooter
     ]]
 
     -- Default programs
@@ -1218,8 +1220,8 @@ function i3_configuration()
     mime_default "org.pwmt.zathura-pdf-poppler.desktop"
     mime_default "org.pwmt.zathura-ps.desktop"
     --mime_default "org.pwmt.zathura.desktop"
-    mime_default "pcmanfm.desktop"
-    mime_default "sxiv.desktop"
+    mime_default "thunar.desktop"
+    mime_default "ristretto.desktop"
     mime_default "vlc.desktop"
     mime_default "wireshark.desktop"
 

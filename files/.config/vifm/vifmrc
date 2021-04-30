@@ -237,8 +237,8 @@ fileviewer {*.[1-8]},<text/troff> man ./%c | col -b
 
 " Images
 filextype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
-        \ {View in sxiv}
-        \ sxiv %f,
+        \ {View in ristretto}
+        \ ristretto %f,
         \ {View in gpicview}
         \ gpicview %c,
         \ {View in shotwell}
@@ -470,7 +470,7 @@ nnoremap ,c :write | edit $MYVIFMRC | restart full<cr>
 nnoremap ,C :!alacritty -e nvim $MYVIFMRC &<cr>
 
 " Thumbnail of all images in the directory
-nnoremap ,i :!sxiv -t %d &<cr>
+nnoremap ,i :!ristretto %d &<cr>
 
 " Play all sound files in a directory recursively
 nnoremap ,m :!vlc %d &<cr>

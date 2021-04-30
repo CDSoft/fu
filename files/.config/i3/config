@@ -45,7 +45,7 @@ bindsym $mod+Return exec alacritty --working-directory "`xcwd`"
 # Filemanagers
 bindsym $mod+Ctrl+Return exec alacritty -t mc -e sh -c "sleep 0.1s && mc \"`xcwd`\" \"`xcwd`\""
 bindsym $mod+Shift+Return exec alacritty -t vifm -e sh -c "sleep 0.1s && vifm \"`xcwd`\" \"`xcwd`\""
-bindsym $mod+$alt+Return exec pcmanfm "`xcwd`"
+bindsym $mod+$alt+Return exec thunar "`xcwd`"
 
 # scratchpad
 bindsym $mod+Shift+o    move scratchpad
@@ -68,7 +68,7 @@ bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o 
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
 
-bindsym $win+Ctrl+i             exec sxiv -t "`xcwd`" &
+bindsym $win+Ctrl+i             exec ristretto "`xcwd`" &
 bindsym $win+Ctrl+m             exec vlc "`xcwd`" &
 
 bindsym $mod+x                  exec menu
