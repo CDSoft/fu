@@ -86,8 +86,10 @@ function configuration()
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
-    EATON_IPP_VERSION = "1.67.162-1"
-    EATON_IPP_URL = I"https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/software/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
+    --EATON_IPP_VERSION = "1.67.162-1"
+    --EATON_IPP_URL = I"https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/software/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
+    EATON_IPP_VERSION = "1.66.161-1"
+    EATON_IPP_URL = I"http://pqsoftware.eaton.com/install/linux/ipp/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
 
 end
 
@@ -1552,6 +1554,10 @@ function eaton_configuration()
 
     if force or not file_exist "/usr/local/Eaton/IntelligentPowerProtector/mc2" then
         log "Eaton Intelligent Power Protector configuration"
+
+        -- https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/eaton-ipp-user-guide-p-164000291.pdf
+        -- http://pqsoftware.eaton.com/explore/fra/ipp/default_fr.htm?lang=fr&os=LINUX
+        -- https://localhost:4680/
 
         sh "wget %(EATON_IPP_URL) -c -O ~/.local/opt/%(basename(EATON_IPP_URL))"
         sh "sudo dnf install ~/.local/opt/%(basename(EATON_IPP_URL))"
