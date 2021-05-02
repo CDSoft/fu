@@ -940,6 +940,7 @@ function swipl_configuration()
             freetype-devel
             gmp-devel
             java-1.8.0-openjdk-devel
+            java-11-openjdk-devel
             jpackage-utils
             libICE-devel
             libjpeg-turbo-devel
