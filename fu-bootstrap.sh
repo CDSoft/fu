@@ -36,4 +36,5 @@ fi
 
 hash lua 2>/dev/null || sudo dnf install lua
 
-"$(dirname "$(realpath "$0")")"/fu -u
+ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
+~/.local/bin/fu -u
