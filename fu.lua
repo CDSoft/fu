@@ -1523,6 +1523,8 @@ function work_configuration()
         gnu-free-mono-fonts
     ]]
 
+    script "menu-work"
+
     -- AWS
     if force or upgrade then
         sh "pip3 install --user awscli boto3"
