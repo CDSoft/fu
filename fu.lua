@@ -63,7 +63,10 @@ function configuration()
     LOCALE = "fr_FR.UTF-8"
 
     BROWSER = "firefox"
-    BROWSER2 = "google-chrome"
+    BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
+               cfg_yesno("edge-as-alternative-browser", "Use Microsoft Edge as alternative browser?") and "microsoft-edge" or
+               cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
+               BROWSER
 
     LATEST_LTS = "lts-17.8"
 
@@ -1398,6 +1401,16 @@ function internet_configuration()
     if cfg_yesno("chrome", "Install Google Chrome?") then
         sh "sudo dnf config-manager --set-enabled google-chrome"
         packages "google-chrome-stable"
+    end
+    if cfg_yesno("chromium", "Install Chromium?") then
+        packages "chromium"
+    end
+    if cfg_yesno("edge", "Install Microsoft Edge?") then
+        -- https://www.microsoftedgeinsider.com/en-us/download/
+        sh "sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc"
+        sh "sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/edge"
+        sh "sudo mv -f /etc/yum.repos.d/packages.microsoft.com_yumrepos_edge.repo /etc/yum.repos.d/microsoft-edge-beta.repo"
+        packages "microsoft-edge-beta"
     end
 
     -- Default browser
