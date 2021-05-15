@@ -10,7 +10,7 @@ set $mod Mod4
 set $st st -f 'Source Code Pro Medium:size=10:antialias=true'
 
 # Font for window titles.
-font xft:Source Code Pro Medium 8
+font xft:Source Code Pro Medium %(tonumber(pipe "xdpyinfo | awk '/dimensions/ {print $2}' | awk -F 'x' '{print $2}'")<1080 and 8 or 10)
 
 # Window colors (default colors, no indicator)
 # class                 border  backgr. text    indicator child_border
