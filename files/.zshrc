@@ -81,6 +81,9 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 
 . %(repo_path)/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+# luarocks
+eval "$(luarocks path --bin)"
+
 %( cfg_yesno("work", "Install work configuration") and [==[
 # Work configuration
 

@@ -394,6 +394,30 @@ function packages(names)
     end
 end
 
+function luarocks(names)
+    names = I(names)
+    local all = set(names)
+    local new_packages = set(names)
+    local already_installed = set()
+    if file_exist "%(config_path)/luarocks" then
+        local old_names = read "%(config_path)/luarocks"
+        already_installed.add(old_names)
+        all.add(old_names)
+    end
+    local new = force or upgrade
+    for _, name in new_packages.ipairs() do
+        new = new or not already_installed.has(name)
+    end
+    if new then
+        names = new_packages.concat " "
+        log("Install luarocks: "..names)
+        for _, name in new_packages.ipairs() do
+            sh("luarocks install --local "..name)
+        end
+        write("%(config_path)/luarocks", all.concat("\n").."\n")
+    end
+end
+
 function upgrade_packages()
     if force or upgrade then
         title "Upgrade packages"
@@ -721,6 +745,7 @@ function dev_configuration()
         python-pip
         pypy
         lua lua-filesystem lua-fun lua-lpeg lua-posix lua-socket luajit
+        luarocks
         lua-devel
         glfw
         flex bison
@@ -748,6 +773,32 @@ function dev_configuration()
         libX11-devel
         libXft-devel
         octave
+    ]]
+
+    luarocks [[
+        ansicolors
+        bigint
+        cprint
+        fun
+        lcomplex
+        lpeg
+        lua-basex
+        lua-cURL
+        luafilesystem
+        lua_fun
+        lua-gnuplot
+        lua-protobuf
+        luarepl
+        luasocket
+        lua-term
+        lua-toml
+        lua-yaml
+        lyaml
+        map
+        optparse
+        penlight
+        stdlib
+        tcc
     ]]
 
     -- pip
