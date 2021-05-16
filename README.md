@@ -44,12 +44,12 @@ Installation from GitHub:
 
     git clone https://github.com/CDSoft/fu
     cd fu
-    ./fu0       # run once to install Lua
-    ./fu -f     # to install everything
+    ./fu-bootstrap.sh   # run once to install Lua
+    fu -f               # to install everything
 
 Update installed packages:
 
-    ./fu -u
+    fu -u
 
 Documentation
 =============
