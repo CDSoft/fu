@@ -84,21 +84,21 @@ bindsym $mod+l                  exec lock
 
 # custom window settings
 hide_edge_borders smart
-default_border pixel 8
-default_floating_border pixel 8
-bindsym $mod+b          border pixel 8
+default_border pixel 4
+default_floating_border pixel 4
+bindsym $mod+b          border pixel 4
 bindsym $mod+Shift+b    border pixel 2
 for_window [window_role="pop-up"]                               floating enable
 for_window [window_role="task_dialog"]                          floating enable
-for_window [title="^🖩 hCalc$"]                                  floating enable, border pixel 8
-for_window [title="^🖩 bc$"]                                     floating enable, border pixel 8
+for_window [title="^🖩 hCalc$"]                                  floating enable
+for_window [title="^🖩 bc$"]                                     floating enable
 for_window [title="^ssh-agent$"]                                floating enable
 for_window [title="VM VirtualBox$"]                             floating enable, border normal 8
 for_window [title="^QEMU (.*)$"]                                floating enable, border normal 8
-for_window [title="Waiting for low CPU and network activity"]   floating enable, border pixel 8
+for_window [title="Waiting for low CPU and network activity"]   floating enable
 for_window [title="Network Manager"]                            floating enable
 for_window [title="Configuration Center"]                       floating enable
-for_window [title="^floating fzfmenu$"]                         floating enable, border pixel 8
+for_window [title="^floating fzfmenu$"]                         floating enable
 
 # kill focused window
 bindsym $mod+q          kill
