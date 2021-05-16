@@ -11,3 +11,6 @@ user_pref("browser.uidensity", 1);
 user_pref("layers.acceleration.force-enabled", true);
 user_pref("layers.force-active", true);
 user_pref("mozilla.widget.use-argb-visuals", false);
+
+/* Ignore windows size at startup and let i3 do its job */
+user_pref("privacy.resistFingerprinting", true);
