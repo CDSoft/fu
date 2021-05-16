@@ -99,6 +99,7 @@ for_window [title="Waiting for low CPU and network activity"]   floating enable
 for_window [title="Network Manager"]                            floating enable
 for_window [title="Configuration Center"]                       floating enable
 for_window [title="^floating fzfmenu$"]                         floating enable
+for_window [title="^Xephyr on :"]                               border normal 8
 
 # kill focused window
 bindsym $mod+q          kill
