@@ -1619,7 +1619,7 @@ end
 function eaton_configuration()
 
     if force or not file_exist "/usr/local/Eaton/IntelligentPowerProtector/mc2" then
-        log "Eaton Intelligent Power Protector configuration"
+        title "Eaton Intelligent Power Protector configuration"
 
         -- https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/eaton-ipp-user-guide-p-164000291.pdf
         -- http://pqsoftware.eaton.com/explore/fra/ipp/default_fr.htm?lang=fr&os=LINUX
