@@ -94,6 +94,9 @@ function configuration()
     EATON_IPP_VERSION = "1.66.161-1"
     EATON_IPP_URL = I"http://pqsoftware.eaton.com/install/linux/ipp/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
 
+    TEAMS_VERSION = "1.4.00.7556-1"
+    TEAMS_URL = I"https://packages.microsoft.com/yumrepos/ms-teams/teams-%(TEAMS_VERSION).x86_64.rpm"
+
 end
 
 function main()
@@ -143,6 +146,7 @@ function main()
     if cfg_yesno("povray", "Install Povray?") then povray_configuration() end
     internet_configuration()
     if cfg_yesno("zoom", "Install Zoom?") then zoom_configuration() end
+    if cfg_yesno("teams", "Install Teams?") then teams_configuration() end
     if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
     if cfg_yesno("work", "Install work configuration?") then work_configuration() end
     if cfg_yesno("eaton", "Install Eaton Intelligent Power Protector?") then eaton_configuration() end
@@ -1453,6 +1457,21 @@ function zoom_configuration()
             sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
             mime_default "Zoom.desktop"
         end)
+    end
+
+end
+
+-- }}}
+
+-- Teams configuration {{{
+
+function teams_configuration()
+    title "Teams configuration"
+
+    if force or not installed "teams" then
+        sh "wget %(TEAMS_URL) -c -O ~/.local/opt/%(basename(TEAMS_URL))"
+        sh "sudo dnf install ~/.local/opt/%(basename(TEAMS_URL))"
+        mime_default "teams.desktop"
     end
 
 end
