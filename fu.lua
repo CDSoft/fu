@@ -68,13 +68,13 @@ function configuration()
                cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
                BROWSER
 
-    LATEST_LTS = "lts-17.8"
+    LATEST_LTS = "lts-17.12"
 
-    RACKET_VERSION = "8.0"
+    RACKET_VERSION = "8.1"
     RACKET_NAME = I"racket-%(RACKET_VERSION)"
     RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux-cs.sh"
 
-    JULIA_VERSION = "1.6.0"
+    JULIA_VERSION = "1.6.1"
     JULIA_NAME = I"julia-%(JULIA_VERSION)"
     JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
 
