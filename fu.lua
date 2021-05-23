@@ -1276,13 +1276,12 @@ function i3_configuration()
     if cfg_yesno("thunderbird-mailer", "Use Thunderbird as the default mailer?") then
         mime_default "mozilla-thunderbird.desktop"
     end
-    --mime_default "org.pwmt.zathura-cb.desktop"
-    mime_default "org.pwmt.zathura-djvu.desktop"
-    mime_default "org.pwmt.zathura-pdf-poppler.desktop"
-    mime_default "org.pwmt.zathura-ps.desktop"
-    --mime_default "org.pwmt.zathura.desktop"
+    --mime_default "org.pwmt.zathura-djvu.desktop"
+    --mime_default "org.pwmt.zathura-pdf-poppler.desktop"
+    --mime_default "org.pwmt.zathura-ps.desktop"
+    mime_default "xreader.desktop"
     mime_default "thunar.desktop"
-    mime_default "ristretto.desktop"
+    mime_default "ristretto.desktop" -- shall be configured after xreader to overload xreader associations
     mime_default "vlc.desktop"
     mime_default "wireshark.desktop"
 
@@ -1366,6 +1365,7 @@ function graphic_application_configuration()
         simple-scan
         evince okular mupdf qpdfview
         zathura zathura-plugins-all
+        xreader
 
         vlc ffmpeg
         gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
