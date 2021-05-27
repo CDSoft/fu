@@ -1,0 +1,9 @@
+
+set filemonitor glib
+
+set window-title-basename true
+set window-title-home-tilde true
+set window-title-page true
+
+set statusbar-basename true
+set statusbar-home-tilde true
