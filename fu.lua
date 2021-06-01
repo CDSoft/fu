@@ -1255,6 +1255,7 @@ function i3_configuration()
         qt5ct
         xfce4-settings
         xfce4-screenshooter
+        xsetroot
     ]]
 
     -- Default programs
