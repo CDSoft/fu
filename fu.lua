@@ -780,6 +780,7 @@ function dev_configuration()
         libX11-devel
         libXft-devel
         octave
+        libcurl-devel
     ]]
 
     luarocks [[
