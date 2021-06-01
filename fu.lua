@@ -1211,11 +1211,6 @@ function neovim_configuration()
         sh 'nvim --headless "+call firenvim#install(0) | q"'
     end
 
-    -- Fix trace32-practice crlf
-    if cfg_yesno("work", "Install work configuration?") then
-        sh "fd '.*' -e vim --exec dos2unix -q {} \\; %(HOME)/.config/nvim/plugged/trace32-practice.vim"
-    end
-
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "shellcheck" then
             sh "stack install --resolver=lts-14.27 ShellCheck"

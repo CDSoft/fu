@@ -33,6 +33,6 @@ Plug 'vimwiki/vimwiki'
 " - https://chrome.google.com/webstore/detail/firenvim/egpjdkipkomnmjhjmdamaniclmdlobbo
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
-%( cfg_yesno("work", "Install work configuration?") and "Plug 'https://github.com/m42e/trace32-practice.vim'" or "" )
+%( cfg_yesno("work", "Install work configuration?") and "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'" or "" )
 
 call plug#end()
