@@ -11,8 +11,8 @@ runtime vim/make.vim
 runtime vim/grep.vim
 runtime vim/html-export.vim
 runtime vim/ale.vim
-runtime vim/vim-pandoc.vim
 runtime vim/display.vim
+runtime vim/vim-pandoc.vim " shall be loaded after display.vim to overload title colors
 runtime vim/rainbow.vim
 runtime vim/autoreload.vim
 runtime vim/terminal.vim
