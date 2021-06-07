@@ -59,7 +59,7 @@ bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec menu-work
 ]=] or "")
 
-bindsym $mod+d                  exec alacritty -e vi -c VimwikiIndex
+#bindsym $mod+d                  exec alacritty -e vi -c VimwikiIndex
 bindsym $mod+t                  exec alacritty -e vi ~/todo.txt
 bindsym $mod+n                  exec alacritty -e vi ~/notes.txt
 bindsym $mod+p                  exec alacritty -e vi ~/secret.pwd
