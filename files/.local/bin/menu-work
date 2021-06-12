@@ -3,9 +3,10 @@
 _menu()
 {
     local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -l 30 -p "work ➜"
-%(("%-16s"):format(basename(BROWSER))): Web browser with the work profile
-%(("%-16s"):format(basename(BROWSER2))): Alternate web browser
-%(("%-16s"):format("meet")): Google Meet in the alternate web browser
+%(("%-24s"):format(basename(BROWSER))): Web browser with the work profile
+%(("%-24s"):format(basename(BROWSER2))): Alternate web browser
+%(("%-24s"):format("meet on "..basename(BROWSER))): Google Meet
+%(("%-24s"):format("meet on "..basename(BROWSER2))): Google Meet in the alternate web browser
 EndOfMenu
 )
     test -n "$action" && $0 "$action"
@@ -14,6 +15,7 @@ EndOfMenu
 case "$1" in
     ("%(basename(BROWSER))"*) %(BROWSER) -P work ;;
     ("%(basename(BROWSER2))"*) %(BROWSER2) ;;
-    ("meet"*) %(BROWSER2) meet.google.com ;;
+    ("meet on %(basename(BROWSER))"*) %(BROWSER) meet.google.com ;;
+    ("meet on %(basename(BROWSER2))"*) %(BROWSER2) meet.google.com ;;
     ("") _menu ;;
 esac
