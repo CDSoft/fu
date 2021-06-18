@@ -853,6 +853,7 @@ function haskell_configuration()
         "gnuplot",
         "parallel",
         "MissingH",
+        "timeit",
     }
     if force or upgrade then
         for _, package in ipairs(HASKELL_PACKAGES) do
