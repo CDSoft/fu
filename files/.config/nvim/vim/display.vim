@@ -30,8 +30,7 @@ set noequalalways " do not resize other windows when splitting
 "set foldenable
 
 "set foldmethod=syntax
-"set guifont=Inconsolata\ 10
-set guifont=Source\ Code\ Pro\ Medium\ 10
+set guifont=%(table.concat({FONT, FONT_VARIANT, FONT_SIZE}, " "):gsub(" ", "\\ "))
 set guioptions+=a " autoselect
 set guioptions-=m " no menu bar
 set guioptions+=t " tearoff menu items

@@ -62,6 +62,10 @@ function configuration()
     KEYMAP = "fr"
     LOCALE = "fr_FR.UTF-8"
 
+    FONT = "Source Code Pro"
+    FONT_VARIANT = "Medium"
+    FONT_SIZE = 10
+
     BROWSER = "firefox"
     BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
                cfg_yesno("edge-as-alternative-browser", "Use Microsoft Edge as alternative browser?") and "microsoft-edge" or
@@ -1340,7 +1344,7 @@ function st_configuration()
     if force or upgrade or not file_exist "%(HOME)/.local/bin/st" then
         gitclone "git://git.suckless.org/st"
         local config = read "%(repo_path)/st/config.def.h"
-        config = config:gsub("font = \".-\";", "font = \"Source Code Pro Medium:size=10:antialias=true:autohint=true\";")
+        config = config:gsub([[font = ".-";]], I[[font = "%(FONT) %(FONT_VARIANT):size=%(FONT_SIZE):antialias=true:autohint=true";]])
         write("%(repo_path)/st/config.h", config)
         sh "cd %(repo_path)/st && make && cp st %(HOME)/.local/bin/"
     end

@@ -1,5 +1,5 @@
 configuration {
-    font: "Source Code Pro Medium 10";
+    font: "%(FONT) %(FONT_VARIANT) %(FONT_SIZE)";
     modi: "window,run,drun";
     combi-modi: "window,drun,run";
     monitor: "-1";
@@ -65,7 +65,7 @@ configuration {
     highlight:          underline bold #ffffff;
 
     transparent:        rgba(0,0,0,0);
-    font:               "Source Code Pro 10";
+    font:               "%(FONT) %(FONT_VARIANT) %(FONT_SIZE)";
 }
 window {
     location: center;
@@ -95,7 +95,7 @@ message {
     background-color: @tcyan;
 }
 message {
-    font: "Source Code Pro 8";
+    font: "%(FONT) %(FONT_SIZE-2)";
     color: @black;
 }
 
@@ -106,7 +106,7 @@ inputbar {
     border: 2px 2px 2px 2px;
     //border-radius:  10px 10px 0px 0px;
     border-color: @foreground;
-    font: "Source Code Pro 18";
+    font: "%(FONT) %(FONT_SIZE+8)";
 }
 entry,prompt,case-indicator {
     text-font: inherit;
