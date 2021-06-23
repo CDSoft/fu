@@ -1261,6 +1261,7 @@ function i3_configuration()
         xfce4-settings
         xfce4-screenshooter
         xsetroot
+        dunst
     ]]
 
     -- Default programs
@@ -1290,6 +1291,8 @@ function i3_configuration()
     script ".config/alacritty/alacritty.yml"
 
     script ".config/i3/config"
+
+    script ".config/dunst/dunstrc"
 
     script ".config/rofi/config.rasi"
 
