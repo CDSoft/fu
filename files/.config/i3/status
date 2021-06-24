@@ -26,7 +26,7 @@ order += "memory"
 order += "cpu_temperature 0"
 order += "cpu_usage"
 order += "load"
-order += "volume master"
+#order += "volume master"
 order += "time"
 #order += "tztime paris"
 

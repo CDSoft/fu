@@ -23,16 +23,14 @@ client.background       #ffffff
 # xbindkeys --key => get keycodes
 
 # Volume control
-# Use pactl to adjust volume in PulseAudio.
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86AudioRaiseVolume    exec amixer -c 0 set Master 2dB+ && amixer set Master unmute && notify_volume
+bindsym XF86AudioLowerVolume    exec amixer -c 0 set Master 2dB- && amixer set Master unmute && notify_volume
+bindsym XF86AudioMute           exec amixer set Master toggle && notify_volume
+bindsym XF86AudioMicMute        exec amixer set Capture toggle && notify_volume
 
 # Brightness
-bindsym XF86MonBrightnessDown exec brightness -5
-bindsym XF86MonBrightnessUp   exec brightness +5
+bindsym XF86MonBrightnessDown   exec brightness -5
+bindsym XF86MonBrightnessUp     exec brightness +5
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

@@ -1320,6 +1320,9 @@ function i3_configuration()
     script "idle"
 
     script "brightness"
+    script "notify_volume"
+
+    script ".config/volumeicon/volumeicon"
 
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "tt" then

@@ -1,0 +1,22 @@
+#!/bin/bash
+# https://wiki.archlinux.org/title/Dunst#Dunstify
+
+# Arbitrary but unique message id
+msgId=$(stat -c %i $0)
+
+# Query amixer for the current volume and whether or not the speaker is muted
+volume="$(amixer -c 0 get Master | tail -1 | awk '{print $4}' | sed 's/[^0-9]*//g')"
+mute="$(amixer -c 0 get Master | tail -1 | awk '{print $6}' | sed 's/[^a-z]*//g')"
+if [[ $volume == 0 || "$mute" == "off" ]]; then
+    # Show the sound muted notification
+    dunstify -a "notify_volume" -u low -i audio-volume-muted -r "$msgId" "Volume muted" 
+else
+    # Show the volume notification
+    dunstify -a "notify_volume" -u low -i audio-volume-high -r "$msgId" -h int:value:"$volume" "Volume: ${volume}%"
+fi
+
+# Play the volume changed sound
+canberra-gtk-play -i audio-volume-change -d "notify_volume"
+
+# uncomment to update the volume status in the i3 status bar
+# killall -SIGUSR1 i3status

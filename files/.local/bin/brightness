@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Arbitrary but unique message id
+msgId=$(stat -c %i $0)
+
 MIN=5
 MAX=100
 
@@ -32,3 +35,5 @@ case "$1" in
     \+*|\-*)    set_brightness $(($cur_p$1)) ;;
     ?*)         set_brightness $1 ;;
 esac
+
+dunstify -a "brightness" -u low -i video-display -r "$msgId" -h int:value:"$cur_p" "Brightness: ${cur_p}%"
