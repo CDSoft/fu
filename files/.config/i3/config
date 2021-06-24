@@ -23,10 +23,10 @@ client.background       #ffffff
 # xbindkeys --key => get keycodes
 
 # Volume control
-bindsym XF86AudioRaiseVolume    exec amixer -c 0 set Master 2dB+ && amixer set Master unmute && notify_volume
-bindsym XF86AudioLowerVolume    exec amixer -c 0 set Master 2dB- && amixer set Master unmute && notify_volume
-bindsym XF86AudioMute           exec amixer set Master toggle && notify_volume
-bindsym XF86AudioMicMute        exec amixer set Capture toggle && notify_volume
+#bindsym XF86AudioRaiseVolume    exec amixer -c 0 set Master 2dB+ && amixer set Master unmute && notify_volume
+#bindsym XF86AudioLowerVolume    exec amixer -c 0 set Master 2dB- && amixer set Master unmute && notify_volume
+#bindsym XF86AudioMute           exec amixer set Master toggle && notify_volume
+#bindsym XF86AudioMicMute        exec amixer set Capture toggle && notify_volume
 
 # Brightness
 bindsym XF86MonBrightnessDown   exec brightness -5
@@ -292,7 +292,8 @@ bar {
 # Autostart applications
 
 exec --no-startup-id numlockx %(cfg_yesno("numlockx", "Enable numclockx?") and "on" or "off")
-exec --no-startup-id dunst
+exec --no-startup-id /usr/lib64/xfce4/notifyd/xfce4-notifyd &
+exec --no-startup-id xfce4-volumed-pulse &
 exec --no-startup-id xsetroot -solid '#081820'
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet

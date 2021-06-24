@@ -1261,7 +1261,8 @@ function i3_configuration()
         xfce4-settings
         xfce4-screenshooter
         xsetroot
-        dunst
+        xfce4-notifyd
+        xfce4-volumed
     ]]
 
     -- Default programs
