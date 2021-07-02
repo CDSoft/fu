@@ -258,7 +258,7 @@ end
 
 function title(s)
     local cols = pipe "tput cols"
-    local color = string.char(27).."[44m"
+    local color = string.char(27).."[1m"..string.char(27).."[37m"..string.char(27).."[44m"
     local normal = string.char(27).."[0m"
     s = I(s)
     io.write(string.char(27).."]0;fu: "..s..string.char(7)) -- windows title
@@ -267,7 +267,7 @@ function title(s)
 end
 
 function log(s)
-    local color = string.char(27).."[44m"
+    local color = string.char(27).."[0m"..string.char(27).."[30m"..string.char(27).."[46m"
     local normal = string.char(27).."[0m"
     s = I(s)
     io.write(color.."### "..s.." "..normal.."\n")
