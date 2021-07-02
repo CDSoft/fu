@@ -98,9 +98,6 @@ function configuration()
     EATON_IPP_VERSION = "1.66.161-1"
     EATON_IPP_URL = I"http://pqsoftware.eaton.com/install/linux/ipp/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
 
-    TEAMS_VERSION = "1.4.00.7556-1"
-    TEAMS_URL = I"https://packages.microsoft.com/yumrepos/ms-teams/teams-%(TEAMS_VERSION).x86_64.rpm"
-
 end
 
 function main()
@@ -1480,9 +1477,23 @@ function teams_configuration()
     title "Teams configuration"
 
     if force or not installed "teams" then
+
+        TEAMS_URL = "https://packages.microsoft.com/yumrepos/ms-teams"
+
+        local index = pipe("curl -sSL wget %(TEAMS_URL)")
+        local version = ""
+        local latest = nil
+        index:gsub([["(teams%-([0-9]+)%.([0-9]+)%.([0-9]+)%.([0-9]+)%-([0-9]+)%.x86_64%.rpm)"]], function(n, a, b, c, d, e)
+            local v = ("%5s.%5s.%5s.%10s-%5s"):format(a,b,c,d,e)
+            if v > version then version, latest = v, n end
+        end)
+        assert(latest, "Can not determine the latest Teams version")
+
+        TEAMS_URL = TEAMS_URL.."/"..latest
         sh "wget %(TEAMS_URL) -c -O ~/.local/opt/%(basename(TEAMS_URL))"
         sh "sudo dnf install ~/.local/opt/%(basename(TEAMS_URL))"
         mime_default "teams.desktop"
+
     end
 
 end
