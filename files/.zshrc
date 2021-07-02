@@ -17,6 +17,13 @@ alias top='procs -w --sortd UsageCpu'
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
 
+function gd()
+{
+    local filepath="$(fd "$1" | fzf)"
+    [ -f "$filepath" ] && filepath="$(dirname "$filepath")"
+    cd "$filepath"
+}
+
 # OMZ scripts
 
 . %(repo_path)/ohmyzsh/lib/completion.zsh
