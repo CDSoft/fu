@@ -76,7 +76,7 @@ function configuration()
 
     RACKET_VERSION = "8.1"
     RACKET_NAME = I"racket-%(RACKET_VERSION)"
-    RACKETINST = I"https://mirror.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux-cs.sh"
+    RACKETINST = I"https://download.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux-cs.sh"
 
     JULIA_VERSION = "1.6.1"
     JULIA_NAME = I"julia-%(JULIA_VERSION)"
