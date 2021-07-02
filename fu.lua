@@ -768,7 +768,6 @@ function dev_configuration()
         expect
         python3-devel
         python3-PyYAML python3-termcolor
-        wine
         pkgconfig
         boost boost-devel
         libjpeg-turbo-devel libpng-devel libtiff-devel
