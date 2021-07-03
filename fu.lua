@@ -151,6 +151,7 @@ function main()
     if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
     if cfg_yesno("work", "Install work configuration?") then work_configuration() end
     if cfg_yesno("eaton", "Install Eaton Intelligent Power Protector?") then eaton_configuration() end
+    if cfg_yesno("radicale", "Install Radicale?") then radicale_configuration() end
 
     upgrade_packages()
 
@@ -175,7 +176,7 @@ end
 function ask_string(question)
     local answer = nil
     repeat
-        io.write(question.." ")
+        io.write(I(question).." ")
         answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
     until #answer > 0
     return answer
@@ -1668,6 +1669,24 @@ function eaton_configuration()
 
         sh "wget %(EATON_IPP_URL) -c -O ~/.local/opt/%(basename(EATON_IPP_URL))"
         sh "sudo dnf install ~/.local/opt/%(basename(EATON_IPP_URL))"
+    end
+
+end
+
+-- }}}
+
+-- Radicale configuration {{{
+
+function radicale_configuration()
+
+    title "Radicale configuration"
+
+    packages "radicale3"
+
+    -- The server is available at http://localhost:5232/
+    script ".config/radicale/config"
+    if not file_exist "%(HOME)/.config/radicale/users" then
+        write("%(HOME)/.config/radicale/users", "%(USER):%(ask_string 'Radicale password for %(USER):')\n")
     end
 
 end

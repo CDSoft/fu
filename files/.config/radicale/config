@@ -1,0 +1,11 @@
+[server]
+# Bind all addresses
+hosts = 0.0.0.0:5232, [::]:5232
+
+[auth]
+type = htpasswd
+htpasswd_filename = ~/.config/radicale/users
+htpasswd_encryption = plain
+
+[storage]
+filesystem_folder = ~/.local/var/lib/radicale/collections
