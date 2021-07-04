@@ -1688,6 +1688,8 @@ function radicale_configuration()
     if not file_exist "%(HOME)/.config/radicale/users" then
         write("%(HOME)/.config/radicale/users", "%(USER):%(ask_string 'Radicale password for %(USER):')\n")
     end
+    script "every"
+    script "radicale_backup"
 
 end
 

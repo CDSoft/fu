@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PERIOD=$1
+shift
+
+while true
+do
+    "$@"
+    sleep $PERIOD
+done
