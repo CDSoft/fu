@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RADICALE_COLLECTIONS=~/.local/var/lib/radicale/collections
+RADICALE_DIR=~/.local/var/lib/radicale
 RADICALE_USERS=~/.config/radicale/users
 
 BACKUP=~/backup/radicale
@@ -21,7 +21,6 @@ backup_collection()
     local LOGIN=$(grep "^$USER:" $RADICALE_USERS)
 
     echo "Backup $TAG: $NAME.$EXT"
-
     curl -sSL --user "$LOGIN" "http://localhost:5232/$USER/$COLLECTION/" -o "$BACKUP/$NAME.$EXT" && git add "$BACKUP/$NAME.$EXT"
 }
 
@@ -43,10 +42,17 @@ EOF
     git commit -m "Initial commit"
 fi
 
-for props in $(find "$RADICALE_COLLECTIONS" -type f -name ".Radicale.props")
+for props in $(find "$RADICALE_DIR" -type f -name ".Radicale.props")
 do
     backup_collection $props
 done
+
+rsync \
+    -av --delete --delete-excluded \
+    --exclude ".*.lock" --exclude ".*.cache" \
+    $RADICALE_DIR ./
+git add $(basename $RADICALE_DIR)
+git ls-files --deleted | xargs -r git rm
 
 if ! git diff-index --quiet HEAD --
 then
