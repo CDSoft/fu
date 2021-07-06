@@ -74,10 +74,6 @@ function configuration()
 
     LATEST_LTS = "lts-17.12"
 
-    RACKET_VERSION = "8.1"
-    RACKET_NAME = I"racket-%(RACKET_VERSION)"
-    RACKETINST = I"https://download.racket-lang.org/installers/%(RACKET_VERSION)/racket-%(RACKET_VERSION)-x86_64-linux-cs.sh"
-
     JULIA_VERSION = "1.6.1"
     JULIA_NAME = I"julia-%(JULIA_VERSION)"
     JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
@@ -901,9 +897,24 @@ end
 function racket_configuration()
 
     if force or not installed "racket" then
+
         title "Racket configuration"
+
+        RACKET_URL = "https://download.racket-lang.org/"
+
+        local index = pipe("curl -sSL %(RACKET_URL)")
+        RACKETINST = nil
+        index:gsub([["([0-9.]+/(racket%-[0-9.]+)%-x86_64%-linux%-cs%.sh)"]], function(path, name)
+            if not RACKETINST then
+                RACKETINST = "https://mirror.racket-lang.org/installers/"..path
+                RACKET_NAME = name
+            end
+        end)
+        assert(RACKETINST and RACKET_NAME, "Can not determine the Racket version")
+
         sh "wget %(RACKETINST) -c -O ~/.local/opt/%(basename(RACKETINST))"
         sh "sh ~/.local/opt/%(basename(RACKETINST)) --in-place --dest ~/.local/opt/%(RACKET_NAME)"
+
     end
 
 end
