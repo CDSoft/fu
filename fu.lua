@@ -1475,13 +1475,14 @@ end
 -- Teams configuration {{{
 
 function teams_configuration()
-    title "Teams configuration"
 
     if force or not installed "teams" then
 
+        title "Teams configuration"
+
         TEAMS_URL = "https://packages.microsoft.com/yumrepos/ms-teams"
 
-        local index = pipe("curl -sSL wget %(TEAMS_URL)")
+        local index = pipe("curl -sSL %(TEAMS_URL)")
         local version = ""
         local latest = nil
         index:gsub([["(teams%-([0-9]+)%.([0-9]+)%.([0-9]+)%.([0-9]+)%-([0-9]+)%.x86_64%.rpm)"]], function(n, a, b, c, d, e)
