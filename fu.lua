@@ -74,10 +74,6 @@ function configuration()
 
     LATEST_LTS = "lts-17.12"
 
-    JULIA_VERSION = "1.6.1"
-    JULIA_NAME = I"julia-%(JULIA_VERSION)"
-    JULIA_ARCHIVE = I"https://julialang-s3.julialang.org/bin/linux/x64/%(JULIA_VERSION:gsub('%.%d*$', ''))/%(JULIA_NAME)-linux-x86_64.tar.gz"
-
     ZIG_VERSION = "0.7.1"
     ZIG_ARCHIVE = I"zig-linux-x86_64-%(ZIG_VERSION).tar.xz"
     ZIG_URL = I"https://ziglang.org/download/%(ZIG_VERSION)/%(ZIG_ARCHIVE)"
@@ -953,7 +949,20 @@ end
 function julia_configuration()
 
     if force or not installed "julia" then
+
         title "Julia configuration"
+
+        JULIA_URL = "https://julialang.org/downloads/"
+
+        local index = pipe("curl -sSL %(JULIA_URL)")
+        JULIA_ARCHIVE = nil
+        index:gsub([[href="(https://julialang%-s3%.julialang%.org/bin/linux/x64/[0-9.]+/(julia%-[0-9.]+)%-linux%-x86_64%.tar%.gz)"]], function(path, name)
+            if not JULIA_ARCHIVE then
+                JULIA_ARCHIVE = path
+                JULIA_NAME = name
+            end
+        end)
+        assert(JULIA_ARCHIVE and JULIA_NAME, "Can not determine the Julia version")
 
         sh "wget %(JULIA_ARCHIVE) -c -O ~/.local/opt/%(basename(JULIA_ARCHIVE))"
         sh "rm -rf ~/.local/opt/%(JULIA_NAME)"
