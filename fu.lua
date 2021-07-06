@@ -74,11 +74,6 @@ function configuration()
 
     LATEST_LTS = "lts-17.12"
 
-    ZIG_VERSION = "0.7.1"
-    ZIG_ARCHIVE = I"zig-linux-x86_64-%(ZIG_VERSION).tar.xz"
-    ZIG_URL = I"https://ziglang.org/download/%(ZIG_VERSION)/%(ZIG_ARCHIVE)"
-    ZIG_DIR = I"%(ZIG_ARCHIVE:gsub('%.tar%.xz$', ''))"
-
     CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
     CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
     CLING_DIR = I"%(CLING_ARCHIVE:gsub('%.tar%.bz2$', ''))"
@@ -978,12 +973,27 @@ end
 
 function zig_configuration()
 
+    --package "zig"
+
     if force or not installed "zig" then
+
         title "Zig configuration"
 
-        sh "wget %(ZIG_URL) -c -O ~/.local/opt/%(basename(ZIG_URL))"
+        ZIG_URL = "https://ziglang.org/download/"
+
+        local index = pipe("curl -sSL %(ZIG_URL)")
+        ZIG_ARCHIVE = nil
+        index:gsub([[(https://ziglang%.org/download/[0-9.]+/(zig%-linux%-x86_64%-[0-9.]+)%.tar%.xz)]], function(url, name)
+            if not ZIG_ARCHIVE then
+                ZIG_ARCHIVE = url
+                ZIG_DIR = name
+            end
+        end)
+        assert(ZIG_ARCHIVE and ZIG_DIR, "Can not determine Zig version")
+
+        sh "wget %(ZIG_ARCHIVE) -c -O ~/.local/opt/%(basename(ZIG_ARCHIVE))"
         sh "rm -rf ~/.local/opt/%(ZIG_DIR)"
-        sh "tar xJf ~/.local/opt/%(basename(ZIG_URL)) -C ~/.local/opt"
+        sh "tar xJf ~/.local/opt/%(basename(ZIG_ARCHIVE)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
     end
 
