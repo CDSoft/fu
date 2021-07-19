@@ -44,7 +44,6 @@ eval "$(pandoc --bash-completion)"
 # Third-party configuration
 
 %(cfg_yesno("ocaml", "Install OCaml?") and '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true' or '')
-%(cfg_yesno("racket", "Install Racket?") and 'export PATH=$PATH:~/.local/opt/%(RACKET_NAME)/bin' or '')
 %(cfg_yesno("rust", "Install Rust?") and '. ~/.cargo/env' or '')
 
 # Plugins
