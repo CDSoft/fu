@@ -11,6 +11,7 @@ alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 alias more=less
 alias df='grc df -h'
 alias du='grc du -h'
+alias ncdu='ncdu --color dark'
 
 alias top='procs -w --sortd UsageCpu'
 
