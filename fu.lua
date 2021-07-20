@@ -857,8 +857,8 @@ function haskell_configuration()
     -- hCalc
     if force or upgrade or not installed "hcalc" then
         gitclone "http://github.com/cdsoft/hcalc"
-    sh "cd %(repo_path)/hcalc && make install"
-end
+        sh "cd %(repo_path)/hcalc && make install"
+    end
 
 end
 
@@ -1478,7 +1478,7 @@ function internet_configuration()
     end
 
     -- Thunderbird extensions
-    if force or update or not file_exist "%(repo_path)/reply_as_original_recipient.xpi" then
+    if force or upgrade or not file_exist "%(repo_path)/reply_as_original_recipient.xpi" then
         gitclone "https://github.com/qiqitori/reply_as_original_recipient.git"
         sh "cd %(repo_path)/reply_as_original_recipient && zip -r ../reply_as_original_recipient.xpi *"
     end
