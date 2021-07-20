@@ -442,19 +442,20 @@ function script(name)
     error("Template not found: "..name)
 end
 
-function gitclone(url)
+function gitclone(url, options)
     url = I(url)
     local name = basename(url)
+    options = table.concat(options or {}, " ")
     mkdir(repo_path)
     local path = repo_path.."/"..name:gsub("%.git$", "")
     if dir_exist(path) then
         if force or upgrade then
-            log("Upgrade "..url.." to "..path)
+            log("Upgrade "..url.." to "..path.." "..options)
             sh("cd "..path.." && git reset --hard master && git pull")
         end
     else
         log("Clone "..url.." to "..path)
-        sh("git clone "..url.." "..path)
+        sh("git clone "..url.." "..path.." "..options)
     end
 end
 
@@ -731,6 +732,7 @@ function dev_configuration()
         git-delta
         subversion
         clang llvm clang-tools-extra
+        ccls
         cppcheck
         cmake
         ncurses-devel
@@ -772,6 +774,8 @@ function dev_configuration()
         libXft-devel
         octave
         libcurl-devel
+        libicu-devel ncurses-devel zlib-devel
+        libstdc++-static
     ]]
 
     luarocks [[
@@ -819,6 +823,45 @@ function dev_configuration()
 
     -- interactive scratchpad: https://github.com/metakirby5/codi.vim
     script "codi"
+
+    -- Language servers
+    if force or upgrade or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
+        mkdir "%(HOME)/.local/opt/bash-language-server"
+        sh "cd ~/.local/opt/bash-language-server && npm install bash-language-server && ln -s -f $PWD/node_modules/.bin/bash-language-server ~/.local/bin/"
+    end
+    if force or upgrade or not file_exist "%(HOME)/.local/opt/dot-language-server/node_modules/.bin/dot-language-server" then
+        mkdir "%(HOME)/.local/opt/dot-language-server"
+        sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
+    end
+    if cfg_yesno("haskell", "Install Haskell?") then
+        if force or upgrade or not installed "haskell-language-server" then
+            gitclone("https://github.com/haskell/haskell-language-server", {"--recurse-submodules"})
+            sh "cd %(repo_path)/haskell-language-server && stack ./install.hs hls"
+        end
+    end
+    if force or upgrade or not installed "zls" then
+        mkdir "%(HOME)/.local/opt/pyright-langserver"
+        sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
+    end
+    if cfg_yesno("zig", "Install Zig?") then
+        if force or upgrade or not installed "zls" then
+            gitclone("https://github.com/zigtools/zls", {"--recurse-submodules"})
+            sh [[ cd %(repo_path)/zls &&
+                git fetch origin b756ed4da59cb0ec419a4010ab6f870c1924924f &&
+                git reset --hard FETCH_HEAD &&
+                zig build -Drelease-safe &&
+                ln -s -f $PWD/zig-out/bin/zls ~/.local/bin/ ]]
+        end
+    end
+    if force or upgrade or not installed "lua-language-server" then
+        gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
+        sh [[ cd %(repo_path)/lua-language-server &&
+              cd 3rd/luamake
+              compile/install.sh
+              cd ../..
+              ./3rd/luamake/luamake rebuild
+              ln -s -f $PWD/bin/Linux/lua-language-server ~/.local/bin/ ]]
+    end
 
 end
 

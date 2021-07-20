@@ -3,7 +3,7 @@ call plug#begin()
 Plug 'https://github.com/CDSoft/pwd.git'
 Plug 'https://github.com/CDSoft/todo.git'
 Plug 'https://github.com/thinca/vim-localrc.git'
-Plug 'https://github.com/w0rp/ale.git'
+"Plug 'https://github.com/w0rp/ale.git'
 Plug 'https://github.com/ziglang/zig.vim'
 Plug 'https://github.com/JuliaEditorSupport/julia-vim.git'
 Plug 'https://github.com/godlygeek/tabular.git'
@@ -27,6 +27,7 @@ Plug 'https://github.com/sbdchd/neoformat'
 Plug 'monkoose/fzf-hoogle.vim'
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "Plug 'vimwiki/vimwiki'
+Plug 'neovim/nvim-lspconfig'
 
 " firenvim requires
 " - https://addons.mozilla.org/en-US/firefox/addon/firenvim/

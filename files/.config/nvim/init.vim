@@ -10,7 +10,7 @@ runtime vim/fzf.vim
 runtime vim/make.vim
 runtime vim/grep.vim
 runtime vim/html-export.vim
-runtime vim/ale.vim
+"runtime vim/ale.vim
 runtime vim/display.vim
 runtime vim/vim-pandoc.vim " shall be loaded after display.vim to overload title colors
 runtime vim/rainbow.vim
@@ -28,6 +28,7 @@ if exists('g:started_by_firenvim')
 endif
 
 lua require'nvim-colorizer'
+lua require'lsp'
 
 " nvim startup may be too long to catch the initial SIGWINCH and resize the window
 autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
