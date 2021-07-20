@@ -556,6 +556,7 @@ function shell_configuration()
         tmux
         tldr
         procs
+        the_silver_searcher
     ]]
 
     sh "chsh -s /bin/zsh %(USER)"
@@ -727,6 +728,7 @@ function dev_configuration()
 
     packages [[
         git git-gui gitk qgit gitg tig git-lfs
+        git-delta
         subversion
         clang llvm clang-tools-extra
         cppcheck
@@ -797,6 +799,8 @@ function dev_configuration()
         stdlib
         tcc
     ]]
+
+    script ".gitconfig"
 
     -- pip
     if force or upgrade then sh "python -m pip install --user --upgrade pip" end

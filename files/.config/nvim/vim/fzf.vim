@@ -1,14 +1,14 @@
-nnoremap <silent> <Leader>b :Buffers<CR>
-nnoremap <silent> <Leader>f :Rg<CR>
-nnoremap <silent> <Leader>t :Tags<CR>
+nnoremap <silent> <Leader>b :Buffers!<CR>
+nnoremap <silent> <Leader>f :Rg!<CR>
+nnoremap <silent> <Leader>t :Tags!<CR>
 if system("git rev-parse --is-inside-work-tree 2>/dev/null") == ""
     "nnoremap <silent> <C-f> :Files<CR>
-    nnoremap <silent> <Leader>o :Files<CR>
+    nnoremap <silent> <Leader>o :Files!<CR>
 else
     "nnoremap <silent> <C-f> :GFiles<CR>
-    nnoremap <silent> <Leader>o :GFiles<CR>
+    nnoremap <silent> <Leader>o :GFiles!<CR>
 endif
-nnoremap <silent> <Leader>O :Files<CR>
+nnoremap <silent> <Leader>O :Files!<CR>
 
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1

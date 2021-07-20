@@ -50,7 +50,7 @@ eval "$(pandoc --bash-completion)"
 # Plugins
 
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
-export FZF_DEFAULT_OPTS="-m --height 80% --border"
+export FZF_DEFAULT_OPTS="-m"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Starship: https://starship.rs
