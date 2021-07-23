@@ -1597,6 +1597,8 @@ end
 
 -- Work configuration {{{
 
+-- https://copr.fedorainfracloud.org/coprs/thofmann/ros/
+
 function work_configuration()
     title "Work configuration"
 
