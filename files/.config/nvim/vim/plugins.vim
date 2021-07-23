@@ -20,7 +20,11 @@ Plug 'airblade/vim-rooter'
 Plug 'https://github.com/vim-scripts/DrawIt'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'vim-airline/vim-airline'
+
+"Plug 'vim-airline/vim-airline'
+Plug 'hoob3rt/lualine.nvim'
+"Plug 'kyazdani42/nvim-web-devicons'
+
 Plug 'https://github.com/vifm/vifm.vim.git'
 "Plug 'https://github.com/frace/vim-bubbles'
 Plug 'https://github.com/sbdchd/neoformat'

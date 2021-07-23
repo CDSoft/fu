@@ -29,6 +29,7 @@ endif
 
 lua require'nvim-colorizer'
 lua require'lsp'
+lua require'lualine-setup'
 
 " nvim startup may be too long to catch the initial SIGWINCH and resize the window
 autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
