@@ -778,6 +778,7 @@ function dev_configuration()
         libstdc++-static
     ]]
 
+    --[[
     luarocks [[
         ansicolors
         bigint
@@ -803,6 +804,7 @@ function dev_configuration()
         stdlib
         tcc
     ]]
+    --]]
 
     script ".gitconfig"
 
