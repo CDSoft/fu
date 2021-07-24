@@ -40,9 +40,9 @@ local servers = {
     --"ccls",   -- no ccls until I can figure out how to use compile_flags.txt
     "clangd",
     "dotls",
-    "hls",
     "pyright",
-    "zls",
+    %(cfg_yesno("haskell", "Install Haskell?") and [["hls",]] or "")
+    %(cfg_yesno("zig", "Install Zig?") and [["zls",]] or "")
 }
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
