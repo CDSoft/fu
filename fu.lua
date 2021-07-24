@@ -1261,6 +1261,7 @@ function neovim_configuration()
         fzf
         ccrypt pwgen
         gzip
+        jq
     ]]
 
     for config_file in ls ".config/nvim/*.vim" do
