@@ -588,7 +588,7 @@ function shell_configuration()
     gitclone "https://github.com/junegunn/fzf.git"
     sh "cd %(repo_path)/fzf && ./install --key-bindings --completion --no-update-rc"
 
-    script ".tmux/conf"
+    script ".tmux.conf"
 
     script "fzfmenu"
 
