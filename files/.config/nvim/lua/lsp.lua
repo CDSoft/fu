@@ -41,7 +41,7 @@ local servers = {
     "clangd",
     "dotls",
     "pyright",
-    %(cfg_yesno("haskell", "Install Haskell?") and [["hls",]] or "")
+    --%(cfg_yesno("haskell", "Install Haskell?") and [["hls",]] or "")
     %(cfg_yesno("zig", "Install Zig?") and [["zls",]] or "")
 }
 for _, lsp in ipairs(servers) do
@@ -49,7 +49,12 @@ for _, lsp in ipairs(servers) do
         on_attach = on_attach,
         flags = {
             debounce_text_changes = 150,
-        }
+        },
+        settings = {
+            haskell = {
+                hlintOn = true,
+            }
+        },
     }
 end
 

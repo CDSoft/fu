@@ -835,12 +835,14 @@ function dev_configuration()
         mkdir "%(HOME)/.local/opt/dot-language-server"
         sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
     end
+    --[[
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "haskell-language-server" then
             gitclone("https://github.com/haskell/haskell-language-server", {"--recurse-submodules"})
             sh "cd %(repo_path)/haskell-language-server && stack ./install.hs hls"
         end
     end
+    --]]
     if force or upgrade or not installed "zls" then
         mkdir "%(HOME)/.local/opt/pyright-langserver"
         sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
