@@ -22,6 +22,7 @@ runtime vim/neoformat.vim
 runtime vim/vim-rooter.vim
 runtime vim/vimwiki.vim
 runtime vim/lac.vim
+runtime vim/completion.vim
 
 if exists('g:started_by_firenvim')
     runtime vim/firenvim.vim " must be run after display.vim

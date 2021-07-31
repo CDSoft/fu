@@ -32,6 +32,7 @@ Plug 'monkoose/fzf-hoogle.vim'
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "Plug 'vimwiki/vimwiki'
 Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
 
 " firenvim requires
 " - https://addons.mozilla.org/en-US/firefox/addon/firenvim/
