@@ -1268,6 +1268,8 @@ function neovim_configuration()
         jq
     ]]
 
+    sh "pip3 install --user pynvim"
+
     for config_file in ls ".config/nvim/*.vim" do
         script(config_file)
     end

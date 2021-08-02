@@ -4,6 +4,7 @@
     syntax on
     set nocompatible " use vim power
     set loadplugins
+    set shortmess+=mrI
 
 " File types / file formats
 """""""""""""""""""""""""""
