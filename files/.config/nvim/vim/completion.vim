@@ -16,7 +16,7 @@ let g:completion_matching_ignore_case = 1
 let g:completion_matching_smart_case = 1
 
 "map <c-p> to manually trigger completion
-imap <silent> <c-p> <Plug>(completion_trigger)
+"imap <silent> <c-p> <Plug>(completion_trigger)
 
 " <tab> to trigger completion
 imap <tab> <Plug>(completion_smart_tab)
