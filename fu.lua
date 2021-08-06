@@ -1615,6 +1615,7 @@ function work_configuration()
         moby-engine grubby
         python-devel python3-devel
         ros-rosbag
+        ros-desktop_full-devel
         xterm
         minicom
         patch yices z3 cvc4 zenon eqp E gtksourceview2-devel libgnomecanvas-devel gmp
