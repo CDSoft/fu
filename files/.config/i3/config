@@ -294,7 +294,8 @@ bar {
 exec --no-startup-id numlockx %(cfg_yesno("numlockx", "Enable numclockx?") and "on" or "off")
 exec --no-startup-id /usr/lib64/xfce4/notifyd/xfce4-notifyd &
 exec --no-startup-id xfce4-volumed-pulse &
-exec --no-startup-id xsetroot -solid '#081820'
+exec --no-startup-id xsetroot -solid '#020608'
+exec --no-startup-id every 1h wallpaper_of_the_day
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'

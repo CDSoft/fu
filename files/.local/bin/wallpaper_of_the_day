@@ -1,0 +1,26 @@
+#!/usr/bin/env lua
+
+INDEX = "https://bing.gifposter.com/"
+
+local function pipe(...)
+    local cmd = table.concat({...}, " ")
+    local p = io.popen(cmd, "r")
+    local content = p:read "a"
+    p:close()
+    return content
+end
+
+local function first_image(content)
+    return content:match("https://[^\"]-%.jpg")
+end
+
+local function basename(s)
+    return (s:gsub(".*/([^/]*)$", "%1"))
+end
+
+local index = pipe("curl", "-sSL", INDEX)
+local url = first_image(index)
+local image = "/tmp/"..basename(url)
+
+os.execute(("wget %s -c -O %s"):format(url, image))
+os.execute(("feh --bg-fill %s"):format(image))

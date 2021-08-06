@@ -1380,6 +1380,8 @@ function i3_configuration()
 
     script ".config/rofi/config.rasi"
 
+    script "wallpaper_of_the_day"
+
     script "xi3"
 
     if force or upgrade or not installed "xcwd" then
