@@ -62,6 +62,7 @@ function configuration()
     KEYMAP = "fr"
     LOCALE = "fr_FR.UTF-8"
 
+    I3_THEME = "green"      -- "blue" (default), "green"
     FONT = "Source Code Pro"
     FONT_VARIANT = "Medium"
     FONT_SIZE = 10

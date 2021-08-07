@@ -12,12 +12,19 @@ font xft:%(FONT) %(FONT_VARIANT) %((tonumber(pipe "xdpyinfo | awk '/dimensions/ 
 
 # Window colors (default colors, no indicator)
 # class                 border  backgr. text    indicator child_border
+%(I3_THEME == "green" and [[
+client.focused          #4c9978 #287755 #ffffff #287755   #287755
+client.focused_inactive #333333 #5f6a67 #ffffff #5f6a67   #5f6a67
+client.unfocused        #333333 #222222 #888888 #222222   #222222
+client.urgent           #2f3a34 #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #0c0c0c   #0c0c0c
+]] or [[
 client.focused          #4c7899 #285577 #ffffff #285577   #285577
 client.focused_inactive #333333 #5f676a #ffffff #5f676a   #5f676a
 client.unfocused        #333333 #222222 #888888 #222222   #222222
 client.urgent           #2f343a #900000 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #0c0c0c   #0c0c0c
-
+]])
 client.background       #ffffff
 
 # xbindkeys --key => get keycodes
@@ -281,11 +288,19 @@ bar {
         statusline #ffffff
         separator #666666
         # color class      border  background text
+%(I3_THEME == "green" and [[
+        focused_workspace  #4c9978 #287755    #ffffff
+        active_workspace   #333333 #5f6a67    #ffffff
+        inactive_workspace #333333 #222222    #888888
+        urgent_workspace   #2f3a34 #900000    #ffffff
+        binding_mode       #2f3a34 #900000    #ffffff
+]] or [[
         focused_workspace  #4c7899 #285577    #ffffff
         active_workspace   #333333 #5f676a    #ffffff
         inactive_workspace #333333 #222222    #888888
         urgent_workspace   #2f343a #900000    #ffffff
         binding_mode       #2f343a #900000    #ffffff
+]])
     }
 }
 

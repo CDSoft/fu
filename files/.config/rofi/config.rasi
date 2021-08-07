@@ -37,6 +37,8 @@ configuration {
     // Green
     green:              #86af80;
     lightgreen:         #88fc22;
+    darkgreen:          #23ef39;
+    i3green:            #287755;
     //
     // Yellow
     yellow:             #e8ae5b;
@@ -134,11 +136,11 @@ element {
     font:inherit;
 }
 element selected.normal {
-    //background-color: @darkblue;
-    background-color: @i3blue;
+    //background-color: @dark%(I3_THEME);
+    background-color: @i3%(I3_THEME);
 }
 element normal active {
-    text-color: @lightblue;
+    text-color: @light%(I3_THEME);
 }
 element normal urgent {
     text-color: @lightred;
@@ -146,14 +148,14 @@ element normal urgent {
 element alternate normal {
 }
 element alternate active {
-    text-color: @lightblue;
+    text-color: @light%(I3_THEME);
 }
 element alternate urgent {
     text-color: @lightred;
 }
 element selected active {
-    //background-color: @darkblue;
-    background-color: @i3blue;
+    //background-color: @dark%(I3_THEME);
+    background-color: @i3%(I3_THEME);
     //text-color: @dark;
 }
 element selected urgent {
