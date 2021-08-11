@@ -92,3 +92,8 @@
     set magic
     set showmatch
     set smartcase
+
+" Substitutions
+"""""""""""""""
+
+    set inccommand=split
