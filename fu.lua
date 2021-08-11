@@ -115,6 +115,7 @@ function main()
     if cfg_yesno("dropbox", "Install dropbox?") then dropbox_configuration() end
     if cfg_yesno("nextcloud", "Install Nextcloud?") then nextcloud_configuration() end
     filesystem_configuration()
+    if cfg_yesno("v", "Install V?") then v_configuration() end
     dev_configuration()
     if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
     if cfg_yesno("ocaml", "Install OCaml?") then ocaml_configuration() end
@@ -443,7 +444,7 @@ function script(name)
     error("Template not found: "..name)
 end
 
-function gitclone(url, options)
+function gitclone(url, options, custom)
     url = I(url)
     local name = basename(url)
     options = table.concat(options or {}, " ")
@@ -777,6 +778,7 @@ function dev_configuration()
         libcurl-devel
         libicu-devel ncurses-devel zlib-devel
         libstdc++-static
+        gc-devel
     ]]
 
     --[[
@@ -866,6 +868,16 @@ function dev_configuration()
               cd ../..
               ./3rd/luamake/luamake rebuild
               ln -s -f $PWD/bin/Linux/lua-language-server ~/.local/bin/ ]]
+    end
+    if cfg_yesno("v", "Install V?") then
+        if force or upgrade or not installed "vls" then
+            gitclone "https://github.com/nedpals/tree-sitter-v"
+            sh "mkdir -p ~/.vmodules/; ln -sf %(repo_path)/tree-sitter-v ~/.vmodules/tree_sitter_v"
+            gitclone("https://github.com/vlang/vls.git")
+            sh [[ cd %(repo_path)/vls
+                git checkout use-tree-sitter
+                v -gc boehm -cc gcc cmd/vls ]]
+        end
     end
 
 end
@@ -1016,6 +1028,23 @@ function julia_configuration()
         sh "rm -rf ~/.local/opt/%(JULIA_NAME)"
         sh "tar xzf ~/.local/opt/%(basename(JULIA_ARCHIVE)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(JULIA_NAME)/bin/julia ~/.local/bin/julia"
+    end
+
+end
+
+-- }}}
+
+-- V configuration {{{
+
+function v_configuration()
+
+    if force or not installed "v" then
+
+        title "V configuration"
+
+        gitclone "https://github.com/vlang/v"
+        sh "cd %(repo_path)/v && make && ln -sf %(repo_path)/v/v ~/.local/bin/v"
+
     end
 
 end

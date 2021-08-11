@@ -33,6 +33,7 @@ Plug 'monkoose/fzf-hoogle.vim'
 "Plug 'vimwiki/vimwiki'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
+Plug 'ollykel/v-vim'
 
 " firenvim requires
 " - https://addons.mozilla.org/en-US/firefox/addon/firenvim/

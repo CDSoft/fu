@@ -108,3 +108,12 @@ require'lspconfig'.sumneko_lua.setup {
         },
     },
 }
+
+-- V Language Server
+-- set the path to the vls installation;
+local vls_root_path = "%(repo_path)/vls"
+local vls_binary = vls_root_path.."/cmd/vls/vls"
+
+require'lspconfig'.vls.setup {
+  cmd = {vls_binary},
+}
