@@ -753,7 +753,7 @@ function dev_configuration()
         glfw
         flex bison
         perl-ExtUtils-MakeMaker
-        SDL2-devel SDL2_ttf-devel SDL2_gfx-devel
+        SDL2-devel SDL2_ttf-devel SDL2_gfx-devel SDL2_mixer-devel SDL2_image-devel
         libpcap-devel
         libyaml libyaml-devel
         libubsan libubsan-static libasan libasan-static libtsan libtsan-static
