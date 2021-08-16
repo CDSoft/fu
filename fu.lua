@@ -444,7 +444,7 @@ function script(name)
     error("Template not found: "..name)
 end
 
-function gitclone(url, options, custom)
+function gitclone(url, options)
     url = I(url)
     local name = basename(url)
     options = table.concat(options or {}, " ")
@@ -453,7 +453,7 @@ function gitclone(url, options, custom)
     if dir_exist(path) then
         if force or upgrade then
             log("Upgrade "..url.." to "..path.." "..options)
-            sh("cd "..path.." && git reset --hard master && git pull")
+            sh("cd "..path.." && ( git reset --hard master || true ) && git pull")
         end
     else
         log("Clone "..url.." to "..path)
