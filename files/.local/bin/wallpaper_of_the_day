@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
 local INDEX = "https://bing.gifposter.com/"
-local CACHE = "/tmp/wallpaper_of_the_day"
+local CACHE = "%(HOME)/.local/var/wallpaper_of_the_day"
 
 local function pipe(...)
     local cmd = table.concat({...}, " ")
