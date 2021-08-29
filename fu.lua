@@ -969,7 +969,9 @@ function racket_configuration()
 
         sh "wget %(RACKETINST) -c -O ~/.local/opt/%(basename(RACKETINST))"
         sh "sh ~/.local/opt/%(basename(RACKETINST)) --in-place --dest ~/.local/opt/%(RACKET_NAME)"
-        sh "ln -f -s ~/.local/opt/%(RACKET_NAME)/bin/racket ~/.local/bin/racket"
+        for _, exe in ipairs { "racket", "drracket", "raco" } do
+            sh("ln -f -s ~/.local/opt/%(RACKET_NAME)/bin/"..exe.." ~/.local/bin/"..exe)
+        end
 
     end
 
