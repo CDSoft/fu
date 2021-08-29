@@ -1413,6 +1413,7 @@ function i3_configuration()
     script ".config/rofi/config.rasi"
 
     script "wallpaper_of_the_day"
+    script "every"
 
     script "xi3"
 
