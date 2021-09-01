@@ -1201,7 +1201,7 @@ function pandoc_configuration()
         sh "cd %(repo_path)/upp && make install"
     end
 
-    if cfg_yesno("haskell", "Install Haskell?") then
+    if cfg_yesno("haskell", "Install Haskell?") and cfg_yesno("abp", "Install abp?") then
         if force or upgrade or not installed "abp" then
             gitclone "http://github.com/cdsoft/abp"
             sh "cd %(repo_path)/abp && stack install"
