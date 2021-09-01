@@ -419,6 +419,7 @@ end
 function upgrade_packages()
     if force or upgrade then
         title "Upgrade packages"
+        sh "sudo dnf update --refresh"
         sh "sudo dnf upgrade --best --allowerasing"
     end
 end
@@ -1703,6 +1704,23 @@ function work_configuration()
     ]]
 
     script "menu-work"
+
+    -- NVidia drivers
+    -- https://docs.fedoraproject.org/en-US/quick-docs/how-to-set-nvidia-as-primary-gpu-on-optimus-based-laptops/
+    if cfg_yesno("nvidia", "Install NVidia drivers") then
+        packages [[
+            xorg-x11-drv-nvidia akmod-nvidia
+            xorg-x11-drv-nvidia-cuda
+            gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-libs.i686
+        ]]
+        sh "sudo akmods --force || true"
+        sh "sudo dracut --force"
+        sh "sudo cp -p /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf"
+        if not read("/etc/X11/xorg.conf.d/nvidia.conf"):match[[Option "PrimaryGPU" "yes"]] then
+            -- add Option "PrimaryGPU" "yes" to OutputClass
+            sh "sudo vi /etc/X11/xorg.conf.d/nvidia.conf"
+        end
+    end
 
     -- AWS
     if force or upgrade then
