@@ -124,6 +124,7 @@ function main()
     if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
     if cfg_yesno("cling", "Install cling?") then cling_configuration() end
     if cfg_yesno("swipl", "Install SWI Prolog (from sources)?") then swipl_configuration() end
+    lsp_configuration()
     text_edition_configuration()
     pandoc_configuration()
     if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
@@ -830,7 +831,23 @@ function dev_configuration()
     -- interactive scratchpad: https://github.com/metakirby5/codi.vim
     script "codi"
 
-    -- Language servers
+    if cfg_yesno("v", "Install V?") then
+        if force or upgrade or not installed "vls" then
+            gitclone "https://github.com/nedpals/tree-sitter-v"
+            sh "mkdir -p ~/.vmodules/; ln -sf %(repo_path)/tree-sitter-v ~/.vmodules/tree_sitter_v"
+            gitclone("https://github.com/vlang/vls.git")
+            sh [[ cd %(repo_path)/vls
+                git checkout use-tree-sitter
+                v -gc boehm -cc gcc cmd/vls ]]
+        end
+    end
+
+end
+
+function lsp_configuration()
+
+    title "Language servers configuration"
+
     if force or upgrade or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
         mkdir "%(HOME)/.local/opt/bash-language-server"
         sh "cd ~/.local/opt/bash-language-server && npm install bash-language-server && ln -s -f $PWD/node_modules/.bin/bash-language-server ~/.local/bin/"
@@ -847,7 +864,7 @@ function dev_configuration()
         end
     end
     --]]
-    if force or upgrade or not installed "zls" then
+    if force or upgrade or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
         mkdir "%(HOME)/.local/opt/pyright-langserver"
         sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
     end
@@ -869,16 +886,6 @@ function dev_configuration()
               cd ../..
               ./3rd/luamake/luamake rebuild
               ln -s -f $PWD/bin/Linux/lua-language-server ~/.local/bin/ ]]
-    end
-    if cfg_yesno("v", "Install V?") then
-        if force or upgrade or not installed "vls" then
-            gitclone "https://github.com/nedpals/tree-sitter-v"
-            sh "mkdir -p ~/.vmodules/; ln -sf %(repo_path)/tree-sitter-v ~/.vmodules/tree_sitter_v"
-            gitclone("https://github.com/vlang/vls.git")
-            sh [[ cd %(repo_path)/vls
-                git checkout use-tree-sitter
-                v -gc boehm -cc gcc cmd/vls ]]
-        end
     end
 
 end
