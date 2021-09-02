@@ -1723,6 +1723,82 @@ function work_configuration()
         vim-common
         python3-pygame
         gnu-free-mono-fonts
+        glibc-locale-source
+        cmake
+        dos2unix
+        findutils
+        gcc
+        make
+        qt qt-x11 motif expect
+        glibc.i686
+        astyle
+        asymptote
+        bc
+        blas-devel
+        can-utils
+        clang
+        clang-tools-extra
+        curl
+        doxygen
+        gcc
+        gedit
+        git
+        git-lfs
+        glibc.i686
+        gnu-free-mono-fonts
+        graphviz
+        ImageMagick
+        java
+        jq
+        lapack-devel
+        libasan
+        libasan-static
+        libffi-devel
+        libpcap-devel
+        libtsan
+        libtsan-static
+        libubsan
+        libubsan-static
+        llvm
+        lua
+        lzma-devel
+        mesa-dri-drivers
+        mesa-libGLU
+        minicom
+        ncurses
+        protobuf-devel
+        python3
+        python3-devel
+        python3-pygments
+        qt qt-x11 motif
+        SDL2_ttf-devel
+        SDL2-devel
+        socat
+        sudo
+        tcpdump
+        tcpreplay
+        texlive
+        texlive-scheme-full
+        wget
+        xauth
+        xorg-x11-server-Xvfb
+        xterm
+        xz-devel
+        zlib-devel
+        cvc4
+        E
+        eqp
+        gappa
+        gmp
+        gtksourceview2-devel
+        libgnomecanvas-devel
+        ocaml
+        ocaml-ocamldoc
+        opam
+        patch
+        yices
+        z3
+        zenon
     ]]
 
     script "menu-work"
