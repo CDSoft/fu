@@ -937,18 +937,23 @@ end
 function ocaml_configuration()
 
     packages [[
+        opam
         z3
         cvc4
+        frama-c
+        coq
+        why3
+        alt-ergo
     ]]
 
     if force or not installed "opam" then
         title "OCaml configuration"
-        sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
+        --sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
         sh "opam init"
         sh "opam update && opam upgrade"
-        sh "opam install depext"
-        sh "opam depext frama-c || true"
-        sh "opam install frama-c coq why3 alt-ergo || true"
+        --sh "opam install depext"
+        --sh "opam depext frama-c || true"
+        --sh "opam install frama-c coq why3 alt-ergo || true"
     end
 
 end
@@ -1022,6 +1027,9 @@ function julia_configuration()
 
         title "Julia configuration"
 
+        packages [[ julia ]]
+
+        --[=[
         JULIA_URL = "https://julialang.org/downloads/"
 
         local index = pipe("curl -sSL %(JULIA_URL)")
@@ -1038,6 +1046,7 @@ function julia_configuration()
         sh "rm -rf ~/.local/opt/%(JULIA_NAME)"
         sh "tar xzf ~/.local/opt/%(basename(JULIA_ARCHIVE)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(JULIA_NAME)/bin/julia ~/.local/bin/julia"
+        --]=]
     end
 
 end
@@ -1065,8 +1074,9 @@ end
 
 function zig_configuration()
 
-    --package "zig"
+    packages "zig"
 
+    --[=[
     if force or not installed "zig" then
 
         title "Zig configuration"
@@ -1088,6 +1098,7 @@ function zig_configuration()
         sh "tar xJf ~/.local/opt/%(basename(ZIG_ARCHIVE)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
     end
+    --]=]
 
 end
 
@@ -1100,10 +1111,14 @@ function cling_configuration()
     if force or not installed "cling" then
         title "Cling configuration"
 
+        packages "cling"
+
+        --[=[
         sh "wget %(CLING_URL) -c -O ~/.local/opt/%(basename(CLING_URL))"
         sh "rm -rf ~/.local/opt/%(CLING_DIR)"
         sh "tar xjf ~/.local/opt/%(basename(CLING_URL)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(CLING_DIR)/bin/cling ~/.local/bin/cling"
+        --]=]
     end
 
 end
@@ -1592,8 +1607,8 @@ function zoom_configuration()
         with_tmpdir(function(tmp)
             sh("wget https://zoom.us/client/latest/zoom_x86_64.rpm -O "..tmp.."/zoom_x86_64.rpm")
             sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
-            mime_default "Zoom.desktop"
         end)
+        mime_default "Zoom.desktop"
     end
 
 end
