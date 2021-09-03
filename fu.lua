@@ -679,8 +679,11 @@ function nextcloud_configuration()
         new_version = pipe("curl -s https://github.com/nextcloud/desktop/releases/latest/"):match("tag/v([%d%.]+)")
         if new_version ~= version then
             if version then sh("%(HOME)/.local/bin/Nextcloud -q") end
-            sh("wget https://github.com/nextcloud/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage -O %(HOME)/.local/bin/Nextcloud")
-            sh("chmod +x %(HOME)/.local/bin/Nextcloud")
+            with_tmpdir(function(tmp)
+                sh("wget https://github.com/nextcloud/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage -O "..tmp.."/Nextcloud")
+                sh("mv -f "..tmp.."/Nextcloud %(HOME)/.local/bin/Nextcloud")
+                sh("chmod +x %(HOME)/.local/bin/Nextcloud")
+            end)
         end
     end
 
