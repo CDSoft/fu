@@ -187,6 +187,7 @@ bindsym $mod+egrave     workspace number $ws7
 bindsym $mod+underscore workspace number $ws8
 bindsym $mod+ccedilla   workspace number $ws9
 bindsym $mod+agrave     workspace number $ws10
+%(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?") and [[
 bindsym $mod+F1         workspace number $ws1
 bindsym $mod+F2         workspace number $ws2
 bindsym $mod+F3         workspace number $ws3
@@ -199,6 +200,7 @@ bindsym $mod+F9         workspace number $ws9
 bindsym $mod+F10        workspace number $ws10
 bindsym $mod+F11        workspace number $ws11
 bindsym $mod+F12        workspace number $ws12
+]] or "")
 
 # move focused container to workspace
 bindsym $mod+Shift+ampersand    move container to workspace number $ws1
@@ -211,6 +213,7 @@ bindsym $mod+Shift+egrave       move container to workspace number $ws7
 bindsym $mod+Shift+underscore   move container to workspace number $ws8
 bindsym $mod+Shift+ccedilla     move container to workspace number $ws9
 bindsym $mod+Shift+agrave       move container to workspace number $ws10
+%(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?") and [[
 bindsym $mod+Shift+F1           move container to workspace number $ws1
 bindsym $mod+Shift+F2           move container to workspace number $ws2
 bindsym $mod+Shift+F3           move container to workspace number $ws3
@@ -223,6 +226,7 @@ bindsym $mod+Shift+F9           move container to workspace number $ws9
 bindsym $mod+Shift+F10          move container to workspace number $ws10
 bindsym $mod+Shift+F11          move container to workspace number $ws11
 bindsym $mod+Shift+F12          move container to workspace number $ws12
+]] or "")
 
 # move workspace to another monitor
 bindsym $mod+$alt+$ctrl+Left    move workspace to output left
