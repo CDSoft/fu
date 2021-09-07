@@ -15,7 +15,7 @@ general {
 #order += "ipv6"
 order += "disk /"
 order += "disk /tmp"
-order += "disk /home"
+%(tonumber(pipe 'lsblk -nl -o MOUNTPOINT | grep "^/home$" | wc -l') == 0 and "#" or "")order += "disk /home"
 #order += "run_watch DHCP"
 #order += "run_watch VPNC"
 #order += "path_exists VPN"
