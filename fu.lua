@@ -871,16 +871,6 @@ function lsp_configuration()
         mkdir "%(HOME)/.local/opt/pyright-langserver"
         sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
     end
-    if cfg_yesno("zig", "Install Zig?") then
-        if force or upgrade or not installed "zls" then
-            gitclone("https://github.com/zigtools/zls", {"--recurse-submodules"})
-            sh [[ cd %(repo_path)/zls &&
-                git fetch origin b756ed4da59cb0ec419a4010ab6f870c1924924f &&
-                git reset --hard FETCH_HEAD &&
-                zig build -Drelease-safe &&
-                ln -s -f $PWD/zig-out/bin/zls ~/.local/bin/ ]]
-        end
-    end
     if force or upgrade or not installed "lua-language-server" then
         gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
         sh [[ cd %(repo_path)/lua-language-server &&
@@ -1102,6 +1092,15 @@ function zig_configuration()
         sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
     end
     --]=]
+
+    if force or upgrade or not installed "zls" then
+        title "Zig Language Server installation"
+        local version = pipe("curl -s https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
+        with_tmpdir(function(tmp)
+            sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/x86_64-linux.tar.xz -O "..tmp.."/x86_64-linux.tar.xz")
+            sh("tar xJf "..tmp.."/x86_64-linux.tar.xz && mv x86_64-linux/zls %(HOME)/.local/bin/zls")
+        end)
+    end
 
 end
 
