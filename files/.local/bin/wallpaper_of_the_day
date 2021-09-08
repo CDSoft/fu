@@ -21,7 +21,7 @@ end
 
 local index = pipe("curl", "-sSL", INDEX)
 local url = first_image(index)
-local image = CACHE.."/"..basename(url)
+local image = CACHE.."/"..(url and basename(url) or pipe("ls -t "..CACHE.." | head -1"))
 
 os.execute(("mkdir -p %s"):format(CACHE))
 os.execute(("wget %s -c -O %s"):format(url, image))
