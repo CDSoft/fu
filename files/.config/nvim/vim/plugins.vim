@@ -9,7 +9,9 @@ Plug 'https://github.com/JuliaEditorSupport/julia-vim.git'
 Plug 'https://github.com/godlygeek/tabular.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc-syntax.git'
-Plug 'https://github.com/junegunn/fzf.vim.git'
+Plug 'nvim-lua/plenary.nvim'
+%( cfg_yesno("nvim-telescope", "Use Telescope with Neovim?") and "Plug 'nvim-telescope/telescope.nvim'" or "")
+%( cfg_yesno("nvim-fzf", "Use FZF with Neovim?") and "Plug 'https://github.com/junegunn/fzf.vim.git'" or "" )
 Plug 'https://github.com/NLKNguyen/papercolor-theme.git'
 Plug 'https://github.com/luochen1990/rainbow.git'
 "Plug 'https://github.com/jiangmiao/auto-pairs.git'

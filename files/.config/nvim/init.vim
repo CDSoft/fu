@@ -6,7 +6,8 @@ runtime vim/config.vim
 
 runtime vim/netrw.vim
 runtime vim/tags.vim
-runtime vim/fzf.vim
+%( cfg_yesno("nvim-fzf", "Use FZF with Neovim?") and "runtime vim/fzf.vim" or "" )
+%( cfg_yesno("nvim-telescope", "Use Telescope with Neovim?") and "runtime vim/telescope.vim" or "" )
 runtime vim/make.vim
 runtime vim/grep.vim
 runtime vim/html-export.vim
