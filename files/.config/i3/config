@@ -91,6 +91,7 @@ default_border pixel 4
 default_floating_border pixel 4
 bindsym $mod+b          border pixel 4
 bindsym $mod+Shift+b    border pixel 2
+bindsym $mod+Ctrl+b     border toggle
 for_window [window_role="pop-up"]                               floating enable
 for_window [window_role="task_dialog"]                          floating enable
 for_window [title="^🖩 hCalc$"]                                  floating enable
