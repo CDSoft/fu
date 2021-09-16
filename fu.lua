@@ -1098,7 +1098,7 @@ function zig_configuration()
         local version = pipe("curl -s https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
         with_tmpdir(function(tmp)
             sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/x86_64-linux.tar.xz -O "..tmp.."/x86_64-linux.tar.xz")
-            sh("tar xJf "..tmp.."/x86_64-linux.tar.xz && mv x86_64-linux/zls %(HOME)/.local/bin/zls")
+            sh("cd "..tmp.."; tar xJf x86_64-linux.tar.xz && mv x86_64-linux/zls %(HOME)/.local/bin/zls")
         end)
     end
 
