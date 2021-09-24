@@ -1,6 +1,9 @@
 #!/usr/bin/env lua
 
-local INDEX = "https://bing.gifposter.com/"
+local INDEXES = {
+    "https://apod.nasa.gov/apod/astropix.html",
+    "https://bing.gifposter.com/",
+}
 local CACHE = "%(HOME)/.local/var/wallpaper_of_the_day"
 
 local function pipe(...)
@@ -12,17 +15,43 @@ local function pipe(...)
 end
 
 local function first_image(content)
-    return content:match("https://[^\"]-%.jpg")
+    local url = content:match("https://[^\"]-%.jpg")
+    if not url then
+        url = content:match("href=\"([^\"]-%.jpg)\"")
+    end
+    return url
 end
 
 local function basename(s)
     return (s:gsub(".*/([^/]*)$", "%1"))
 end
 
-local index = pipe("curl", "-sSL", INDEX)
-local url = first_image(index)
-local image = CACHE.."/"..(url and basename(url) or pipe("ls -t "..CACHE.." | head -1"))
+local function dirname(s)
+    return (s:gsub("/([^/]*)$", ""))
+end
+
+local function add_base(base, url)
+    if url and not url:match "^http" then
+        url = dirname(base).."/"..url
+    end
+    return url
+end
 
 os.execute(("mkdir -p %s"):format(CACHE))
-os.execute(("wget %s -c -O %s"):format(url, image))
-os.execute(("feh --bg-fill %s"):format(image))
+
+local images = {}
+for _, INDEX in ipairs(INDEXES) do
+    local index = pipe("curl", "-sSL", INDEX)
+    local url = first_image(index)
+    url = add_base(INDEX, url)
+    if url then
+        local image = CACHE.."/"..(url and basename(url) or pipe("ls -t "..CACHE.." | head -1"))
+        os.execute(("wget %s -c -O %s"):format(url, image))
+        table.insert(images, image)
+    end
+end
+
+local image = images[1]
+if image then
+    os.execute(("feh --bg-fill %s"):format(image))
+end
