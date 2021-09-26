@@ -1,10 +1,24 @@
 #!/usr/bin/env lua
 
 local INDEXES = {
-    "https://apod.nasa.gov/apod/astropix.html",
-    "https://bing.gifposter.com/",
+    {url="https://apod.nasa.gov/apod/astropix.html", pattern="href=\"([^\"]-%.jpg)\""},
+    {url="https://bing.gifposter.com/",              pattern="https://[^\"]-%.jpg"},
 }
 local CACHE = "%(HOME)/.local/var/wallpaper_of_the_day"
+local COUNTER = CACHE.."/.counter"
+
+local function counter()
+    local f = io.open(COUNTER, "r")
+    local n = 0
+    if f then
+        n = tonumber(f:read("a") or 0)
+        f:close()
+    end
+    f = io.open(COUNTER, "w")
+    f:write(tostring(n+1))
+    f:close()
+    return n
+end
 
 local function pipe(...)
     local cmd = table.concat({...}, " ")
@@ -14,11 +28,8 @@ local function pipe(...)
     return content
 end
 
-local function first_image(content)
-    local url = content:match("https://[^\"]-%.jpg")
-    if not url then
-        url = content:match("href=\"([^\"]-%.jpg)\"")
-    end
+local function first_image(content, pattern)
+    local url = content:match(pattern)
     return url
 end
 
@@ -40,10 +51,10 @@ end
 os.execute(("mkdir -p %s"):format(CACHE))
 
 local images = {}
-for _, INDEX in ipairs(INDEXES) do
-    local index = pipe("curl", "-sSL", INDEX)
-    local url = first_image(index)
-    url = add_base(INDEX, url)
+for _, idx in ipairs(INDEXES) do
+    local index = pipe("curl", "-sSL", idx.url)
+    local url = first_image(index, idx.pattern)
+    url = add_base(idx.url, url)
     if url then
         local image = CACHE.."/"..(url and basename(url) or pipe("ls -t "..CACHE.." | head -1"))
         os.execute(("wget %s -c -O %s"):format(url, image))
@@ -51,7 +62,7 @@ for _, INDEX in ipairs(INDEXES) do
     end
 end
 
-local image = images[1]
-if image then
+if #images > 0 then
+    local image = images[(counter()%#images)+1]
     os.execute(("feh --bg-fill %s"):format(image))
 end
