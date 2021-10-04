@@ -6,4 +6,5 @@ hi Title term=bold ctermfg=Red guifg=Red gui=bold
 
 augroup pandoc_syntax
     au! BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
+    au! BufNewFile,BufFilePre,BufRead *.rst.inc set filetype=rst
 augroup END
