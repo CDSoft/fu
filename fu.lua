@@ -562,6 +562,7 @@ function shell_configuration()
         tldr
         procs
         the_silver_searcher
+        hexyl
         zoxide
     ]]
 
