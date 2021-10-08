@@ -46,6 +46,11 @@ eval "$(pandoc --bash-completion)"
 
 eval "$(zoxide init zsh)"
 
+%(cfg_yesno("rust", "Install Rust?") and [[
+# onefetch
+#
+alias onefetch='onefetch --text-colors 9 10 11 12 13 14']] or "")
+
 # Third-party configuration
 
 %(cfg_yesno("ocaml", "Install OCaml?") and '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true' or '')

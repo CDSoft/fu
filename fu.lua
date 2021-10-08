@@ -1002,6 +1002,7 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
+        "onefetch",
     }
     for _, package in ipairs(RUST_PACKAGES) do
         if force or not installed(package) then
