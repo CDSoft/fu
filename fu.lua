@@ -1004,6 +1004,7 @@ function rust_configuration()
 
     local RUST_PACKAGES = {
         "onefetch",
+        "miniserve",
     }
     for _, package in ipairs(RUST_PACKAGES) do
         if force or not installed(package) then
