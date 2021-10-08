@@ -42,6 +42,10 @@ autoload -U +X bashcompinit && bashcompinit
 %(cfg_yesno("haskell", "Install Haskell?") and 'eval "$(stack --bash-completion-script stack)"' or '')
 eval "$(pandoc --bash-completion)"
 
+# zoxide
+
+eval "$(zoxide init zsh)"
+
 # Third-party configuration
 
 %(cfg_yesno("ocaml", "Install OCaml?") and '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true' or '')
