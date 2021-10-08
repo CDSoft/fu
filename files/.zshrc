@@ -39,22 +39,22 @@ zstyle ':completion:*:*:make:*' tag-order 'targets'
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
 
-%(cfg_yesno("haskell", "Install Haskell?") and 'eval "$(stack --bash-completion-script stack)"' or '')
+%(when(cfg_yesno("haskell", "Install Haskell?")) 'eval "$(stack --bash-completion-script stack)"')
 eval "$(pandoc --bash-completion)"
 
 # zoxide
 
 eval "$(zoxide init zsh)"
 
-%(cfg_yesno("rust", "Install Rust?") and [[
+%(when(cfg_yesno("rust", "Install Rust?")) [[
 # onefetch
 #
-alias onefetch='onefetch --text-colors 9 10 11 12 13 14']] or "")
+alias onefetch='onefetch --text-colors 9 10 11 12 13 14']])
 
 # Third-party configuration
 
-%(cfg_yesno("ocaml", "Install OCaml?") and '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true' or '')
-%(cfg_yesno("rust", "Install Rust?") and '. ~/.cargo/env' or '')
+%(when(cfg_yesno("ocaml", "Install OCaml?")) '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
+%(when(cfg_yesno("rust", "Install Rust?")) '. ~/.cargo/env')
 
 # Plugins
 
@@ -100,7 +100,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 # luarocks
 eval "$(luarocks path --bin)"
 
-%( cfg_yesno("work", "Install work configuration") and [==[
+%(when(cfg_yesno("work", "Install work configuration")) [==[
 # Work configuration
 
 #alias docker='docker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -v /dev/bus/usb:/dev/bus/usb --privileged -p host_port:container_port/tcp'
@@ -114,8 +114,7 @@ alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-r
 alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
 
 . /usr/lib64/ros/setup.zsh
-]==] or ""
-)
+]==])
 
 # cd with vifm
 

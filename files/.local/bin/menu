@@ -11,13 +11,13 @@ reboot              : reboot the computer
 exit                : exit i3
 lock                : lock screen
 
-%( cfg_yesno("external-monitor", "Add shortcuts for external monitor?") and [=[
+%(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
 single              : internal monitor only
 right               : external monitor on the right
 left                : external monitor on the left
 above               : external monitor on the top
 clone               : clone the internal monitor to the external one
-]=] or "" )
+]=])
 
 mute                : mute the main audio output
 unmute              : unmute the main audio output
@@ -80,7 +80,7 @@ idle()
 EXT_RES=1920x1200
 
 case "$1" in
-%( cfg_yesno("external-monitor", "Add shortcuts for external monitor?") and [=[
+    %(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
     (single*)       move_to_int; xrandr --output HDMI-1 --off
                     i3-msg reload
                     ;;
@@ -99,7 +99,7 @@ case "$1" in
                     i3-msg move workspace to output up
                     i3-msg reload
                     ;;
-]=] or "" )
+]=])
 
     (mute*)         pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;
     (unmute*)       pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` false ;;

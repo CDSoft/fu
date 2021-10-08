@@ -58,9 +58,9 @@ bindsym $mod+o          scratchpad show
 #
 bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
-%( cfg_yesno("work", "Install work configuration?") and [=[
+%(when(cfg_yesno("work", "Install work configuration?")) [=[
 bindsym $mod+Shift+w            exec menu-work
-]=] or "")
+]=])
 
 #bindsym $mod+d                  exec alacritty -e vi -c VimwikiIndex
 bindsym $mod+t                  exec alacritty -e vi ~/todo.txt
@@ -77,11 +77,11 @@ bindsym $win+Ctrl+i             exec ristretto "`xcwd`" &
 bindsym $win+Ctrl+m             exec vlc "`xcwd`" &
 
 bindsym $mod+x                  exec menu
-%( cfg_yesno("external-monitor", "Add shortcuts for external monitor?") and [=[
+%(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
 bindsym $mod+$alt+Ctrl+i        exec menu single # single internal monitor
 bindsym $mod+$alt+Ctrl+e        exec menu dual # dual external + internal monitor
 bindsym $mod+$alt+Ctrl+c        exec menu clone # dual internal monitor cloned to the external one
-]=] or "")
+]=])
 
 bindsym $mod+l                  exec lock
 
@@ -188,7 +188,7 @@ bindsym $mod+egrave     workspace number $ws7
 bindsym $mod+underscore workspace number $ws8
 bindsym $mod+ccedilla   workspace number $ws9
 bindsym $mod+agrave     workspace number $ws10
-%(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?") and [[
+%(when(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?")) [[
 bindsym $mod+F1         workspace number $ws1
 bindsym $mod+F2         workspace number $ws2
 bindsym $mod+F3         workspace number $ws3
@@ -201,7 +201,7 @@ bindsym $mod+F9         workspace number $ws9
 bindsym $mod+F10        workspace number $ws10
 bindsym $mod+F11        workspace number $ws11
 bindsym $mod+F12        workspace number $ws12
-]] or "")
+]])
 
 # move focused container to workspace
 bindsym $mod+Shift+ampersand    move container to workspace number $ws1
@@ -214,7 +214,7 @@ bindsym $mod+Shift+egrave       move container to workspace number $ws7
 bindsym $mod+Shift+underscore   move container to workspace number $ws8
 bindsym $mod+Shift+ccedilla     move container to workspace number $ws9
 bindsym $mod+Shift+agrave       move container to workspace number $ws10
-%(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?") and [[
+%(when(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?")) [[
 bindsym $mod+Shift+F1           move container to workspace number $ws1
 bindsym $mod+Shift+F2           move container to workspace number $ws2
 bindsym $mod+Shift+F3           move container to workspace number $ws3
@@ -227,7 +227,7 @@ bindsym $mod+Shift+F9           move container to workspace number $ws9
 bindsym $mod+Shift+F10          move container to workspace number $ws10
 bindsym $mod+Shift+F11          move container to workspace number $ws11
 bindsym $mod+Shift+F12          move container to workspace number $ws12
-]] or "")
+]])
 
 # move workspace to another monitor
 bindsym $mod+$alt+$ctrl+Left    move workspace to output left
@@ -328,15 +328,15 @@ exec --no-startup-id st -T ssh-agent -e ~/.local/bin/ssha &
 # Time tracker
 exec --no-startup-id tt -d
 
-%( cfg_yesno("startvlc", "Autostart VLC in the systray?") and [=[
+%(when(cfg_yesno("startvlc", "Autostart VLC in the systray?")) [=[
 # VLC minimized
 exec --no-startup-id vlc --qt-start-minimized &
-]=] or "" )
+]=])
 
 # run specific scripts at i3 startup
 
-%(cfg_yesno("dropbox", "Install Dropbox?") and "exec --no-startup-id ~/.dropbox-dist/dropboxd &" or "")
-%(cfg_yesno("nextcloud", "Install Nextcloud?") and "exec --no-startup-id Nextcloud" or "")
-%(cfg_yesno("radicale", "Install Radicale?") and "exec --no-startup-id radicale & sleep 10s; every 15m radicale_backup &" or "")
+%(when(cfg_yesno("dropbox", "Install Dropbox?")) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
+%(when(cfg_yesno("nextcloud", "Install Nextcloud?")) "exec --no-startup-id Nextcloud")
+%(when(cfg_yesno("radicale", "Install Radicale?")) "exec --no-startup-id radicale & sleep 10s; every 15m radicale_backup &")
 
 %(file_exist "%(HOME)/.config/i3/custom-config" and read "%(HOME)/.config/i3/custom-config" or "")

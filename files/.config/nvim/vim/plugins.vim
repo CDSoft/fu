@@ -10,8 +10,8 @@ Plug 'https://github.com/godlygeek/tabular.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc-syntax.git'
 Plug 'nvim-lua/plenary.nvim'
-%( cfg_yesno("nvim-telescope", "Use Telescope with Neovim?") and "Plug 'nvim-telescope/telescope.nvim'" or "")
-%( cfg_yesno("nvim-fzf", "Use FZF with Neovim?") and "Plug 'https://github.com/junegunn/fzf.vim.git'" or "" )
+%(when(cfg_yesno("nvim-telescope", "Use Telescope with Neovim?")) "Plug 'nvim-telescope/telescope.nvim'")
+%(when(cfg_yesno("nvim-fzf", "Use FZF with Neovim?")) "Plug 'https://github.com/junegunn/fzf.vim.git'")
 Plug 'https://github.com/NLKNguyen/papercolor-theme.git'
 Plug 'https://github.com/luochen1990/rainbow.git'
 "Plug 'https://github.com/jiangmiao/auto-pairs.git'
@@ -42,6 +42,6 @@ Plug 'ollykel/v-vim'
 " - https://chrome.google.com/webstore/detail/firenvim/egpjdkipkomnmjhjmdamaniclmdlobbo
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
-%( cfg_yesno("work", "Install work configuration?") and "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'" or "" )
+%(when(cfg_yesno("work", "Install work configuration?")) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
 
 call plug#end()

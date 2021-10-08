@@ -194,6 +194,10 @@ function cfg_string(param, question)
     return answer
 end
 
+function when(cond)
+    return function(s) return cond and s or "" end
+end
+
 -- }}}
 
 -- Utilities {{{
