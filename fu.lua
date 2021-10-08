@@ -1436,6 +1436,7 @@ function i3_configuration()
     mime_default "ristretto.desktop" -- shall be configured after xreader to overload xreader associations
     mime_default "vlc.desktop"
     mime_default "wireshark.desktop"
+    mime_default "nvim.desktop"
 
     script ".config/alacritty/alacritty.yml"
 
