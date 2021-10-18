@@ -2,6 +2,8 @@
 
 let g:pandoc#syntax#conceal#use=0
 
+let g:pandoc#syntax#codeblocks#embeds#langs = ["c", "lua", "python", "haskell", "literatehaskell=lhaskell", "bash=sh", "dot"]
+
 hi Title term=bold ctermfg=Red guifg=Red gui=bold
 
 augroup pandoc_syntax
