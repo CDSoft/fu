@@ -790,6 +790,7 @@ function dev_configuration()
         libicu-devel ncurses-devel zlib-devel
         libstdc++-static
         gc-devel
+        frama-c ocaml-seq-devel
     ]]
 
     --[[
@@ -935,6 +936,7 @@ end
 
 function ocaml_configuration()
 
+    --[=[
     packages [[
         opam
         z3
@@ -944,7 +946,11 @@ function ocaml_configuration()
         why3
         alt-ergo
     ]]
-
+    --]=]
+    packages [[
+        frama-c ocaml-seq-devel
+    ]]
+--[[
     if force or not installed "opam" then
         title "OCaml configuration"
         --sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
@@ -954,6 +960,7 @@ function ocaml_configuration()
         --sh "opam depext frama-c || true"
         --sh "opam install frama-c coq why3 alt-ergo || true"
     end
+--]]
 
 end
 
@@ -1842,7 +1849,7 @@ function work_configuration()
 
     -- Frama-C
     if force or upgrade then
-        sh "why3 config --detect || true"
+        sh "why3 config detect"
         --sh "pip2 install --user json-query"
     end
 

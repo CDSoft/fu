@@ -53,7 +53,7 @@ alias onefetch='onefetch --text-colors 9 10 11 12 13 14']])
 
 # Third-party configuration
 
-%(when(cfg_yesno("ocaml", "Install OCaml?")) '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
+#%(when(cfg_yesno("ocaml", "Install OCaml?")) '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
 %(when(cfg_yesno("rust", "Install Rust?")) '. ~/.cargo/env')
 
 # Plugins
