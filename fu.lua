@@ -936,7 +936,6 @@ end
 
 function ocaml_configuration()
 
-    --[=[
     packages [[
         opam
         z3
@@ -945,12 +944,8 @@ function ocaml_configuration()
         coq
         why3
         alt-ergo
-    ]]
-    --]=]
-    packages [[
         frama-c ocaml-seq-devel
     ]]
---[[
     if force or not installed "opam" then
         title "OCaml configuration"
         --sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
@@ -960,7 +955,6 @@ function ocaml_configuration()
         --sh "opam depext frama-c || true"
         --sh "opam install frama-c coq why3 alt-ergo || true"
     end
---]]
 
 end
 
@@ -1879,11 +1873,13 @@ function work_configuration()
         end
     end
 
+    --[[
     if installed "opam" then
         if force or upgrade or not installed "google-drive-ocamlfuse" then
             sh "opam install google-drive-ocamlfuse || true"
         end
     end
+    --]]
 
     sh [[ pip3 install '--user'             \
                 awscli                      \
