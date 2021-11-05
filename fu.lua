@@ -73,7 +73,7 @@ function configuration()
                cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
                BROWSER
 
-    LATEST_LTS = "lts-17.12"
+    LATEST_LTS = "lts-18.15"
 
     CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
     CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
