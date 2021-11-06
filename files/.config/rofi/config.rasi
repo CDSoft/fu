@@ -141,17 +141,22 @@ element selected.normal {
 }
 element normal active {
     text-color: @light%(I3_THEME);
+    background-color: @dark;
 }
 element normal urgent {
     text-color: @lightred;
+    background-color: @dark;
 }
 element alternate normal {
+    background-color: @dark;
 }
 element alternate active {
     text-color: @light%(I3_THEME);
+    background-color: @dark;
 }
 element alternate urgent {
     text-color: @lightred;
+    background-color: @dark;
 }
 element selected active {
     //background-color: @dark%(I3_THEME);
@@ -163,7 +168,7 @@ element selected urgent {
     text-color: @dark;
 }
 element normal normal {
-
+    background-color: @dark;
 }
 
 vertb {
