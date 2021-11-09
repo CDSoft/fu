@@ -110,7 +110,7 @@ bindsym $mod+q          kill
 bindsym $alt+F4         kill
 
 # start rofi (a windows switcher / program launcher)
-bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "➜" -show-icons
+bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "run" -show-icons
 
 # change focus
 #bindsym $mod+j focus left

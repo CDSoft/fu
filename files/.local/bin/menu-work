@@ -2,7 +2,7 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -l 30 -p "work ➜"
+    local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -l 30 -p "work"
 %(("%-24s"):format(basename(BROWSER))): Web browser with the work profile
 %(("%-24s"):format(basename(BROWSER2))): Alternate web browser
 %(("%-24s"):format("meet on "..basename(BROWSER))): Google Meet
