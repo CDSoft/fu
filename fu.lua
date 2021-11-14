@@ -532,6 +532,7 @@ function system_configuration()
     packages [[
         dnf-plugins-core dnfdragora
         fedora-workstation-repositories
+		git
     ]]
 
     -- Locale and timezone
@@ -627,6 +628,7 @@ function network_configuration()
         telnet
         curl
         wget
+		python3-pip
     ]]
 
     -- hostname
