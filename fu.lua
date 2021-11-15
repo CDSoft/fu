@@ -1676,12 +1676,8 @@ end
 
 -- Work configuration {{{
 
--- https://copr.fedorainfracloud.org/coprs/thofmann/ros/
-
 function work_configuration()
     title "Work configuration"
-
-    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo", "thofmann/ros")
 
     packages [[
         moby-engine grubby
@@ -1906,6 +1902,27 @@ function work_configuration()
                     sphinx-multibuild           \
                     sphinx_rtd_theme            \
         ]]
+    end
+
+    -- ROS: http://wiki.ros.org/Installation/Source
+    if cfg_yesno("ros", "Install ROS?") then
+        packages [[
+            gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
+            python3-sip-devel qt-devel python3-qt5-devel
+        ]]
+        if not dir_exist "%(HOME)/ros_catkin_ws" then
+            sh "sudo rosdep init"
+            sh "rosdep update"
+            sh [[
+                mkdir -p %(HOME)/ros_catkin_ws;
+                cd %(HOME)/ros_catkin_ws;
+                rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.ros;
+                mkdir -p src;
+                vcs import --input noetic-desktop.ros ./src;
+                rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y;
+                ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release;
+            ]]
+        end
     end
 
 end
