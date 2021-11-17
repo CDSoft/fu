@@ -1,4 +1,4 @@
-export PATH=~/.local/bin:/var/lib/snapd/snap/bin:$PATH
+export PATH=~/.local/bin:$PATH
 
 export EDITOR=nvim
 export VISUAL=nvim

@@ -34,8 +34,17 @@ then
     exec "$@"
 fi
 
-hash lua 2>/dev/null || sudo dnf install lua
+[ -x ~/.local/bin/lua ] || (
+    LUA_VERSION=5.4.3
+    mkdir -p ~/.config/fu/repos
+    cd ~/.config/fu/repos
+    curl -R -O http://www.lua.org/ftp/lua-$LUA_VERSION.tar.gz
+    rm -rf lua-$LUA_VERSION
+    tar zxf lua-$LUA_VERSION.tar.gz
+    cd lua-$LUA_VERSION
+    sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=~/.local#' Makefile
+    make all test install
+)
 
-mkdir -p a ~/.local/bin
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
-~/.local/bin/fu -u
+~/.local/bin/lua ~/.local/bin/fu

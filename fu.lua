@@ -4,7 +4,7 @@
 --[[====================================================================
 Fedora Updater (fu): lightweight Fedora « distribution »
 
-Copyright (C) 2018-2020 Christophe Delord
+Copyright (C) 2018-2021 Christophe Delord
 https://github.com/CDSoft/fu
 
 This file is part of Fedora Updater (FU)
@@ -50,6 +50,9 @@ end
 
 function configuration()
 
+    FEDORA = installed "dnf"
+    UBUNTU = installed "apt"
+
     HOME = os.getenv "HOME"
     USER = os.getenv "USER"
 
@@ -63,17 +66,16 @@ function configuration()
     LOCALE = "fr_FR.UTF-8"
 
     I3_THEME = "green"      -- "blue" (default), "green"
-    FONT = "Source Code Pro"
+    FONT = "Fira Code"
     FONT_VARIANT = "Medium"
-    FONT_SIZE = 10
+    FONT_SIZE = 9
 
     BROWSER = "firefox"
     BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
-               cfg_yesno("edge-as-alternative-browser", "Use Microsoft Edge as alternative browser?") and "microsoft-edge" or
-               cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
+               FEDORA and cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
                BROWSER
 
-    LATEST_LTS = "lts-18.16"
+    LATEST_LTS = "lts-18.17"
 
     CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
     CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
@@ -81,15 +83,11 @@ function configuration()
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
-    --EATON_IPP_VERSION = "1.67.162-1"
-    --EATON_IPP_URL = I"https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/software/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
-    EATON_IPP_VERSION = "1.66.161-1"
-    EATON_IPP_URL = I"http://pqsoftware.eaton.com/install/linux/ipp/ipp-linux-%(EATON_IPP_VERSION).x86_64.rpm"
-
 end
 
 function main()
-    title "Fedora Updater"
+    if FEDORA then title "Fedora Updater" end
+    if UBUNTU then title "Ubuntu Updater" end
 
     configuration()
 
@@ -128,11 +126,8 @@ function main()
     text_edition_configuration()
     pandoc_configuration()
     if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
-    if cfg_yesno("mdbook", "Install MDBook?") then mdbook_configuration() end
-    if cfg_yesno("sphinx", "Install Sphinx?") then sphinx_configuration() end
     neovim_configuration()
     i3_configuration()
-    if cfg_yesno("st", "Install Suckless Terminal?") then st_configuration() end
     graphic_application_configuration()
     if cfg_yesno("povray", "Install Povray?") then povray_configuration() end
     internet_configuration()
@@ -140,8 +135,6 @@ function main()
     if cfg_yesno("teams", "Install Teams?") then teams_configuration() end
     if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
     if cfg_yesno("work", "Install work configuration?") then work_configuration() end
-    if cfg_yesno("eaton", "Install Eaton Intelligent Power Protector?") then eaton_configuration() end
-    if cfg_yesno("radicale", "Install Radicale?") then radicale_configuration() end
 
     upgrade_packages()
 
@@ -354,13 +347,19 @@ function rm(path) os.remove(I(path)) end
 
 function identification()
     MYHOSTNAME = cfg_string("hostname", "Hostname:")
-    RELEASE = pipe "rpm -E %fedora"
-    log "release : Fedora %(RELEASE)"
+    if FEDORA then
+        RELEASE = pipe "rpm -E %fedora"
+        log "release : Fedora %(RELEASE)"
+    end
+    if UBUNTU then
+        RELEASE = pipe [[ awk -F "=" '$1=="DISTRIB_DESCRIPTION" {print $2}' /etc/lsb-release ]]
+        log "release : %(RELEASE)"
+    end
     log "hostname: %(MYHOSTNAME)"
 end
 
 function repo(local_name, name)
-    if not file_exist(I(local_name)) then
+    if FEDORA and not file_exist(I(local_name)) then
         name = I(name)
         log("Install repo "..name)
         sh("sudo dnf install -y \""..name.."\"")
@@ -368,14 +367,38 @@ function repo(local_name, name)
 end
 
 function copr(local_name, name)
-    if not file_exist(local_name) then
+    if FEDORA and not file_exist(local_name) then
         name = I(name)
         log("Install copr "..name)
         sh("sudo dnf copr enable \""..name.."\"")
     end
 end
 
-function packages(names)
+function ppa(local_name, name)
+    if UBUNTU and not file_exist(local_name) then
+        name = I(name)
+        log("Install ppa "..name)
+        sh("sudo add-apt-repository "..name)
+        sh("sudo apt update")
+    end
+end
+
+function deblist(local_name, name)
+    if UBUNTU and not file_exist(local_name) then
+        name = I(name)
+        log("Install deb.list "..name)
+        with_tmpfile(function(tmp)
+            write(tmp, name)
+            sh("sudo cp "..tmp.." "..local_name)
+            sh("sudo chmod 644 "..local_name)
+        end)
+        sh "wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -"
+        sh "sudo apt-get update"
+    end
+end
+
+function dnf_install(names)
+    if not FEDORA then return end
     names = I(names)
     local all = set(names)
     local new_packages = set(names)
@@ -393,6 +416,29 @@ function packages(names)
         names = new_packages.concat " "
         log("Install packages: "..names)
         sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
+        write("%(config_path)/packages", all.concat("\n").."\n")
+    end
+end
+
+function apt_install(names)
+    if not UBUNTU then return end
+    names = I(names)
+    local all = set(names)
+    local new_packages = set(names)
+    local already_installed = set()
+    if file_exist "%(config_path)/packages" then
+        local old_names = read "%(config_path)/packages"
+        already_installed.add(old_names)
+        all.add(old_names)
+    end
+    local new = false
+    for _, name in new_packages.ipairs() do
+        new = new or not already_installed.has(name)
+    end
+    if new then
+        names = new_packages.concat " "
+        log("Install packages: "..names)
+        sh("sudo apt install "..names)
         write("%(config_path)/packages", all.concat("\n").."\n")
     end
 end
@@ -424,8 +470,13 @@ end
 function upgrade_packages()
     if force or upgrade then
         title "Upgrade packages"
-        sh "sudo dnf update --refresh"
-        sh "sudo dnf upgrade --best --allowerasing"
+        if FEDORA then
+            sh "sudo dnf update --refresh"
+            sh "sudo dnf upgrade --best --allowerasing"
+        end
+        if UBUNTU then
+            sh "sudo apt update && sudo apt upgrade"
+        end
     end
 end
 
@@ -529,15 +580,19 @@ function system_configuration()
     repo("/etc/yum.repos.d/rpmfusion-free.repo", "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm")
     repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", "http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
 
-    packages [[
+    dnf_install [[
         dnf-plugins-core dnfdragora
         fedora-workstation-repositories
-		git
+        git
+    ]]
+
+    apt_install [[
+        git
     ]]
 
     -- Locale and timezone
     sh "sudo timedatectl set-timezone %(TIMEZONE)"
-    sh "sudo localectl set-keymap %(KEYMAP)"
+    if FEDORA then sh "sudo localectl set-keymap %(KEYMAP)" end -- TODO : à corriger pour UBUNTU
     sh "sudo localectl set-locale %(LOCALE)"
 
     -- No more poweroff
@@ -551,7 +606,7 @@ end
 function shell_configuration()
     title "Shell configuration"
 
-    packages [[
+    dnf_install [[
         zsh
         powerline-fonts
         grc bat fzf
@@ -565,8 +620,23 @@ function shell_configuration()
         fd-find
         tmux
         tldr
-        procs
         the_silver_searcher
+        hexyl
+        zoxide
+    ]]
+
+    apt_install [[
+        zsh
+        fonts-powerline
+        grc bat fzf
+        inotify-tools
+        htop
+        pwgen
+        ripgrep
+        exa
+        fd-find
+        tmux
+        tldr
         hexyl
         zoxide
     ]]
@@ -585,6 +655,8 @@ function shell_configuration()
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
         if cfg_yesno("rust", "Install Rust?") then
+            dnf_install "openssl-devel"
+            apt_install "libssl-dev"
             gitclone "https://github.com/starship/starship.git"
             sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
         else
@@ -603,6 +675,10 @@ function shell_configuration()
 
     script "fzfmenu"
 
+    if file_exist "/usr/bin/batcat" then
+        sh "ln -s -f /usr/bin/batcat ~/.local/bin/bat"
+    end
+
 end
 
 -- }}}
@@ -612,7 +688,7 @@ end
 function network_configuration()
     title "Network configuration"
 
-    packages [[
+    dnf_install [[
         nmon
         openssh openssh-server
         nmap
@@ -623,12 +699,27 @@ function network_configuration()
         minicom
         wireshark
         tigervnc
-        can-utils
         openvpn
         telnet
         curl
         wget
-		python3-pip
+        python3-pip
+    ]]
+
+    apt_install [[
+        nmon
+        openssh-client openssh-server
+        nmap
+        blueman
+        socat
+        sshpass
+        minicom
+        wireshark
+        openvpn
+        telnet
+        curl
+        wget
+        python3-pip
     ]]
 
     -- hostname
@@ -636,22 +727,27 @@ function network_configuration()
     rootfile("/etc/hostname", "%(MYHOSTNAME)\n")
 
     -- ssh
-    sh "sudo systemctl start sshd"
-    sh "sudo systemctl enable sshd"
-    sh "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
+    if FEDORA then
+        sh "sudo systemctl start sshd"
+        sh "sudo systemctl enable sshd"
+    end
+    if UBUNTU then
+        sh "sudo systemctl start ssh"
+        sh "sudo systemctl enable ssh"
+    end
+    if FEDORA then
+        sh "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
+    end
     script "ssha"
 
     -- sshd
-    sh "sudo chkconfig sshd on"
-    sh "sudo service sshd start"
+    if FEDORA then
+        sh "sudo chkconfig sshd on"
+        sh "sudo service sshd start"
+    end
 
     -- wireshark
     sh "sudo usermod -a -G wireshark %(USER)"
-
-    -- Google Drive
-    if force or upgrade then
-        sh "pip install --user --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
-    end
 
 end
 
@@ -661,7 +757,8 @@ end
 
 function dropbox_configuration()
 
-    packages [[ PyQt4 libatomic ]]
+    dnf_install [[ PyQt4 libatomic ]]
+    apt_install [[ python3-qtpy libatomic1 ]]
 
     if force or not file_exist "%(HOME)/.dropbox-dist/dropboxd" then
         title "Dropbox configuration"
@@ -706,7 +803,7 @@ function filesystem_configuration()
 
     copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:fcsm:cryfs.repo", "fcsm/cryfs")
 
-    packages [[
+    dnf_install [[
         gparted
         udftools
         encfs
@@ -726,6 +823,26 @@ function filesystem_configuration()
         archivemount fuseiso sshfs curlftpfs fuse-7z
     ]]
 
+    apt_install [[
+        gparted
+        udftools
+        encfs
+        cryfs
+        p7zip-full p7zip-rar
+        mc pcmanfm thunar
+        vifm
+        pmount
+        exfat-utils exfat-fuse
+        syslinux
+        backintime-common backintime-qt
+        timeshift
+        cryptsetup
+        squashfs-tools squashfuse
+        baobab ncdu
+        xz-utils unrar
+        archivemount fuseiso sshfs curlftpfs
+    ]]
+
     gitclone "https://github.com/vifm/vifm-colors"
     script ".config/vifm/vifmrc"
     mkdir "%(HOME)/.config/vifm/colors"
@@ -740,11 +857,13 @@ end
 function dev_configuration()
     title "Development environment configuration"
 
-    if cfg_yesno("R", "Install R?") then packages [[ R ]] end
+    if cfg_yesno("R", "Install R?") then
+        dnf_install [[ R ]]
+        apt_install [[ r-base r-base-dev ]]
+    end
 
-    packages [[
+    dnf_install [[
         git git-gui gitk qgit gitg tig git-lfs
-        git-delta
         subversion
         clang llvm clang-tools-extra
         ccls
@@ -795,7 +914,84 @@ function dev_configuration()
         frama-c ocaml-seq-devel
     ]]
 
-    --[[
+    apt_install [[
+        git git-gui gitk qgit gitg tig git-lfs
+        subversion
+        clang llvm clang-tidy clang-format
+        ccls
+        cppcheck
+        cmake
+        ncurses-dev
+        libreadline-dev
+        meld
+        swi-prolog-full
+        libev-dev libstartup-notification0-dev libxcb-util-dev libxcb-cursor-dev libxcb-keysyms1-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-render-util0-dev libxcb-util0-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libyajl-dev
+        gcc-arm-none-eabi gdb-arm-none-eabi
+        gcc-mingw-w64
+        gnat
+        python3-pip
+        pypy
+        luarocks
+        libglfw3
+        flex bison
+        libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-image-dev
+        libpcap-dev
+        libyaml-0-2 libyaml-dev
+        libubsan1 libasan6 libtsan0
+        expect
+        python3-dev
+        python3-yaml python3-termcolor
+        pkg-config
+        libboost-all-dev
+        libjpeg-turbo8-dev libpng-dev libtiff-dev
+        npm
+        liblzma-dev
+        libprotobuf-dev python3-protobuf
+        lzma-dev
+        libopenblas-dev liblapack-dev
+        gnuplot
+        libssl-dev
+        golang
+        libx11-dev
+        libxft-dev
+        octave
+        libcurl4-openssl-dev
+        libicu-dev ncurses-dev
+        libgc-dev
+    ]]
+    if force or update or not installed "tokei" then
+        if cfg_yesno("rust", "Install Rust?") then
+            sh "cargo install tokei"
+        end
+    end
+
+    if force or upgrade or not installed "delta" then
+        local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
+        with_tmpdir(function(tmp)
+            if FEDORA then
+                dnf_install "git_delta"
+            end
+            if UBUNTU then
+                sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
+                sh("sudo dpkg -i "..tmp.."/delta.deb")
+            end
+        end)
+    end
+
+    if not file_exist "%(HOME)/.local/bin/lua" then
+        sh [[
+            cd %(repo_path) &&
+            curl -R -O http://www.lua.org/ftp/lua-5.4.3.tar.gz &&
+            rm -rf lua-5.4.3 &&
+            tar zxf lua-5.4.3.tar.gz &&
+            cd lua-5.4.3 &&
+            sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=%(HOME)/.local#' Makefile &&
+            make all test install
+        ]]
+    end
+
+
+    --[=[
     luarocks [[
         ansicolors
         bigint
@@ -821,12 +1017,12 @@ function dev_configuration()
         stdlib
         tcc
     ]]
-    --]]
+    --]=]
 
     script ".gitconfig"
 
     -- pip
-    if force or upgrade then sh "python -m pip install --user --upgrade pip" end
+    if force or upgrade then sh "python3 -m pip install --user --upgrade pip" end
 
     -- git
     -- https://stackoverflow.com/questions/34119866/setting-up-and-using-meld-as-your-git-difftool-and-mergetool
@@ -899,8 +1095,6 @@ end
 function haskell_configuration()
     title "Haskell configuration"
 
-    if cfg_yesno("haskell-platform", "Install haskell-platform?") then packages [[ haskell-platform ]] end
-
     if not installed "stack" then
         sh "curl -sSL https://get.haskellstack.org/ | sh"
     elseif force or upgrade then
@@ -911,12 +1105,12 @@ function haskell_configuration()
     local HASKELL_PACKAGES = {
         "hasktags",
         "hlint",
-        --"hoogle",
+        "hoogle",
         --"matplotlib",
         --"gnuplot",
-        "parallel",
-        "MissingH",
-        "timeit",
+        --"parallel",
+        --"MissingH",
+        --"timeit",
     }
     if force or upgrade then
         for _, package in ipairs(HASKELL_PACKAGES) do
@@ -938,7 +1132,7 @@ end
 
 function ocaml_configuration()
 
-    packages [[
+    dnf_install [[
         opam
         z3
         cvc4
@@ -948,14 +1142,30 @@ function ocaml_configuration()
         alt-ergo
         frama-c ocaml-seq-devel
     ]]
+
+    apt_install [[
+        opam
+        z3
+        cvc4
+    ]]
+
     if force or not installed "opam" then
         title "OCaml configuration"
-        --sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
-        sh "opam init"
-        sh "opam update && opam upgrade"
-        --sh "opam install depext"
-        --sh "opam depext frama-c || true"
-        --sh "opam install frama-c coq why3 alt-ergo || true"
+        if FEDORA then
+            --sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
+            sh "opam init"
+            sh "opam update && opam upgrade"
+            --sh "opam install depext"
+            --sh "opam depext frama-c || true"
+            --sh "opam install frama-c coq why3 alt-ergo || true"
+        end
+        if UBUNTU then
+            sh "opam init"
+            sh "opam update && opam upgrade"
+            sh "opam install depext"
+            sh "opam depext frama-c"
+            sh "opam install frama-c"
+        end
     end
 
 end
@@ -1010,8 +1220,6 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
-        "onefetch",
-        "miniserve",
     }
     for _, package in ipairs(RUST_PACKAGES) do
         if force or not installed(package) then
@@ -1031,7 +1239,8 @@ function julia_configuration()
 
         title "Julia configuration"
 
-        packages [[ julia ]]
+        dnf_install [[ julia ]]
+        apt_install [[ julia ]]
 
         --[=[
         JULIA_URL = "https://julialang.org/downloads/"
@@ -1065,6 +1274,7 @@ function v_configuration()
 
         title "V configuration"
 
+        dnf_install "libatomic"
         gitclone "https://github.com/vlang/v"
         sh "cd %(repo_path)/v && make && ln -sf %(repo_path)/v/v ~/.local/bin/v"
 
@@ -1078,9 +1288,6 @@ end
 
 function zig_configuration()
 
-    packages "zig"
-
-    --[=[
     if force or not installed "zig" then
 
         title "Zig configuration"
@@ -1102,7 +1309,6 @@ function zig_configuration()
         sh "tar xJf ~/.local/opt/%(basename(ZIG_ARCHIVE)) -C ~/.local/opt"
         sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
     end
-    --]=]
 
     if force or upgrade or not installed "zls" then
         title "Zig Language Server installation"
@@ -1121,17 +1327,19 @@ end
 
 function cling_configuration()
 
-    if force or not installed "cling" then
-        title "Cling configuration"
+    if FEDORA then
+        if force or not installed "cling" then
+            title "Cling configuration"
 
-        packages "cling"
+            dnf_install "cling"
 
-        --[=[
-        sh "wget %(CLING_URL) -c -O ~/.local/opt/%(basename(CLING_URL))"
-        sh "rm -rf ~/.local/opt/%(CLING_DIR)"
-        sh "tar xjf ~/.local/opt/%(basename(CLING_URL)) -C ~/.local/opt"
-        sh "ln -f -s ~/.local/opt/%(CLING_DIR)/bin/cling ~/.local/bin/cling"
-        --]=]
+            --[=[
+            sh "wget %(CLING_URL) -c -O ~/.local/opt/%(basename(CLING_URL))"
+            sh "rm -rf ~/.local/opt/%(CLING_DIR)"
+            sh "tar xjf ~/.local/opt/%(basename(CLING_URL)) -C ~/.local/opt"
+            sh "ln -f -s ~/.local/opt/%(CLING_DIR)/bin/cling ~/.local/bin/cling"
+            --]=]
+        end
     end
 
 end
@@ -1146,7 +1354,7 @@ function swipl_configuration()
         title "SWI Prolog configuration"
 
         -- https://www.swi-prolog.org/build/unix.html
-        packages [[
+        dnf_install [[
             cmake
             ninja-build
             libunwind
@@ -1179,6 +1387,24 @@ function swipl_configuration()
             libarchive-devel
             libyaml-devel
         ]]
+        apt_install [[
+            build-essential cmake ninja-build pkg-config
+            libncurses-dev libreadline-dev libedit-dev
+            libgoogle-perftools-dev
+            libunwind-dev
+            libgmp-dev
+            libssl-dev
+            unixodbc-dev
+            zlib1g-dev libarchive-dev
+            libossp-uuid-dev
+            libxext-dev libice-dev libjpeg-dev libxinerama-dev libxft-dev
+            libxpm-dev libxt-dev
+            libdb-dev
+            libpcre3-dev
+            libyaml-dev
+            default-jdk junit4
+        ]]
+
         gitclone "https://github.com/SWI-Prolog/swipl-devel.git"
         sh "cd %(repo_path)/swipl-devel && git submodule update --init"
         mkdir "%(repo_path)/swipl-devel/build"
@@ -1194,14 +1420,23 @@ end
 function text_edition_configuration()
     title "Text edition configuration"
 
-    packages [[
+    dnf_install [[
         wkhtmltopdf
         aspell-fr aspell-en
         figlet
         translate-shell
         doxygen
         gnuplot
-        graphviz plantuml
+        graphviz
+    ]]
+    apt_install [[
+        wkhtmltopdf
+        aspell-fr aspell-en
+        figlet
+        translate-shell
+        doxygen
+        gnuplot
+        graphviz
     ]]
 
 end
@@ -1213,7 +1448,12 @@ end
 function pandoc_configuration()
     title "Pandoc configuration"
 
-    packages [[
+    dnf_install [[
+        pandoc
+        patat
+        asymptote
+    ]]
+    apt_install [[
         pandoc
         patat
         asymptote
@@ -1269,55 +1509,14 @@ end
 function latex_configuration()
     title "LaTeX configuration"
 
-    packages [[
+    dnf_install [[
         texlive texlive-scheme-full
         graphviz plantuml asymptote
     ]]
-
-end
-
--- }}}
-
--- MDBook configuration {{{
-
-function mdbook_configuration()
-    title "MDBook configuration"
-
-    local MDBOOK_PACKAGES = {
-        "mdbook",
-        "mdbook-toc",
-        "mdbook-latex",
-        "mdbook-plantuml",
-        "mdbook-mermaid",
-        "mdbook-checklist",
-        "mdbook-presentation-preprocessor",
-    }
-    for _, package in ipairs(MDBOOK_PACKAGES) do
-        if force or not installed(package) then
-            sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package)
-        end
-    end
-end
-
--- }}}
-
--- Sphinx configuration {{{
-
-function sphinx_configuration()
-
-    if force or upgrade or not installed "sphinx-build" then
-        title "Sphinx configuration"
-        sh [[ pip3 install '--user'         \
-                    sphinx==2.4.4           \
-                    sphinxcontrib-plantuml  \
-                    breathe                 \
-                    recommonmark            \
-                    sphinx-rtd-theme        \
-                    pyaml                   \
-                    scipy                   \
-                    matplotlib              \
-        ]]
-    end
+    apt_install [[
+        texlive texlive-full
+        graphviz plantuml asymptote
+    ]]
 
 end
 
@@ -1328,7 +1527,16 @@ end
 function neovim_configuration()
     title "neovim configuration"
 
-    packages [[
+    ppa("/etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-impish.list", "ppa:neovim-ppa/stable")
+
+    dnf_install [[
+        neovim
+        fzf
+        ccrypt pwgen
+        gzip
+        jq
+    ]]
+    apt_install [[
         neovim
         fzf
         ccrypt pwgen
@@ -1369,7 +1577,7 @@ function neovim_configuration()
 
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "shellcheck" then
-            sh "stack install --resolver=lts-14.27 ShellCheck"
+            sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
         end
     end
 
@@ -1382,13 +1590,13 @@ end
 function i3_configuration()
     title "i3 configuration"
 
-    packages [[
+    dnf_install [[
         rxvt-unicode
-        alacritty
         numlockx
         rlwrap
         i3 i3status i3lock dmenu xbacklight feh
         i3-ipc
+        picom
         arandr
         sox
         fortune-mod ImageMagick
@@ -1415,6 +1623,42 @@ function i3_configuration()
         xfce4-notifyd
         xfce4-volumed
     ]]
+    apt_install [[
+        rxvt-unicode
+        numlockx
+        rlwrap
+        i3 i3status i3lock suckless-tools xbacklight feh
+        picom
+        arandr
+        sox
+        fortune-mod imagemagick
+        sxiv ristretto
+        volumeicon-alsa pavucontrol
+        fonts-firacode
+        rofi
+        xbindkeys
+        lxappearance
+        qt5ct
+        xfce4-settings
+        xfce4-screenshooter
+        xfce4-notifyd
+        xfce4-volumed
+        xcwd
+    ]]
+
+    -- alacritty
+    if force or upgrade or not installed "alacritty" then
+        if cfg_yesno("rust", "Install Rust?") then
+            dnf_install [[ cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++ ]]
+            apt_install [[ cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 ]]
+            sh "cargo install alacritty"
+        elseif FEDORA then
+            dnf_install "alacritty"
+        elseif UBUNTU then
+            ppa("/etc/apt/sources.list.d/aslatter-ubuntu-ppa-impish.list", "ppa:aslatter/ppa")
+            apt_install "alacritty"
+        end
+    end
 
     -- Default programs
 
@@ -1431,12 +1675,9 @@ function i3_configuration()
     if cfg_yesno("thunderbird-mailer", "Use Thunderbird as the default mailer?") then
         mime_default "mozilla-thunderbird.desktop"
     end
-    --mime_default "org.pwmt.zathura-djvu.desktop"
-    --mime_default "org.pwmt.zathura-pdf-poppler.desktop"
-    --mime_default "org.pwmt.zathura-ps.desktop"
-    mime_default "xreader.desktop"
+    mime_default "atril.desktop"
     mime_default "thunar.desktop"
-    mime_default "ristretto.desktop" -- shall be configured after xreader to overload xreader associations
+    mime_default "ristretto.desktop" -- shall be configured after atril to overload atril associations
     mime_default "vlc.desktop"
     mime_default "wireshark.desktop"
     mime_default "nvim.desktop"
@@ -1454,13 +1695,15 @@ function i3_configuration()
 
     script "xi3"
 
-    if force or upgrade or not installed "xcwd" then
-        gitclone "https://github.com/schischi-a/xcwd.git"
-        -- patch to reject "/"
-        local xcwd = read "%(repo_path)/xcwd/xcwd.c"
-        xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', I'(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0)')
-        write("%(repo_path)/xcwd/xcwd.c", xcwd)
-        sh "cd %(repo_path)/xcwd && make && sudo make install"
+    if FEDORA then
+        if force or upgrade or not installed "xcwd" then
+            gitclone "https://github.com/schischi-a/xcwd.git"
+            -- patch to reject "/"
+            local xcwd = read "%(repo_path)/xcwd/xcwd.c"
+            xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', I'(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0)')
+            write("%(repo_path)/xcwd/xcwd.c", xcwd)
+            sh "cd %(repo_path)/xcwd && make && sudo make install"
+        end
     end
 
     pipe("base64 -d > ~/.config/i3/empty.wav", "UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=")
@@ -1498,28 +1741,12 @@ end
 
 -- }}}
 
--- Suckless simple terminal configuration {{{
-
-function st_configuration()
-    title "st configuration"
-
-    if force or upgrade or not file_exist "%(HOME)/.local/bin/st" then
-        gitclone "git://git.suckless.org/st"
-        local config = read "%(repo_path)/st/config.def.h"
-        config = config:gsub([[font = ".-";]], I[[font = "%(FONT) %(FONT_VARIANT):size=%(FONT_SIZE):antialias=true:autohint=true";]])
-        write("%(repo_path)/st/config.h", config)
-        sh "cd %(repo_path)/st && make && cp st %(HOME)/.local/bin/"
-    end
-end
-
--- }}}
-
 -- Graphic applications configuration {{{
 
 function graphic_application_configuration()
     title "Graphic applications configuration"
 
-    packages [[
+    dnf_install [[
         shutter feh gimp ImageMagick scribus inkscape
         qt5-qtx11extras
         gnuplot
@@ -1528,14 +1755,52 @@ function graphic_application_configuration()
         vokoscreenNG
         simple-scan
         evince okular mupdf qpdfview
-        zathura zathura-plugins-all
-        xreader
+        atril
 
         vlc ffmpeg
         gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
     ]]
+    apt_install [[
+        feh gimp imagemagick scribus inkscape
+        gnuplot
+        qrencode
+        libreoffice libreoffice-l10n-fr libreoffice-help-fr
+        vokoscreen-ng
+        simple-scan
+        evince okular mupdf qpdfview
+        atril
 
-    script ".config/zathura/zathurarc"
+        vlc ffmpeg
+    ]]
+
+    --[=[
+    if UBUNTU then
+        apt_install [[
+            git dpkg-dev
+            gobject-introspection libdjvulibre-dev libgail-3-dev
+            libgirepository1.0-dev libgtk-3-dev libgxps-dev
+            libkpathsea-dev libpoppler-glib-dev libsecret-1-dev
+            libspectre-dev libtiff-dev libwebkit2gtk-4.0-dev libxapp-dev
+            mate-common meson xsltproc yelp-tools
+        ]]
+        gitclone "https://github.com/linuxmint/xreader.git"
+        sh [[
+            cd %(repo_path)/xreader &&
+                meson debian/build \
+                    --prefix=%(HOME)/.local \
+                    --buildtype=plain \
+                    -D deprecated_warnings=false \
+                    -D djvu=true \
+                    -D dvi=true \
+                    -D t1lib=true \
+                    -D pixbuf=true \
+                    -D comics=true \
+                    -D introspection=true &&
+                ninja -C debian/build &&
+                ninja -C debian/build install
+        ]]
+    end
+    --]=]
 
 end
 
@@ -1546,12 +1811,17 @@ end
 function povray_configuration()
     title "Povray configuration"
 
+    dnf_install [[ povray ]]
+    apt_install [[ povray ]]
+
+    --[=[
     if force or not installed "povray" then
         gitclone "https://github.com/pov-ray/povray.git"
         sh "cd %(repo_path)/povray/unix && ./prebuild.sh"
         sh [[cd %(repo_path)/povray/ && ./configure '--prefix'="$(realpath ~/.local)" compiled_by="christophe delord <http://cdelord.fr>"]]
         sh "cd %(repo_path)/povray/ && make check install"
     end
+    --]=]
 end
 
 -- }}}
@@ -1561,7 +1831,13 @@ end
 function internet_configuration()
     title "Internet configuration"
 
-    packages [[
+    dnf_install [[
+        firefox
+        surf
+        thunderbird
+        transmission
+    ]]
+    apt_install [[
         firefox
         surf
         thunderbird
@@ -1569,18 +1845,16 @@ function internet_configuration()
     ]]
 
     if cfg_yesno("chrome", "Install Google Chrome?") then
-        sh "sudo dnf config-manager --set-enabled google-chrome"
-        packages "google-chrome-stable"
+        if FEDORA then sh "sudo dnf config-manager --set-enabled google-chrome" end
+        if UBUNTU then
+            deblist("/etc/apt/sources.list.d/google-chrome.list", "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main")
+            sh "wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -"
+        end
+        dnf_install "google-chrome-stable"
+        apt_install "google-chrome-stable"
     end
-    if cfg_yesno("chromium", "Install Chromium?") then
+    if FEDORA and cfg_yesno("chromium", "Install Chromium?") then
         packages "chromium"
-    end
-    if cfg_yesno("edge", "Install Microsoft Edge?") then
-        -- https://www.microsoftedgeinsider.com/en-us/download/
-        sh "sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc"
-        sh "sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/edge"
-        sh "sudo mv -f /etc/yum.repos.d/packages.microsoft.com_yumrepos_edge.repo /etc/yum.repos.d/microsoft-edge-beta.repo"
-        packages "microsoft-edge-beta"
     end
 
     -- Default browser
@@ -1619,8 +1893,14 @@ function zoom_configuration()
 
     if force or not installed "zoom" then
         with_tmpdir(function(tmp)
-            sh("wget https://zoom.us/client/latest/zoom_x86_64.rpm -O "..tmp.."/zoom_x86_64.rpm")
-            sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
+            if FEDORA then
+                sh("wget https://zoom.us/client/latest/zoom_x86_64.rpm -O "..tmp.."/zoom_x86_64.rpm")
+                sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
+            end
+            if UBUNTU then
+                sh("wget https://zoom.us/client/latest/zoom_amd64.deb -O "..tmp.."/zoom_amd64.deb")
+                sh("sudo apt install "..tmp.."/zoom_amd64.deb")
+            end
         end)
         mime_default "Zoom.desktop"
     end
@@ -1637,21 +1917,29 @@ function teams_configuration()
 
         title "Teams configuration"
 
-        TEAMS_URL = "https://packages.microsoft.com/yumrepos/ms-teams"
+        if FEDORA then
+            TEAMS_URL = "https://packages.microsoft.com/yumrepos/ms-teams"
 
-        local index = pipe("curl -sSL %(TEAMS_URL)")
-        local version = ""
-        local latest = nil
-        index:gsub([["(teams%-([0-9]+)%.([0-9]+)%.([0-9]+)%.([0-9]+)%-([0-9]+)%.x86_64%.rpm)"]], function(n, a, b, c, d, e)
-            local v = ("%5s.%5s.%5s.%10s-%5s"):format(a,b,c,d,e)
-            if v > version then version, latest = v, n end
-        end)
-        assert(latest, "Can not determine the latest Teams version")
+            local index = pipe("curl -sSL %(TEAMS_URL)")
+            local version = ""
+            local latest = nil
+            index:gsub([["(teams%-([0-9]+)%.([0-9]+)%.([0-9]+)%.([0-9]+)%-([0-9]+)%.x86_64%.rpm)"]], function(n, a, b, c, d, e)
+                local v = ("%5s.%5s.%5s.%10s-%5s"):format(a,b,c,d,e)
+                if v > version then version, latest = v, n end
+            end)
+            assert(latest, "Can not determine the latest Teams version")
 
-        TEAMS_URL = TEAMS_URL.."/"..latest
-        sh "wget %(TEAMS_URL) -c -O ~/.local/opt/%(basename(TEAMS_URL))"
-        sh "sudo dnf install ~/.local/opt/%(basename(TEAMS_URL))"
-        mime_default "teams.desktop"
+            TEAMS_URL = TEAMS_URL.."/"..latest
+            sh "wget %(TEAMS_URL) -c -O ~/.local/opt/%(basename(TEAMS_URL))"
+            sh "sudo dnf install ~/.local/opt/%(basename(TEAMS_URL))"
+            mime_default "teams.desktop"
+        end
+
+        if UBUNTU then
+            sh "curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -"
+            deblist("/etc/apt/sources.list.d/teams.list", "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main")
+            apt_install "teams"
+        end
 
     end
 
@@ -1664,11 +1952,20 @@ end
 function virtualization_configuration()
     title "Virtualization configuration"
 
-    packages [[
-        VirtualBox
+    dnf_install [[
+        virtualbox
         virtualbox-guest-additions
     ]]
-    packages "akmod-VirtualBox kernel-devel-%(pipe 'uname -r')"
+    apt_install [[
+        virtualbox-qt
+        virtualbox-ext-pack
+        virtualbox-guest-additions-iso
+    ]]
+    dnf_install "akmod-VirtualBox kernel-devel-%(pipe 'uname -r')"
+    apt_install "virtualbox-dkms linux-headers-%(pipe 'uname -r')"
+    if UBUNTU then
+        sh "sudo modprobe vboxdrv"
+    end
 
 end
 
@@ -1676,10 +1973,12 @@ end
 
 -- Work configuration {{{
 
-function work_configuration()
+function work_configuration_old()
     title "Work configuration"
 
-    packages [[
+    if not FEDORA then return end
+
+    dnf_install [[
         moby-engine grubby
         python-devel python3-devel
         ros-rosbag
@@ -1690,7 +1989,7 @@ function work_configuration()
         xorg-x11-server-Xephyr
         sqlite-devel fuse-devel libcurl-devel zlib-devel m4
     ]]
-    packages [[
+    dnf_install [[
         asymptote
         can-utils
         clang
@@ -1816,7 +2115,7 @@ function work_configuration()
     -- NVidia drivers
     -- https://docs.fedoraproject.org/en-US/quick-docs/how-to-set-nvidia-as-primary-gpu-on-optimus-based-laptops/
     if cfg_yesno("nvidia", "Install NVidia drivers") then
-        packages [[
+        dnf_install [[
             xorg-x11-drv-nvidia akmod-nvidia
             xorg-x11-drv-nvidia-cuda
             gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-libs.i686
@@ -1829,6 +2128,11 @@ function work_configuration()
             sh "sudo vi /etc/X11/xorg.conf.d/nvidia.conf"
         end
     end
+
+    -- Google Drive
+    --if force or upgrade then
+    --    sh "pip install --user --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
+    --end
 
     -- AWS
     if force or upgrade then
@@ -1906,7 +2210,7 @@ function work_configuration()
 
     -- ROS: http://wiki.ros.org/Installation/Source
     if cfg_yesno("ros", "Install ROS?") then
-        packages [[
+        dnf_install [[
             gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
             python3-sip-devel qt-devel python3-qt5-devel
         ]]
@@ -1927,42 +2231,83 @@ function work_configuration()
 
 end
 
--- }}}
+function work_configuration()
+    title "Work configuration"
 
--- Eaton configuration {{{
+    script "menu-work"
 
-function eaton_configuration()
+    dnf_install [[
+        moby-engine
+    ]]
+    apt_install [[
+        docker.io docker-compose
+    ]]
 
-    if force or not file_exist "/usr/local/Eaton/IntelligentPowerProtector/mc2" then
-        title "Eaton Intelligent Power Protector configuration"
+    -- AWS
+    if force or upgrade then
+        sh "pip3 install --user awscli boto3"
+        sh "sudo groupadd docker || true"
+        sh "sudo usermod -a -G docker %(USER)"
+        sh "sudo systemctl enable docker || true"
+    end
+    script "aws-login"
 
-        -- https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/power-management-software-connectivity/eaton-intelligent-power-protector/eaton-ipp-user-guide-p-164000291.pdf
-        -- http://pqsoftware.eaton.com/explore/fra/ipp/default_fr.htm?lang=fr&os=LINUX
-        -- https://localhost:4680/
+    -- Docker
+    if force or upgrade then
+        if FEDORA then
+            -- https://github.com/docker/cli/issues/2104
+            sh "sudo grubby --update-kernel=ALL --args=\"systemd.unified_cgroup_hierarchy=0\""
+        end
 
-        sh "wget %(EATON_IPP_URL) -c -O ~/.local/opt/%(basename(EATON_IPP_URL))"
-        sh "sudo dnf install ~/.local/opt/%(basename(EATON_IPP_URL))"
+        sh "sudo systemctl start docker || true"
+        sh "sudo usermod -a -G docker %(USER)"
     end
 
-end
-
--- }}}
-
--- Radicale configuration {{{
-
-function radicale_configuration()
-
-    title "Radicale configuration"
-
-    packages "radicale3"
-
-    -- The server is available at http://localhost:5232/
-    script ".config/radicale/config"
-    if not file_exist "%(HOME)/.config/radicale/users" then
-        write("%(HOME)/.config/radicale/users", "%(USER):%(ask_string 'Radicale password for %(USER):')\n")
+    if cfg_yesno("move-docker-to-home", "Move /var/lib/docker to /home/docker?") then
+        if not dir_exist "/home/docker" then
+            log "Move /var/lib/docker to /home/docker"
+            sh "sudo service docker stop"
+            if dir_exist "/var/lib/docker" then
+                log "Copy /var/lib/docker to /home/docker"
+                sh "sudo mv /var/lib/docker /home/docker"
+            else
+                log "Create /home/docker"
+                sh "sudo mkdir /home/docker"
+            end
+            log "Link /var/lib/docker to /home/docker"
+            sh "sudo ln -s -f /home/docker /var/lib/docker"
+            sh "sudo service docker start || true"
+        end
     end
-    script "every"
-    script "radicale_backup"
+
+    -- ROS: http://wiki.ros.org/Installation/Source
+    if cfg_yesno("ros", "Install ROS?") then
+        if FEDORA then
+            dnf_install [[
+                gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
+                python3-sip-devel qt-devel python3-qt5-devel
+            ]]
+            if not dir_exist "%(HOME)/ros_catkin_ws" then
+                sh "sudo rosdep init"
+                sh "rosdep update"
+                sh [[
+                    mkdir -p %(HOME)/ros_catkin_ws;
+                    cd %(HOME)/ros_catkin_ws;
+                    rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.ros;
+                    mkdir -p src;
+                    vcs import --input noetic-desktop.ros ./src;
+                    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y;
+                    ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release;
+                ]]
+            end
+        end
+        if UBUNTU then
+            apt_install [[
+                ros-desktop-full
+                ros-desktop-full-dev
+            ]]
+        end
+    end
 
 end
 

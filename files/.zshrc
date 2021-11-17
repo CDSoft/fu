@@ -8,12 +8,12 @@ alias lt='ll --sort newest'
 
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 
+%(when(UBUNTU) "alias fd=fdfind")
+
 alias more=less
 alias df='grc df -h'
 alias du='grc du -h'
 alias ncdu='ncdu --color dark'
-
-alias top='procs -w --sortd UsageCpu'
 
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
@@ -45,11 +45,6 @@ eval "$(pandoc --bash-completion)"
 # zoxide
 
 eval "$(zoxide init zsh)"
-
-%(when(cfg_yesno("rust", "Install Rust?")) [[
-# onefetch
-#
-alias onefetch='onefetch --text-colors 9 10 11 12 13 14']])
 
 # Third-party configuration
 
@@ -134,3 +129,6 @@ if [ -f ~/.zuser ]
 then
     . ~/.zuser
 fi
+
+# User specific environment and startup programs
+eval "$(ssh-agent -s)" >/dev/null
