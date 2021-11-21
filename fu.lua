@@ -1706,6 +1706,17 @@ function i3_configuration()
         end
     end
 
+    if FEDORA then
+        if force or upgrade or not installed "hsetroot" then
+            dnf_install "imlib2-devel"
+            gitclone "https://github.com/himdel/hsetroot"
+            sh "cd %(repo_path)/hsetroot && make && DESTDIR=%(HOME) PREFIX=/.local make install"
+        end
+    end
+    if UBUNTU then
+        apt_install "hsetroot"
+    end
+
     pipe("base64 -d > ~/.config/i3/empty.wav", "UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=")
 
     script ".config/i3/status"
