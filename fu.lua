@@ -68,8 +68,9 @@ function configuration()
     I3_THEME = "green"      -- "blue" (default), "green"
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
-    FONT_SIZE = 9
-    SMALL_FONT_SIZE = 8
+    NORMAL_FONT_SIZE = 9
+    SMALL_FONT_SIZE = 7
+    FONT_SIZE = (tonumber(pipe "xdpyinfo | awk '/dimensions/ {print $2}' | awk -F 'x' '{print $2}'") or 1920) < 1080 and SMALL_FONT_SIZE or NORMAL_FONT_SIZE
 
     BROWSER = "firefox"
     BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
