@@ -43,7 +43,7 @@ fi
     tar zxf lua-$LUA_VERSION.tar.gz
     cd lua-$LUA_VERSION
     sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=~/.local#' Makefile
-    make all test install
+    make linux-readline test install
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu

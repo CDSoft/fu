@@ -53,6 +53,8 @@ function configuration()
     FEDORA = installed "dnf"
     UBUNTU = installed "apt"
 
+    LUA_VERSION = "5.4.3"
+
     HOME = os.getenv "HOME"
     USER = os.getenv "USER"
 
@@ -990,12 +992,12 @@ function dev_configuration()
     if not file_exist "%(HOME)/.local/bin/lua" then
         sh [[
             cd %(repo_path) &&
-            curl -R -O http://www.lua.org/ftp/lua-5.4.3.tar.gz &&
-            rm -rf lua-5.4.3 &&
-            tar zxf lua-5.4.3.tar.gz &&
-            cd lua-5.4.3 &&
+            curl -R -O http://www.lua.org/ftp/lua-%(LUA_VERSION).tar.gz &&
+            rm -rf lua-%(LUA_VERSION) &&
+            tar zxf lua-%(LUA_VERSION).tar.gz &&
+            cd lua-%(LUA_VERSION) &&
             sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=%(HOME)/.local#' Makefile &&
-            make all test install
+            make linux-readline test install
         ]]
     end
 
