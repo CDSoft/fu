@@ -8,7 +8,7 @@ set $win Mod4
 set $mod Mod4
 
 # Font for window titles.
-font xft:%(FONT) %(FONT_VARIANT) %((tonumber(pipe "xdpyinfo | awk '/dimensions/ {print $2}' | awk -F 'x' '{print $2}'") or 1920) < 1080 and FONT_SIZE-2 or FONT_SIZE)
+font xft:%(FONT) %(FONT_VARIANT) %((tonumber(pipe "xdpyinfo | awk '/dimensions/ {print $2}' | awk -F 'x' '{print $2}'") or 1920) < 1080 and SMALL_FONT_SIZE or FONT_SIZE)
 
 # Window colors (default colors, no indicator)
 # class                 border  backgr. text    indicator child_border

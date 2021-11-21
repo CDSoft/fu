@@ -69,6 +69,7 @@ function configuration()
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
     FONT_SIZE = 9
+    SMALL_FONT_SIZE = 8
 
     BROWSER = "firefox"
     BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
