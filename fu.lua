@@ -611,7 +611,7 @@ function shell_configuration()
     dnf_install [[
         zsh
         powerline-fonts
-        grc bat fzf
+        bat fzf
         PackageKit-command-not-found
         util-linux-user
         inotify-tools
@@ -679,6 +679,13 @@ function shell_configuration()
 
     if file_exist "/usr/bin/batcat" then
         sh "ln -s -f /usr/bin/batcat ~/.local/bin/bat"
+    end
+
+    if FEDORA then
+        if force or upgrade or not installed "grc" then
+            gitclone "https://github.com/garabik/grc"
+            sh "cd %(repo_path)/grc && sudo ./install.sh"
+        end
     end
 
 end

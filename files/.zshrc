@@ -14,6 +14,7 @@ alias more=less
 alias df='grc df -h'
 alias du='grc du -h'
 alias ncdu='ncdu --color dark'
+alias lsblk='grc lsblk'
 
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
