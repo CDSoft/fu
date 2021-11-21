@@ -873,6 +873,7 @@ function dev_configuration()
 
     dnf_install [[
         git git-gui gitk qgit gitg tig git-lfs
+        git-delta
         subversion
         clang llvm clang-tools-extra
         ccls
@@ -974,17 +975,16 @@ function dev_configuration()
         end
     end
 
-    if force or upgrade or not installed "delta" then
-        local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
-        with_tmpdir(function(tmp)
-            if FEDORA then
-                dnf_install "git_delta"
-            end
-            if UBUNTU then
-                sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
-                sh("sudo dpkg -i "..tmp.."/delta.deb")
-            end
-        end)
+    if UBUNTU then
+        if force or upgrade or not installed "delta" then
+            with_tmpdir(function(tmp)
+                local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
+                if UBUNTU then
+                    sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
+                    sh("sudo dpkg -i "..tmp.."/delta.deb")
+                end
+            end)
+        end
     end
 
     if not file_exist "%(HOME)/.local/bin/lua" then
