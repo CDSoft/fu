@@ -34,17 +34,21 @@ then
     exec "$@"
 fi
 
+
 [ -x ~/.local/bin/lua ] || (
+    ( hash apt && ! ( hash curl && hash make gcc ) ) 2>/dev/null && sudo apt install curl make gcc
+    ( hash dnf && ! ( hash curl && hash make gcc ) ) 2>/dev/null && sudo dnf install curl make gcc
     LUA_VERSION=5.4.3
-    mkdir -p ~/.config/fu/repos
-    cd ~/.config/fu/repos
+    LUA_BUILD=/tmp/fu-lua-$LUA_VERSION
+    mkdir -p $LUA_BUILD
+    cd $LUA_BUILD
     curl -R -O http://www.lua.org/ftp/lua-$LUA_VERSION.tar.gz
     rm -rf lua-$LUA_VERSION
     tar zxf lua-$LUA_VERSION.tar.gz
     cd lua-$LUA_VERSION
     sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=~/.local#' Makefile
-    make linux-readline test install
+    make linux test install
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
-~/.local/bin/lua ~/.local/bin/fu
+~/.local/bin/lua ~/.local/bin/fu -u

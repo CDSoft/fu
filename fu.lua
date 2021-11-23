@@ -989,7 +989,7 @@ function dev_configuration()
         end
     end
 
-    if not file_exist "%(HOME)/.local/bin/lua" then
+    if not file_exist "%(HOME)/.local/bin/lua" or not pipe"ldd %(HOME)/.local/bin/lua":match"readline" then
         sh [[
             cd %(repo_path) &&
             curl -R -O http://www.lua.org/ftp/lua-%(LUA_VERSION).tar.gz &&
