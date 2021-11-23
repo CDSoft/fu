@@ -1,3 +1,13 @@
+# Environment variables
+
+export PATH=~/.local/bin:$PATH
+
+export EDITOR=nvim
+export VISUAL=nvim
+export BROWSER=%(BROWSER)
+
+export QT_QPA_PLATFORMTHEME=qt5ct
+
 # Aliases
 
 alias ls="exa --classify"
@@ -109,7 +119,7 @@ alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
 alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-run-if-empty docker rmi"
 alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
 
-%(when(cfg_yesno("ros", "Install ROS?")) ". ~/ros_catkin_ws/install_isolated/setup.zsh")
+%(when(FEDORA and cfg_yesno("ros", "Install ROS?")) ". ~/ros_catkin_ws/install_isolated/setup.zsh")
 ]==])
 
 # cd with vifm
@@ -132,4 +142,4 @@ then
 fi
 
 # User specific environment and startup programs
-eval "$(ssh-agent -s)" >/dev/null
+[ -z "$SSH_AGENT_PID" ] && eval "$(ssh-agent -s)"

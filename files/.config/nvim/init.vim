@@ -30,6 +30,7 @@ if exists('g:started_by_firenvim')
 endif
 
 lua require'nvim-colorizer'
+lua require 'luasnip'
 lua require'lsp'
 lua require'lualine-setup'
 lua require'nvim-cmp'

@@ -245,20 +245,26 @@ function printI(s)
     print(I(s))
 end
 
+local current_title = ""
+
 function title(s)
     local cols = pipe "tput cols"
     local color = string.char(27).."[1m"..string.char(27).."[37m"..string.char(27).."[44m"
     local normal = string.char(27).."[0m"
     s = I(s)
+    current_title = s
+    s = ("%s [%d]"):format(s, debug.getinfo(2, 'l').currentline)
     io.write(string.char(27).."]0;fu: "..s..string.char(7)) -- windows title
     s = s .. string.rep(" ", cols - #s - 4)
     io.write(color.."### "..s..normal.."\n")
 end
 
-function log(s)
+function log(s, level)
     local color = string.char(27).."[0m"..string.char(27).."[30m"..string.char(27).."[46m"
     local normal = string.char(27).."[0m"
     s = I(s)
+    s = ("%s [%d]"):format(s, debug.getinfo(2+(level or 0), 'l').currentline)
+    io.write(string.char(27).."]0;fu: "..current_title.." / "..s..string.char(7)) -- windows title
     io.write(color.."### "..s.." "..normal.."\n")
 end
 
@@ -365,7 +371,7 @@ end
 function repo(local_name, name)
     if FEDORA and not file_exist(I(local_name)) then
         name = I(name)
-        log("Install repo "..name)
+        log("Install repo "..name, 1)
         sh("sudo dnf install -y \""..name.."\"")
     end
 end
@@ -373,7 +379,7 @@ end
 function copr(local_name, name)
     if FEDORA and not file_exist(local_name) then
         name = I(name)
-        log("Install copr "..name)
+        log("Install copr "..name, 1)
         sh("sudo dnf copr enable \""..name.."\"")
     end
 end
@@ -381,7 +387,7 @@ end
 function ppa(local_name, name)
     if UBUNTU and not file_exist(local_name) then
         name = I(name)
-        log("Install ppa "..name)
+        log("Install ppa "..name, 1)
         sh("sudo add-apt-repository "..name)
         sh("sudo apt update")
     end
@@ -390,7 +396,7 @@ end
 function deblist(local_name, name)
     if UBUNTU and not file_exist(local_name) then
         name = I(name)
-        log("Install deb.list "..name)
+        log("Install deb.list "..name, 1)
         with_tmpfile(function(tmp)
             write(tmp, name)
             sh("sudo cp "..tmp.." "..local_name)
@@ -418,7 +424,7 @@ function dnf_install(names)
     end
     if new then
         names = new_packages.concat " "
-        log("Install packages: "..names)
+        log("Install packages: "..names, 1)
         sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
         write("%(config_path)/packages", all.concat("\n").."\n")
     end
@@ -441,7 +447,7 @@ function apt_install(names)
     end
     if new then
         names = new_packages.concat " "
-        log("Install packages: "..names)
+        log("Install packages: "..names, 1)
         sh("sudo apt install "..names)
         write("%(config_path)/packages", all.concat("\n").."\n")
     end
@@ -463,7 +469,7 @@ function luarocks(names)
     end
     if new then
         names = new_packages.concat " "
-        log("Install luarocks: "..names)
+        log("Install luarocks: "..names, 1)
         for _, name in new_packages.ipairs() do
             sh("luarocks install --local "..name)
         end
@@ -492,7 +498,7 @@ end
 function script(name)
     local function template(file_name, dest_name, exe)
         if file_exist(file_name) then
-            log("Create "..dest_name)
+            log("Create "..dest_name, 1)
             mkdir(dirname(dest_name))
             write(dest_name, read(file_name))
             if exe then sh("chmod +x "..dest_name) end
@@ -513,17 +519,18 @@ function gitclone(url, options)
     local path = repo_path.."/"..name:gsub("%.git$", "")
     if dir_exist(path) then
         if force or upgrade then
-            log("Upgrade "..url.." to "..path.." "..options)
+            log("Upgrade "..url.." to "..path.." "..options, 1)
             sh("cd "..path.." && ( git reset --hard master || true ) && git pull")
         end
     else
-        log("Clone "..url.." to "..path)
+        log("Clone "..url.." to "..path, 1)
         sh("git clone "..url.." "..path.." "..options)
     end
 end
 
 function mime_default(desktop_file)
     desktop_file = I(desktop_file)
+    log("Mime default: "..desktop_file, 1)
     local config_flag = I("%(config_path)/"..desktop_file..".already_configured")
     local path = "/usr/share/applications/"..desktop_file
     if file_exist(path) and (force or upgrade or not file_exist(config_flag)) then
@@ -595,11 +602,13 @@ function system_configuration()
     ]]
 
     -- Locale and timezone
+    log "Timezone and keyboard"
     sh "sudo timedatectl set-timezone %(TIMEZONE)"
     if FEDORA then sh "sudo localectl set-keymap %(KEYMAP)" end -- TODO : à corriger pour UBUNTU
     sh "sudo localectl set-locale %(LOCALE)"
 
     -- No more poweroff
+    log "Disable power key"
     sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
 end
 
@@ -645,6 +654,7 @@ function shell_configuration()
         zoxide
     ]]
 
+    log "Change current shell"
     sh "chsh -s /bin/zsh %(USER)"
 
     script ".zprofile"
@@ -652,9 +662,12 @@ function shell_configuration()
 
     script ".config/starship.toml"
 
+    log "Oh My Zsh"
     gitclone "https://github.com/ohmyzsh/ohmyzsh.git" -- not installed, some scripts will be sourced
     gitclone "https://github.com/zsh-users/zsh-syntax-highlighting.git"
     gitclone "https://github.com/zsh-users/zsh-autosuggestions"
+
+    log "Starship prompt"
     if force or not installed "starship" then
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
@@ -680,6 +693,7 @@ function shell_configuration()
     script "fzfmenu"
 
     if file_exist "/usr/bin/batcat" then
+        log "bat symlink"
         sh "ln -s -f /usr/bin/batcat ~/.local/bin/bat"
     end
 
@@ -739,25 +753,30 @@ function network_configuration()
 
     -- ssh
     if FEDORA then
+        log "sshd"
         sh "sudo systemctl start sshd"
         sh "sudo systemctl enable sshd"
     end
     if UBUNTU then
+        log "sshd"
         sh "sudo systemctl start ssh"
         sh "sudo systemctl enable ssh"
     end
     if FEDORA then
+        log "Disable firewalld"
         sh "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
     end
     script "ssha"
 
     -- sshd
     if FEDORA then
+        log "sshd"
         sh "sudo chkconfig sshd on"
         sh "sudo service sshd start"
     end
 
     -- wireshark
+    log "Wireshark group"
     sh "sudo usermod -a -G wireshark %(USER)"
 
 end
@@ -786,7 +805,7 @@ end
 function nextcloud_configuration()
 
     local installed = file_exist "%(HOME)/.local/bin/Nextcloud"
-    if force or upgrade or not file_exist "%(HOME)/.local/bin/Nextcloud" then
+    if force or upgrade or not installed then
         title "Nextcloud configuration"
         local version, new_version
         if installed then
@@ -973,7 +992,8 @@ function dev_configuration()
     ]]
     if force or update or not installed "tokei" then
         if cfg_yesno("rust", "Install Rust?") then
-            sh "cargo install tokei"
+            log "Tokei"
+            sh "~/.cargo/bin/cargo install tokei"
         end
     end
 
@@ -982,6 +1002,7 @@ function dev_configuration()
             with_tmpdir(function(tmp)
                 local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
                 if UBUNTU then
+                    log "Delta"
                     sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
                     sh("sudo dpkg -i "..tmp.."/delta.deb")
                 end
@@ -990,6 +1011,7 @@ function dev_configuration()
     end
 
     if not file_exist "%(HOME)/.local/bin/lua" or not pipe"ldd %(HOME)/.local/bin/lua":match"readline" then
+        log "Lua"
         sh [[
             cd %(repo_path) &&
             curl -R -O http://www.lua.org/ftp/lua-%(LUA_VERSION).tar.gz &&
@@ -1033,11 +1055,15 @@ function dev_configuration()
     script ".gitconfig"
 
     -- pip
-    if force or upgrade then sh "python3 -m pip install --user --upgrade pip" end
+    if force or upgrade then
+        log "pip upgrade"
+        sh "python3 -m pip install --user --upgrade pip"
+    end
 
     -- git
     -- https://stackoverflow.com/questions/34119866/setting-up-and-using-meld-as-your-git-difftool-and-mergetool
     -- use git meld to call git difftool with meld
+    log "Git configuration"
     sh "git config --global alias.meld '!git difftool -t meld --dir-diff'"
     sh "git config --global core.excludesfile ~/.gitignore"
 
@@ -1057,7 +1083,7 @@ function dev_configuration()
             gitclone("https://github.com/vlang/vls.git")
             sh [[ cd %(repo_path)/vls
                 git checkout use-tree-sitter
-                v -gc boehm -cc gcc cmd/vls ]]
+                ~/.local/bin/v -gc boehm -cc gcc cmd/vls ]]
         end
     end
 
@@ -1068,26 +1094,31 @@ function lsp_configuration()
     title "Language servers configuration"
 
     if force or upgrade or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
+        log "Bash Language Server"
         mkdir "%(HOME)/.local/opt/bash-language-server"
         sh "cd ~/.local/opt/bash-language-server && npm install bash-language-server && ln -s -f $PWD/node_modules/.bin/bash-language-server ~/.local/bin/"
     end
     if force or upgrade or not file_exist "%(HOME)/.local/opt/dot-language-server/node_modules/.bin/dot-language-server" then
+        log "Dot Language Server"
         mkdir "%(HOME)/.local/opt/dot-language-server"
         sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
     end
     --[[
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "haskell-language-server" then
+            log "Haskell Language Server"
             gitclone("https://github.com/haskell/haskell-language-server", {"--recurse-submodules"})
             sh "cd %(repo_path)/haskell-language-server && stack ./install.hs hls"
         end
     end
     --]]
     if force or upgrade or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
+        log "Python Language Server"
         mkdir "%(HOME)/.local/opt/pyright-langserver"
         sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
     end
     if force or upgrade or not installed "lua-language-server" then
+        log "Lua Language Server"
         gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
         sh [[ cd %(repo_path)/lua-language-server &&
               cd 3rd/luamake
@@ -1107,8 +1138,10 @@ function haskell_configuration()
     title "Haskell configuration"
 
     if not installed "stack" then
+        log "Stack installation"
         sh "curl -sSL https://get.haskellstack.org/ | sh"
     elseif force or upgrade then
+        log "Stack upgrade"
         sh "stack upgrade"
     end
 
@@ -1125,6 +1158,7 @@ function haskell_configuration()
     }
     if force or upgrade then
         for _, package in ipairs(HASKELL_PACKAGES) do
+            log("Stack install "..package)
             sh("stack install --resolver="..RESOLVER.." "..package)
         end
     end
@@ -1224,9 +1258,9 @@ function rust_configuration()
         with_tmpfile(function(tmp)
             sh("curl https://sh.rustup.rs -sSf -o "..tmp.." && sh "..tmp.." -y -v --no-modify-path")
         end)
-        sh "PATH=$PATH:$HOME/.cargo/bin rustup update stable"
+        sh "~/.cargo/bin/rustup update stable"
     elseif force or upgrade then
-        title "Rust configuration"
+        title "Rust upgrade"
         sh "rustup update stable"
     end
 
@@ -1234,6 +1268,7 @@ function rust_configuration()
     }
     for _, package in ipairs(RUST_PACKAGES) do
         if force or not installed(package) then
+            log("Rust package: "..package)
             sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package)
         end
     end
@@ -1495,18 +1530,22 @@ function pandoc_configuration()
     end
 
     if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
+        log "plantuml.jar"
         sh "wget http://sourceforge.net/projects/plantuml/files/plantuml.jar -O ~/.local/bin/plantuml.jar"
     end
 
     if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
+        log "ditaa.jar"
         sh "wget https://github.com/stathissideris/ditaa/releases/download/v0.11.0/ditaa-0.11.0-standalone.jar -O ~/.local/bin/ditaa.jar"
     end
 
     if force or upgrade or not installed "blockdiag" then
+        log "Blockdiag"
         sh "pip3 install --user blockdiag seqdiag actdiag nwdiag"
     end
 
     if force or upgrade or not file_exist "%(HOME)/.local/opt/mermaid/node_modules/.bin/mmdc" then
+        log "Mermaid"
         mkdir "%(HOME)/.local/opt/mermaid"
         sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
     end
@@ -1574,6 +1613,7 @@ function neovim_configuration()
 
     -- Asymptote syntax
     if file_exist "/usr/share/asymptote/asy.vim" and file_exist "/usr/share/asymptote/asy_filetype.vim" then
+        log "Asymptote syntax"
         mkdir "%(HOME)/.config/nvim/syntax"
         mkdir "%(HOME)/.config/nvim/ftdetect"
         sh "cp /usr/share/asymptote/asy.vim ~/.config/nvim/syntax/"
@@ -1582,12 +1622,14 @@ function neovim_configuration()
 
     -- update all plugins
     if force or upgrade then
+        log "Pluggin update"
         sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
         sh 'nvim --headless "+call firenvim#install(0) | q"'
     end
 
     if cfg_yesno("haskell", "Install Haskell?") then
         if force or upgrade or not installed "shellcheck" then
+            log "ShellCheck"
             sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
         end
     end
@@ -1659,10 +1701,11 @@ function i3_configuration()
 
     -- alacritty
     if force or upgrade or not installed "alacritty" then
+        log "Alacritty"
         if cfg_yesno("rust", "Install Rust?") then
             dnf_install [[ cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++ ]]
             apt_install [[ cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 ]]
-            sh "cargo install alacritty"
+            sh "~/.cargo/bin/cargo install alacritty"
         elseif FEDORA then
             dnf_install "alacritty"
         elseif UBUNTU then
@@ -1696,6 +1739,8 @@ function i3_configuration()
     script ".config/alacritty/alacritty.yml"
 
     script ".config/i3/config"
+    script ".xsession"
+    script ".xsessionrc"
 
     script ".config/dunst/dunstrc"
 
@@ -1754,6 +1799,7 @@ function i3_configuration()
 
     -- start VLC in a single instance
     if file_exist "%(HOME)/.config/vlc/vlcrc" then
+        log "VLC configuration"
         local vlcrc = read "%(HOME)/.config/vlc/vlcrc"
         vlcrc = vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
         write("%(HOME)/.config/vlc/vlcrc", vlcrc)
@@ -1880,6 +1926,7 @@ function internet_configuration()
     end
 
     -- Default browser
+    log "Default browser"
     sh "BROWSER= xdg-settings set default-web-browser %(BROWSER).desktop"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop text/html"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/http"
@@ -1889,9 +1936,12 @@ function internet_configuration()
     -- Firefox configuration
     -- https://askubuntu.com/questions/313483/how-do-i-change-firefoxs-aboutconfig-from-a-shell-script
     -- https://askubuntu.com/questions/239543/get-the-default-firefox-profile-directory-from-bash
-    for line in readlines("%(HOME)/.mozilla/firefox/profiles.ini") do
-        for profile in line:gmatch("Path=(.*)") do
-            write("%(HOME)/.mozilla/firefox/"..profile.."/user.js", read "%(src_files)/user.js")
+    if file_exist("%(HOME)/.mozilla/firefox/profiles.ini") then
+        log "Firefox configuration"
+        for line in readlines("%(HOME)/.mozilla/firefox/profiles.ini") do
+            for profile in line:gmatch("Path=(.*)") do
+                write("%(HOME)/.mozilla/firefox/"..profile.."/user.js", read "%(src_files)/user.js")
+            end
         end
     end
 
@@ -1902,6 +1952,7 @@ function internet_configuration()
     end
 
     -- Remove unecessary language symlinks
+    log "Remove unecessary language symlinks"
     sh "sudo find /usr/share/myspell -type l -exec rm -v {} \\;"
 
 end
@@ -1975,7 +2026,7 @@ function virtualization_configuration()
     title "Virtualization configuration"
 
     dnf_install [[
-        virtualbox
+        VirtualBox
         virtualbox-guest-additions
     ]]
     apt_install [[
@@ -2267,6 +2318,7 @@ function work_configuration()
 
     -- AWS
     if force or upgrade then
+        log "AWS configuration"
         sh "pip3 install --user awscli boto3"
         sh "sudo groupadd docker || true"
         sh "sudo usermod -a -G docker %(USER)"
@@ -2276,11 +2328,11 @@ function work_configuration()
 
     -- Docker
     if force or upgrade then
+        log "Docker configuration"
         if FEDORA then
             -- https://github.com/docker/cli/issues/2104
             sh "sudo grubby --update-kernel=ALL --args=\"systemd.unified_cgroup_hierarchy=0\""
         end
-
         sh "sudo systemctl start docker || true"
         sh "sudo usermod -a -G docker %(USER)"
     end
@@ -2310,6 +2362,7 @@ function work_configuration()
                 python3-sip-devel qt-devel python3-qt5-devel
             ]]
             if not dir_exist "%(HOME)/ros_catkin_ws" then
+                log "Build ROS"
                 sh "sudo rosdep init"
                 sh "rosdep update"
                 sh [[
