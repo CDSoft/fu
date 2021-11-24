@@ -8,6 +8,9 @@ export BROWSER=%(BROWSER)
 
 export QT_QPA_PLATFORMTHEME=qt5ct
 
+export GZIP_OPT="-9"
+export XZ_OPT="-9"
+
 # Aliases
 
 alias ls="exa --classify"
