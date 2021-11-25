@@ -654,8 +654,10 @@ function shell_configuration()
         zoxide
     ]]
 
-    log "Change current shell"
-    sh "chsh -s /bin/zsh %(USER)"
+    if not os.getenv "SHELL" :match "/bin/zsh" then
+        log "Change current shell"
+        sh "chsh -s /bin/zsh %(USER)"
+    end
 
     script ".zprofile"
     script ".zshrc"
