@@ -2207,55 +2207,6 @@ function work_configuration_old()
     --    sh "pip install --user --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
     --end
 
-    -- AWS
-    if force or upgrade then
-        sh "pip3 install --user awscli boto3"
-        sh "sudo groupadd docker || true"
-        sh "sudo usermod -a -G docker %(USER)"
-        sh "sudo systemctl enable docker || true"
-    end
-    script "aws-login"
-
-    -- Frama-C
-    if force or upgrade then
-        sh "why3 config detect"
-        --sh "pip2 install --user json-query"
-    end
-
-    -- Docker
-    if force or upgrade then
-        -- https://github.com/docker/cli/issues/2104
-        sh "sudo grubby --update-kernel=ALL --args=\"systemd.unified_cgroup_hierarchy=0\""
-
-        sh "sudo systemctl start docker || true"
-        sh "sudo usermod -a -G docker %(USER)"
-    end
-
-    if cfg_yesno("move-docker-to-home", "Move /var/lib/docker to /home/docker?") then
-        if not dir_exist "/home/docker" then
-            log "Move /var/lib/docker to /home/docker"
-            sh "sudo service docker stop"
-            if dir_exist "/var/lib/docker" then
-                log "Copy /var/lib/docker to /home/docker"
-                sh "sudo mv /var/lib/docker /home/docker"
-            else
-                log "Create /home/docker"
-                sh "sudo mkdir /home/docker"
-            end
-            log "Link /var/lib/docker to /home/docker"
-            sh "sudo ln -s -f /home/docker /var/lib/docker"
-            sh "sudo service docker start || true"
-        end
-    end
-
-    --[[
-    if installed "opam" then
-        if force or upgrade or not installed "google-drive-ocamlfuse" then
-            sh "opam install google-drive-ocamlfuse || true"
-        end
-    end
-    --]]
-
     sh [[ pip3 install '--user'             \
                 awscli                      \
                 click                       \
@@ -2281,27 +2232,6 @@ function work_configuration_old()
         ]]
     end
 
-    -- ROS: http://wiki.ros.org/Installation/Source
-    if cfg_yesno("ros", "Install ROS?") then
-        dnf_install [[
-            gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
-            python3-sip-devel qt-devel python3-qt5-devel
-        ]]
-        if not dir_exist "%(HOME)/ros_catkin_ws" then
-            sh "sudo rosdep init"
-            sh "rosdep update"
-            sh [[
-                mkdir -p %(HOME)/ros_catkin_ws;
-                cd %(HOME)/ros_catkin_ws;
-                rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.ros;
-                mkdir -p src;
-                vcs import --input noetic-desktop.ros ./src;
-                rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y;
-                ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release;
-            ]]
-        end
-    end
-
 end
 
 function work_configuration()
@@ -2310,7 +2240,7 @@ function work_configuration()
     script "menu-work"
 
     dnf_install [[
-        moby-engine
+        moby-engine grubby
     ]]
     apt_install [[
         docker.io docker-compose
