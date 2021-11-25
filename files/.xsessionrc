@@ -11,6 +11,15 @@ export EDITOR=nvim
 export VISUAL=nvim
 export BROWSER=%(BROWSER)
 
+# Same pixel ratio on all screens
+export WINIT_X11_SCALE_FACTOR=1
+# https://unix.stackexchange.com/questions/596887/how-to-scale-the-resolution-display-of-the-desktop-and-or-applications
+export QT_AUTO_SCREEN_SET_FACTOR=0
+export QT_SCALE_FACTOR=1
+export QT_FONT_DPI=96
+export GDK_SCALE=1
+export GDK_DPI_SCALE=1
+
 export QT_QPA_PLATFORMTHEME=qt5ct
 
 %(when(cfg_yesno("rust", "Install Rust?")) '. ~/.cargo/env')
