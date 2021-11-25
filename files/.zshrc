@@ -13,6 +13,8 @@ export XZ_OPT="-9"
 
 # Aliases
 
+[ -e /etc/grc.zsh ] && . /etc/grc.zsh
+
 alias ls="exa --classify"
 alias ll='ls -lh'
 alias la='ll -a'
@@ -24,10 +26,9 @@ alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 %(when(UBUNTU) "alias fd=fdfind")
 
 alias more=less
-alias df='grc df -h'
-alias du='grc du -h'
+alias df='df -h'
+alias du='du -h'
 alias ncdu='ncdu --color dark'
-alias lsblk='grc lsblk'
 
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
