@@ -1505,7 +1505,7 @@ function pandoc_configuration()
         sh "pip3 install --user blockdiag seqdiag actdiag nwdiag"
     end
 
-    if force or upgrade or not file_exist "%(HOME)/.local/opt/mermaid/node_modules/.bin/mmdc" then
+    if force or upgrade or not installed "mmdc" then
         log "Mermaid"
         mkdir "%(HOME)/.local/opt/mermaid"
         sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
