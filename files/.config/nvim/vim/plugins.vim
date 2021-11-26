@@ -27,7 +27,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'hoob3rt/lualine.nvim'
 "Plug 'kyazdani42/nvim-web-devicons'
 
-Plug 'https://github.com/vifm/vifm.vim.git'
 "Plug 'https://github.com/frace/vim-bubbles'
 Plug 'https://github.com/sbdchd/neoformat'
 Plug 'monkoose/fzf-hoogle.vim'

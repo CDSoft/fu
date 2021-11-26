@@ -840,7 +840,6 @@ function filesystem_configuration()
         cryfs
         p7zip p7zip-gui p7zip-plugins
         mc pcmanfm thunar
-        vifm
         pmount
         exfat-utils fuse-exfat
         syslinux
@@ -860,7 +859,6 @@ function filesystem_configuration()
         cryfs
         p7zip-full p7zip-rar
         mc pcmanfm thunar
-        vifm
         pmount
         exfat-utils exfat-fuse
         syslinux
@@ -872,11 +870,6 @@ function filesystem_configuration()
         xz-utils unrar
         archivemount fuseiso sshfs curlftpfs
     ]]
-
-    gitclone "https://github.com/vifm/vifm-colors"
-    script ".config/vifm/vifmrc"
-    mkdir "%(HOME)/.config/vifm/colors"
-    sh "cp %(repo_path)/vifm-colors/*.vifm %(HOME)/.config/vifm/colors/"
 
 end
 

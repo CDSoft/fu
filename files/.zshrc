@@ -128,18 +128,6 @@ alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run
 %(when(FEDORA and cfg_yesno("ros", "Install ROS?")) ". ~/ros_catkin_ws/install_isolated/setup.zsh")
 ]==])
 
-# cd with vifm
-
-vicd()
-{
-    local dst="$(command vifm -c only --choose-dir - "$@")"
-    if [ -z "$dst" ]; then
-        echo 'Directory picking cancelled/failed'
-        return 1
-    fi
-    cd "$dst"
-}
-
 # Other user configuration
 
 if [ -f ~/.zuser ]
