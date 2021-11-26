@@ -926,7 +926,6 @@ function dev_configuration()
         blas-devel lapack-devel
         gnuplot
         openssl-devel
-        tokei
         golang
         libX11-devel
         libXft-devel
