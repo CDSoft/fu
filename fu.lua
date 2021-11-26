@@ -1645,7 +1645,7 @@ function i3_configuration()
         arandr
         sox
         fortune-mod imagemagick
-        sxiv ristretto
+        stterm sxiv ristretto
         volumeicon-alsa pavucontrol
         fonts-firacode
         rofi
