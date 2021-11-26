@@ -112,6 +112,9 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 # luarocks
 eval "$(luarocks path --bin)"
 
+# Lua Language Server
+alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
+
 %(when(cfg_yesno("work", "Install work configuration")) [==[
 # Work configuration
 
