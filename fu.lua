@@ -1169,6 +1169,8 @@ end
 
 function ocaml_configuration()
 
+    title "OCaml configuration"
+
     dnf_install [[
         opam
         z3
@@ -1186,23 +1188,13 @@ function ocaml_configuration()
         cvc4
     ]]
 
-    if force or not installed "opam" then
-        title "OCaml configuration"
-        if FEDORA then
-            --sh "wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin"
-            sh "opam init"
-            sh "opam update && opam upgrade"
-            --sh "opam install depext"
-            --sh "opam depext frama-c || true"
-            --sh "opam install frama-c coq why3 alt-ergo || true"
-        end
-        if UBUNTU then
-            sh "opam init"
-            sh "opam update && opam upgrade"
-            sh "opam install depext"
-            sh "opam depext frama-c"
-            sh "opam install frama-c"
-        end
+    if force or not installed "frama-c" then
+        log "Frama-C installation"
+        sh "opam init"
+        sh "opam update && opam upgrade"
+        sh "opam install depext"
+        sh "opam depext frama-c"
+        sh "opam install frama-c"
     end
 
 end
