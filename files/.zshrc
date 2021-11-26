@@ -1,15 +1,12 @@
 # Environment variables
 
-export PATH=~/.local/bin:$PATH
+export PATH=~/.local/bin:~/bin:$PATH
 
 export EDITOR=nvim
 export VISUAL=nvim
 export BROWSER=%(BROWSER)
 
 export QT_QPA_PLATFORMTHEME=qt5ct
-
-export GZIP_OPT="-9"
-export XZ_OPT="-9"
 
 # Aliases
 
@@ -39,6 +36,11 @@ function gd()
     [ -f "$filepath" ] && filepath="$(dirname "$filepath")"
     cd "$filepath"
 }
+
+# Force compression level with tar
+
+export GZIP_OPT="-9"
+export XZ_OPT="-9"
 
 # OMZ scripts
 
