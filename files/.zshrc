@@ -65,7 +65,7 @@ eval "$(zoxide init zsh)"
 
 # Third-party configuration
 
-#%(when(cfg_yesno("ocaml", "Install OCaml?")) '. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
+%(when(cfg_yesno("ocaml", "Install OCaml?")) '[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
 %(when(cfg_yesno("rust", "Install Rust?")) '. ~/.cargo/env')
 
 # Plugins
