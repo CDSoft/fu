@@ -2,7 +2,7 @@
 
 # Codi
 # Usage: codi [filetype] [filename]
-# filetype: cpp, haskell, julia, lua (default), ocaml, python
+# filetype: haskell, julia, lua (default), ocaml, python
 
 syntax="${1:-lua}"
 shift

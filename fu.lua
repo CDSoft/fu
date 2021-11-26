@@ -84,10 +84,6 @@ function configuration()
 
     LATEST_LTS = "lts-18.17"
 
-    CLING_ARCHIVE = "cling_2020-11-05_ROOT-fedora32.tar.bz2"
-    CLING_URL = I"https://root.cern.ch/download/cling/%(CLING_ARCHIVE)"
-    CLING_DIR = I"%(CLING_ARCHIVE:gsub('%.tar%.bz2$', ''))"
-
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
 end
@@ -127,7 +123,6 @@ function main()
     if cfg_yesno("racket", "Install Racket?") then racket_configuration() end
     if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
     if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
-    if cfg_yesno("cling", "Install cling?") then cling_configuration() end
     if cfg_yesno("swipl", "Install SWI Prolog (from sources)?") then swipl_configuration() end
     lsp_configuration()
     text_edition_configuration()
@@ -1368,29 +1363,6 @@ function zig_configuration()
             sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/x86_64-linux.tar.xz -O "..tmp.."/x86_64-linux.tar.xz")
             sh("cd "..tmp.."; tar xJf x86_64-linux.tar.xz && mv x86_64-linux/zls %(HOME)/.local/bin/zls")
         end)
-    end
-
-end
-
--- }}}
-
--- Cling configuration {{{
-
-function cling_configuration()
-
-    if FEDORA then
-        if force or not installed "cling" then
-            title "Cling configuration"
-
-            dnf_install "cling"
-
-            --[=[
-            sh "wget %(CLING_URL) -c -O ~/.local/opt/%(basename(CLING_URL))"
-            sh "rm -rf ~/.local/opt/%(CLING_DIR)"
-            sh "tar xjf ~/.local/opt/%(basename(CLING_URL)) -C ~/.local/opt"
-            sh "ln -f -s ~/.local/opt/%(CLING_DIR)/bin/cling ~/.local/bin/cling"
-            --]=]
-        end
     end
 
 end
