@@ -334,6 +334,5 @@ exec --no-startup-id vlc --qt-start-minimized &
 
 %(when(cfg_yesno("dropbox", "Install Dropbox?")) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
 %(when(cfg_yesno("nextcloud", "Install Nextcloud?")) "exec --no-startup-id Nextcloud")
-%(when(cfg_yesno("radicale", "Install Radicale?")) "exec --no-startup-id radicale & sleep 10s; every 15m radicale_backup &")
 
 %(file_exist "%(HOME)/.config/i3/custom-config" and read "%(HOME)/.config/i3/custom-config" or "")
