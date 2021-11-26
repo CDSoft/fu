@@ -6,7 +6,6 @@
 [ -z "$SSH_AGENT_PID" ] && eval "$(ssh-agent -s)"
 
 export PATH=~/.local/bin:$PATH
-%(when(cfg_yesno("rust", "Install Rust?")) '. ~/.cargo/env')
 
 export EDITOR=nvim
 export VISUAL=nvim

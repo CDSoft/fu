@@ -993,7 +993,7 @@ function dev_configuration()
     if force or update or not installed "tokei" then
         if cfg_yesno("rust", "Install Rust?") then
             log "Tokei"
-            sh "~/.cargo/bin/cargo install tokei"
+            sh "~/.cargo/bin/cargo install tokei --root ~/.local"
         end
     end
 
@@ -1682,7 +1682,7 @@ function i3_configuration()
         if cfg_yesno("rust", "Install Rust?") then
             dnf_install [[ cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++ ]]
             apt_install [[ cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 ]]
-            sh "~/.cargo/bin/cargo install alacritty"
+            sh "~/.cargo/bin/cargo install alacritty --root ~/.local"
         elseif FEDORA then
             dnf_install "alacritty"
         elseif UBUNTU then
