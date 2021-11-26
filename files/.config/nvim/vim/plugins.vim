@@ -45,11 +45,6 @@ Plug 'L3MON4D3/LuaSnip'
 
 Plug 'ollykel/v-vim'
 
-" firenvim requires
-" - https://addons.mozilla.org/en-US/firefox/addon/firenvim/
-" - https://chrome.google.com/webstore/detail/firenvim/egpjdkipkomnmjhjmdamaniclmdlobbo
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-
 %(when(cfg_yesno("work", "Install work configuration?")) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
 
 call plug#end()

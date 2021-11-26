@@ -1585,7 +1585,6 @@ function neovim_configuration()
     if force or upgrade then
         log "Pluggin update"
         sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
-        sh 'nvim --headless "+call firenvim#install(0) | q"'
     end
 
     if cfg_yesno("haskell", "Install Haskell?") then

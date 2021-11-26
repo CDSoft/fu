@@ -25,10 +25,6 @@ runtime vim/vimwiki.vim
 runtime vim/lac.vim
 runtime vim/completion.vim
 
-if exists('g:started_by_firenvim')
-    runtime vim/firenvim.vim " must be run after display.vim
-endif
-
 lua require'nvim-colorizer'
 lua require 'luasnip'
 lua require'lsp'
