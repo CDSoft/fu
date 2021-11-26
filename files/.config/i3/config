@@ -325,9 +325,6 @@ exec --no-startup-id xautolock -time 15 -locker '~/.local/bin/lock' &
 
 exec --no-startup-id alacritty -t ssh-agent -e ~/.local/bin/ssha &
 
-# Time tracker
-exec --no-startup-id tt -d
-
 %(when(cfg_yesno("startvlc", "Autostart VLC in the systray?")) [=[
 # VLC minimized
 exec --no-startup-id vlc --qt-start-minimized &

@@ -1750,13 +1750,6 @@ function i3_configuration()
 
     script ".config/volumeicon/volumeicon"
 
-    if cfg_yesno("haskell", "Install Haskell?") then
-        if force or upgrade or not installed "tt" then
-            gitclone "http://github.com/CDSoft/tt"
-            sh "cd %(repo_path)/tt && make"
-        end
-    end
-
     -- start VLC in a single instance
     if file_exist "%(HOME)/.config/vlc/vlcrc" then
         log "VLC configuration"
