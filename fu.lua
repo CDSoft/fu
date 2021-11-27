@@ -1988,11 +1988,13 @@ function virtualization_configuration()
     dnf_install [[
         VirtualBox
         virtualbox-guest-additions
+        qemu-system-x86
     ]]
     apt_install [[
         virtualbox-qt
         virtualbox-ext-pack
         virtualbox-guest-additions-iso
+        qemu-system-x86
     ]]
     dnf_install "akmod-VirtualBox kernel-devel-%(pipe 'uname -r')"
     apt_install "virtualbox-dkms linux-headers-%(pipe 'uname -r')"
