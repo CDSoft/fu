@@ -3,7 +3,7 @@
 # If you login with gdm3 and choose a GNOME session, the ~/.xsession file will be ignored completely.
 # (But you may still use ~/.xsessionrc.)
 
-[ -z "$SSH_AGENT_PID" ] && eval "$(ssh-agent -s)"
+[ -n "$SSH_AGENT_PID" ] || eval "$(ssh-agent -s)"
 
 export PATH=~/.local/bin:$PATH
 

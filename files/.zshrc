@@ -139,4 +139,4 @@ then
 fi
 
 # User specific environment and startup programs
-[ -z "$SSH_AGENT_PID" ] && eval "$(ssh-agent -s)"
+[ -n "$SSH_AGENT_PID" ] || eval "$(ssh-agent -s)"
