@@ -64,5 +64,5 @@ end
 
 if #images > 0 then
     local image = images[(counter()%#images)+1]
-    os.execute(("hsetroot -full %s"):format(image))
+    os.execute(("feh --bg-fill %s"):format(image))
 end
