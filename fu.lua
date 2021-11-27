@@ -48,13 +48,7 @@ hooks:
 ]]
 end
 
-function configuration()
-
-    FEDORA = installed "dnf"
-    UBUNTU = installed "apt"
-
-    LUA_VERSION = "5.4.3"
-
+function fu_configuration()
     HOME = os.getenv "HOME"
     USER = os.getenv "USER"
 
@@ -62,6 +56,11 @@ function configuration()
     config_path = I"%(fu_path)/config"
     repo_path = I"%(fu_path)/repos"
     src_files = dirname(pipe "realpath %(arg[0])").."/files"
+end
+
+function os_configuration()
+
+    LUA_VERSION = "5.4.3"
 
     TIMEZONE = "Europe/Paris"
     KEYMAP = "fr"
@@ -89,10 +88,10 @@ function configuration()
 end
 
 function main()
-    if FEDORA then title "Fedora Updater" end
-    if UBUNTU then title "Ubuntu Updater" end
 
-    configuration()
+    fu_configuration()
+    identification()
+    os_configuration()
 
     for _, a in ipairs(arg) do
         if a == "-h" then help(); return;
@@ -102,8 +101,6 @@ function main()
         else io.stderr:write("Error: Unknown argument: "..a.."\n\n"); help(); return 1
         end
     end
-
-    identification()
 
     create_directories()
 
@@ -354,16 +351,26 @@ function mkdir(path) sh("mkdir -p "..path) end
 function rm(path) os.remove(I(path)) end
 
 function identification()
+    local function os_release(param) return pipe(". /etc/os-release; echo $"..param) end
+    OS_RELEASE_NAME         = os_release "NAME"
+    OS_RELEASE_PRETTY_NAME  = os_release "PRETTY_NAME"
+    OS_RELEASE_ID           = os_release "ID"
+    OS_RELEASE_VERSION_ID   = os_release "VERSION_ID"
+    UBUNTU_CODENAME         = os_release "UBUNTU_CODENAME"
+
+    title(OS_RELEASE_PRETTY_NAME)
+
+    FEDORA = (OS_RELEASE_ID == "fedora")
+    UBUNTU = (OS_RELEASE_ID == "ubuntu")
+
+    assert(FEDORA or UBUNTU, "Unsupported distribution: "..OS_RELEASE_PRETTY_NAME)
+
+    RELEASE = FEDORA and pipe "rpm -E %fedora"
+              or UBUNTU and OS_RELEASE_VERSION_ID
+
     MYHOSTNAME = cfg_string("hostname", "Hostname:")
-    if FEDORA then
-        RELEASE = pipe "rpm -E %fedora"
-        log "release : Fedora %(RELEASE)"
-    end
-    if UBUNTU then
-        RELEASE = pipe [[ awk -F "=" '$1=="DISTRIB_DESCRIPTION" {print $2}' /etc/lsb-release ]]
-        log "release : %(RELEASE)"
-    end
     log "hostname: %(MYHOSTNAME)"
+    log "username: %(USER)"
 end
 
 function repo(local_name, name)
@@ -1538,7 +1545,7 @@ end
 function neovim_configuration()
     title "neovim configuration"
 
-    ppa("/etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-impish.list", "ppa:neovim-ppa/stable")
+    ppa("/etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-%(UBUNTU_CODENAME).list", "ppa:neovim-ppa/stable")
 
     dnf_install [[
         neovim
@@ -1669,7 +1676,7 @@ function i3_configuration()
         elseif FEDORA then
             dnf_install "alacritty"
         elseif UBUNTU then
-            ppa("/etc/apt/sources.list.d/aslatter-ubuntu-ppa-impish.list", "ppa:aslatter/ppa")
+            ppa("/etc/apt/sources.list.d/aslatter-ubuntu-ppa-%(UBUNTU_CODENAME).list", "ppa:aslatter/ppa")
             apt_install "alacritty"
         end
     end
