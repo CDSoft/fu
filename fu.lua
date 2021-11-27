@@ -947,7 +947,7 @@ function dev_configuration()
     apt_install [[
         git git-gui gitk qgit gitg tig git-lfs
         subversion
-        clang llvm clang-tidy clang-format
+        clang llvm clang-tidy clang-format clangd
         ccls
         cppcheck
         cmake
