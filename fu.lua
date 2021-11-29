@@ -603,6 +603,7 @@ function system_configuration()
     ]]
 
     apt_install [[
+        apt-file
         git
     ]]
 
