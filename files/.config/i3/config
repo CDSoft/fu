@@ -312,7 +312,7 @@ bar {
 
 exec --no-startup-id picom -bc
 exec --no-startup-id numlockx %(cfg_yesno("numlockx", "Enable numclockx?") and "on" or "off")
-exec --no-startup-id /usr/lib64/xfce4/notifyd/xfce4-notifyd &
+exec --no-startup-id %(FEDORA and "/usr/lib64" or UBUNTU and "/lib/x86_64-linux-gnu")/xfce4/notifyd/xfce4-notifyd &
 exec --no-startup-id xfce4-volumed-pulse &
 exec --no-startup-id hsetroot -solid '#020608'
 %(when(cfg_yesno("wallpaper", "Use daily wallpaper?")) [[exec --no-startup-id every 1h wallpaper_of_the_day]])

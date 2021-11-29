@@ -503,7 +503,7 @@ end
 function script(name)
     local function template(file_name, dest_name, exe)
         if file_exist(file_name) then
-            log("Create "..dest_name, 1)
+            log("Create "..dest_name, 2)
             mkdir(dirname(dest_name))
             write(dest_name, read(file_name))
             if exe then sh("chmod +x "..dest_name) end
@@ -1763,6 +1763,14 @@ function i3_configuration()
         local vlcrc = read "%(HOME)/.config/vlc/vlcrc"
         vlcrc = vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
         write("%(HOME)/.config/vlc/vlcrc", vlcrc)
+    end
+
+    -- Xfce configuration for i3
+    for config_file in ls ".config/xfce4/terminal/*" do
+        script(config_file)
+    end
+    for config_file in ls ".config/xfce4/xfconf/xfce-perchannel-xml/*" do
+        script(config_file)
     end
 
 end
