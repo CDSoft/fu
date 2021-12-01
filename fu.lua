@@ -66,7 +66,9 @@ function os_configuration()
     KEYMAP = "fr"
     LOCALE = "fr_FR.UTF-8"
 
-    I3_THEME = "green"      -- "blue" (default), "green"
+    I3_THEME = -- "blue" (default), "green"
+           UBUNTU and "blue"
+        or FEDORA and "green"
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
     NORMAL_FONT_SIZE = 9
