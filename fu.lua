@@ -1719,6 +1719,10 @@ function i3_configuration()
 
     script "xi3"
 
+    script ".config/gtk-3.0/settings.ini"
+    script ".config/qt5ct/qt5ct.conf"
+    script ".gtkrc-2.0"
+
     if FEDORA then
         if force or upgrade or not installed "xcwd" then
             gitclone "https://github.com/schischi-a/xcwd.git"
