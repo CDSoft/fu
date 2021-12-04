@@ -2264,25 +2264,38 @@ function work_configuration()
     -- ROS: http://wiki.ros.org/Installation/Source
     if cfg_yesno("ros", "Install ROS?") then
         if FEDORA then
-            dnf_install [[
-                gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
-                python3-sip-devel qt-devel python3-qt5-devel
-            ]]
-            if not dir_exist "%(HOME)/ros_catkin_ws" then
-                log "Build ROS"
-                sh "sudo rosdep init"
-                sh "rosdep update"
-                sh [[
-                    mkdir -p %(HOME)/ros_catkin_ws;
-                    cd %(HOME)/ros_catkin_ws;
-                    rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.ros;
-                    mkdir -p src;
-                    vcs import --input noetic-desktop.ros ./src;
-                    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y;
-                    ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release;
+            copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo", "thofmann/ros")
+            if tonumber(OS_RELEASE_VERSION_ID) <= 34 then
+                dnf_install [[
+                    ros-desktop_full-devel
+                ]]
+            else
+                dnf_install [[
+                    ros-ros_base
+                    ros-ros_base-devel
                 ]]
             end
         end
+                --[=[ WARNING: this does not seem to work!
+                dnf_install [[
+                    gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
+                    python3-sip-devel qt-devel python3-qt5-devel
+                ]]
+                if not dir_exist "%(HOME)/ros_catkin_ws" then
+                    log "Build ROS"
+                    sh "sudo rosdep init"
+                    sh "rosdep update"
+                    sh [[
+                        mkdir -p %(HOME)/ros_catkin_ws;
+                        cd %(HOME)/ros_catkin_ws;
+                        rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.rosinstall;
+                        mkdir -p src;
+                        vcs import --input noetic-desktop.rosinstall ./src;
+                        rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y;
+                        ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3;
+                    ]]
+                end
+                --]=]
         if UBUNTU then
             apt_install [[
                 ros-desktop-full

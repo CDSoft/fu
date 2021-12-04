@@ -128,7 +128,8 @@ alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
 alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-run-if-empty docker rmi"
 alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
 
-%(when(FEDORA and cfg_yesno("ros", "Install ROS?")) ". ~/ros_catkin_ws/install_isolated/setup.zsh")
+%(when(FEDORA and cfg_yesno("ros", "Install ROS?"))
+    ". /usr/lib64/ros/setup.zsh")
 ]==])
 
 # Other user configuration
