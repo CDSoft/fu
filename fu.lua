@@ -80,7 +80,7 @@ function os_configuration()
 
     BROWSER = "firefox"
     BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
-               FEDORA and cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
+               cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
                BROWSER
 
     LATEST_LTS = "lts-18.17"
@@ -460,6 +460,29 @@ function apt_install(names)
     end
 end
 
+function snap_install(names)
+    if not UBUNTU then return end
+    names = I(names)
+    local all = set(names)
+    local new_packages = set(names)
+    local already_installed = set()
+    if file_exist "%(config_path)/snap_packages" then
+        local old_names = read "%(config_path)/snap_packages"
+        already_installed.add(old_names)
+        all.add(old_names)
+    end
+    local new = false
+    for _, name in new_packages.ipairs() do
+        new = new or not already_installed.has(name)
+    end
+    if new then
+        names = new_packages.concat " "
+        log("Install snap packages: "..names, 1)
+        sh("sudo snap install "..names)
+        write("%(config_path)/snap_packages", all.concat("\n").."\n")
+    end
+end
+
 function luarocks(names)
     names = I(names)
     local all = set(names)
@@ -492,7 +515,7 @@ function upgrade_packages()
             sh "sudo dnf upgrade --best --allowerasing"
         end
         if UBUNTU then
-            sh "sudo apt update && sudo apt upgrade"
+            sh "sudo apt update && sudo apt upgrade && sudo snap refresh"
         end
     end
 end
@@ -1896,8 +1919,9 @@ function internet_configuration()
         dnf_install "google-chrome-stable"
         apt_install "google-chrome-stable"
     end
-    if FEDORA and cfg_yesno("chromium", "Install Chromium?") then
-        packages "chromium"
+    if cfg_yesno("chromium", "Install Chromium?") then
+        dnf_install "chromium"
+        apt_install "chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra"
     end
 
     -- Default browser
