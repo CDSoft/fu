@@ -1571,7 +1571,7 @@ end
 function neovim_configuration()
     title "neovim configuration"
 
-    ppa("/etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-%(UBUNTU_CODENAME).list", "ppa:neovim-ppa/stable")
+    ppa("/etc/apt/sources.list.d/neovim-ppa-ubuntu-unstable-%(UBUNTU_CODENAME).list", "ppa:neovim-ppa/unstable")
 
     dnf_install [[
         neovim
