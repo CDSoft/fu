@@ -462,6 +462,7 @@ end
 
 function snap_install(names)
     if not UBUNTU then return end
+    if not cfg_yesno("snap", "Enable snap?") then return end
     names = I(names)
     local all = set(names)
     local new_packages = set(names)
@@ -515,7 +516,10 @@ function upgrade_packages()
             sh "sudo dnf upgrade --best --allowerasing"
         end
         if UBUNTU then
-            sh "sudo apt update && sudo apt upgrade && sudo snap refresh"
+            sh "sudo apt update && sudo apt upgrade"
+            if cfg_yesno("snap", "Enable snap?") then
+                sh "sudo snap refresh"
+            end
         end
     end
 end
@@ -631,6 +635,22 @@ function system_configuration()
         apt-file
         git
     ]]
+
+    if UBUNTU then
+        if cfg_yesno("snap", "Enable snap?") then
+            if not installed "snap" then
+                log "Install snap"
+                sh "sudo apt install snapd"
+            end
+        else
+            -- Remove snap
+            if installed "snap" then
+                log "Remove snap"
+                sh "sudo apt purge snapd"
+                sh "sudo rm -rf ~/snap /snap /var/snap /var/lib/snapd"
+            end
+        end
+    end
 
     -- Locale and timezone
     log "Timezone and keyboard"
