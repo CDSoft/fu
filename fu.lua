@@ -1346,7 +1346,7 @@ end
 
 function julia_configuration()
 
-    if force or not installed "julia" then
+    if force or upgrade or not installed "julia" then
 
         title "Julia configuration"
 
