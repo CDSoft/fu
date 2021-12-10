@@ -1064,8 +1064,9 @@ function dev_configuration()
     if UBUNTU then
         if force or upgrade or not installed "delta" then
             with_tmpdir(function(tmp)
+                local curr_version = pipe("delta --version"):match("[%d%.]+")
                 local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
-                if UBUNTU then
+                if UBUNTU and version ~= curr_version then
                     log "Delta"
                     sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
                     sh("sudo dpkg -i "..tmp.."/delta.deb")
