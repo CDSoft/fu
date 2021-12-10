@@ -1446,7 +1446,7 @@ end
 
 function swipl_configuration()
 
-    if force or not file_exist "%(HOME)/.local/bin/swipl" then
+    if force or upgrade or not file_exist "%(HOME)/.local/bin/swipl" then
         title "SWI Prolog configuration"
 
         -- https://www.swi-prolog.org/build/unix.html
