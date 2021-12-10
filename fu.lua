@@ -987,7 +987,6 @@ function dev_configuration()
         libicu-devel ncurses-devel zlib-devel
         libstdc++-static
         gc-devel
-        frama-c ocaml-seq-devel
     ]]
 
     apt_install [[
@@ -1232,7 +1231,7 @@ function ocaml_configuration()
         coq
         why3
         alt-ergo
-        frama-c ocaml-seq-devel
+        ocaml-seq-devel
     ]]
 
     apt_install [[
