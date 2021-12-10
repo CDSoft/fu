@@ -593,9 +593,26 @@ end
 -- Force upgrade when the last upgrade is too old {{{
 
 function check_last_upgrade()
+    if not force then
+        title "Check last force upgrade"
+
+        local outdated
+        if file_exist "%(config_path)/last_force_upgrade" then
+            local last_force_upgrade = tonumber(pipe "date +%s -r %(config_path)/last_force_upgrade")
+            local now = tonumber(pipe "date +%s")
+            outdated = now - last_force_upgrade > 60*86400
+        else
+            outdated = true
+        end
+        if outdated then
+            force = ask_yesno "The last force upgrade is too old. Force upgrade now?"
+        end
+        upgrade = upgrade or force
+    end
     if not upgrade then
         title "Check last upgrade"
 
+        local outdated
         if file_exist "%(config_path)/last_upgrade" then
             local last_upgrade = tonumber(pipe "date +%s -r %(config_path)/last_upgrade")
             local now = tonumber(pipe "date +%s")
@@ -610,6 +627,9 @@ function check_last_upgrade()
 end
 
 function store_upgrade_date()
+    if force then
+        sh "touch %(config_path)/last_force_upgrade"
+    end
     if upgrade then
         sh "touch %(config_path)/last_upgrade"
     end
