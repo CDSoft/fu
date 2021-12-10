@@ -1332,7 +1332,7 @@ function rust_configuration()
     local RUST_PACKAGES = {
     }
     for _, package in ipairs(RUST_PACKAGES) do
-        if force or not installed(package) then
+        if force or upgrade or not installed(package) then
             log("Rust package: "..package)
             sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package)
         end
