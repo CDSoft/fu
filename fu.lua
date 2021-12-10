@@ -118,7 +118,7 @@ function main()
     if cfg_yesno("v", "Install V?") then v_configuration() end
     dev_configuration()
     if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
-    if cfg_yesno("ocaml", "Install OCaml?") then ocaml_configuration() end
+    if cfg_yesno("frama-c", "Install Frama-C?") then framac_configuration() end
     if cfg_yesno("racket", "Install Racket?") then racket_configuration() end
     if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
     if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
@@ -1240,9 +1240,9 @@ end
 
 -- OCaml configuration {{{
 
-function ocaml_configuration()
+function framac_configuration()
 
-    title "OCaml configuration"
+    title "Frama-C installation"
 
     dnf_install [[
         opam
@@ -1261,13 +1261,21 @@ function ocaml_configuration()
         cvc4
     ]]
 
-    if force or not installed "frama-c" then
-        log "Frama-C installation"
-        sh "opam init"
-        sh "opam update && opam upgrade"
-        sh "opam install depext"
-        sh "opam depext frama-c"
-        sh "opam install frama-c"
+    if UBUNTU then
+        if force or not file_exist "%(HOME)/.opam/config" then
+            log "Opam configuration"
+            sh "opam init"
+            sh "opam update && opam upgrade"
+        elseif force then
+            log "Opam update"
+            sh "opam update && opam upgrade"
+        end
+        if force or upgrade or not installed "frama-c" then
+            log "Frama-C installation"
+            sh "opam install depext"
+            sh "opam depext frama-c"
+            sh "opam install frama-c"
+        end
     end
 
 end
