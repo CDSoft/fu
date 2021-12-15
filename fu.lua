@@ -1887,6 +1887,7 @@ function graphic_application_configuration()
     apt_install [[
         feh gimp imagemagick scribus inkscape
         gnuplot
+        geogebra
         qrencode
         libreoffice libreoffice-l10n-fr libreoffice-help-fr
         vokoscreen-ng
@@ -1896,6 +1897,16 @@ function graphic_application_configuration()
 
         vlc ffmpeg
     ]]
+
+    --[[
+    if FEDORA and (force or not installed "geogebra") then
+        local GEOGEBRA_URL = "http://www.geogebra.org/download/rpm.php?arch=amd64&ver=6"
+        with_tmpdir(function(tmp)
+            sh("wget '"..GEOGEBRA_URL.."' -O "..tmp.."/geogebra-classic.x86_64.rpm")
+            sh("sudo dnf install "..tmp.."/geogebra-classic.x86_64.rpm")
+        end)
+    end
+    --]]
 
     --[=[
     if UBUNTU then
