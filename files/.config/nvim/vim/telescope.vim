@@ -7,6 +7,9 @@ nnoremap <leader>f/ <cmd>lua require('telescope.builtin').current_buffer_fuzzy_f
 nnoremap <leader>fs <cmd>lua require('telescope.builtin').git_status()<cr>
 nnoremap <leader>fx <cmd>lua require('telescope.builtin').file_browser()<cr>
 
+" see project.nvim
+nnoremap <leader>fp :Telescope projects<cr>
+
 nnoremap <leader>ld <cmd>lua require('telescope.builtin').lsp_definitions()<cr>
 nnoremap <leader>la <cmd>lua require('telescope.builtin').lsp_code_actions()<cr>
 

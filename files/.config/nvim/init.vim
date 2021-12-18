@@ -20,7 +20,7 @@ runtime vim/terminal.vim
 runtime vim/vim-gitgutter.vim
 "runtime vim/vim-bubbles.vim
 runtime vim/neoformat.vim
-runtime vim/vim-rooter.vim
+"runtime vim/vim-rooter.vim
 runtime vim/vimwiki.vim
 runtime vim/lac.vim
 runtime vim/completion.vim
@@ -30,6 +30,8 @@ lua require 'luasnip'
 lua require'lsp'
 lua require'lualine-setup'
 lua require'nvim-cmp'
+lua require'nvim-project-setup'
+lua require'nvim-tree-setup'
 
 " nvim startup may be too long to catch the initial SIGWINCH and resize the window
 autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
