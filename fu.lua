@@ -1545,15 +1545,25 @@ function pandoc_configuration()
     title "Pandoc configuration"
 
     dnf_install [[
-        pandoc
         patat
         asymptote
     ]]
     apt_install [[
-        pandoc
         patat
         asymptote
     ]]
+
+    if force or upgrade or not installed "pandoc" then
+        local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
+        local version = pipe("curl -s https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
+        if version ~= curr_version then
+            log "Pandoc"
+            with_tmpdir(function(tmp)
+                sh("wget https://github.com/jgm/pandoc/releases/download/"..version.."/pandoc-"..version.."-linux-amd64.tar.gz -O "..tmp.."/pandoc.tar.gz")
+                sh("tar xvzf "..tmp.."/pandoc.tar.gz --strip-components 1 -C ~/.local")
+            end)
+        end
+    end
 
     if force or upgrade or not installed "panda" then
         gitclone "http://github.com/cdsoft/panda"
