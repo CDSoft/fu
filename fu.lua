@@ -1757,7 +1757,6 @@ function i3_configuration()
         xfce4-screenshooter
         xfce4-notifyd
         xfce4-volumed
-        xcwd
     ]]
 
     -- alacritty
@@ -1816,15 +1815,10 @@ function i3_configuration()
     script ".config/qt5ct/qt5ct.conf"
     script ".gtkrc-2.0"
 
-    if FEDORA then
-        if force or upgrade or not installed "xcwd" then
-            gitclone "https://github.com/schischi-a/xcwd.git"
-            -- patch to reject "/"
-            local xcwd = read "%(repo_path)/xcwd/xcwd.c"
-            xcwd = xcwd:gsub('%(%s*access%s*%(%s*([%w->]+)%s*,%s*F_OK%s*%)%s*%)', I'(access(%1, F_OK) != 0 || strcmp(%1, "/") == 0)')
-            write("%(repo_path)/xcwd/xcwd.c", xcwd)
-            sh "cd %(repo_path)/xcwd && make && sudo make install"
-        end
+    if force or upgrade or not installed "xcwd" then
+        log "xcwd"
+        gitclone "https://github.com/CDSoft/xcwd.git"
+        sh "cd %(repo_path)/xcwd && make && make install"
     end
 
     if FEDORA then
