@@ -1647,6 +1647,7 @@ function neovim_configuration()
         ccrypt pwgen
         gzip
         jq
+        xclip
     ]]
     apt_install [[
         neovim
@@ -1654,6 +1655,7 @@ function neovim_configuration()
         ccrypt pwgen
         gzip
         jq
+        xclip
     ]]
 
     sh "pip3 install --user pynvim"
