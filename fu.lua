@@ -2122,194 +2122,6 @@ end
 
 -- Work configuration {{{
 
-function work_configuration_old()
-    title "Work configuration"
-
-    if not FEDORA then return end
-
-    dnf_install [[
-        moby-engine grubby
-        python-devel python3-devel
-        ros-rosbag
-        ros-desktop_full-devel
-        xterm
-        minicom
-        patch yices z3 cvc4 zenon eqp E gtksourceview2-devel libgnomecanvas-devel gmp
-        xorg-x11-server-Xephyr
-        sqlite-devel fuse-devel libcurl-devel zlib-devel m4
-    ]]
-    dnf_install [[
-        asymptote
-        can-utils
-        clang
-        clang-tools-extra
-        cmake
-        curl
-        doxygen
-        gcc
-        git
-        graphviz
-        ImageMagick
-        libasan
-        libasan-static
-        libpcap-devel
-        libtsan
-        libtsan-static
-        libubsan
-        libubsan-static
-        llvm
-        ncurses
-        plantuml
-        protobuf-devel
-        python3
-        python3-protobuf
-        SDL2-devel
-        SDL2_ttf-devel
-        socat
-        texlive
-        texlive-scheme-full
-        tcpdump
-        tcpreplay
-        wget
-        xz-devel
-        zlib-devel
-        minicom
-        xterm
-        blas-devel
-        lapack-devel
-        @virtualization
-        vim-common
-        python3-pygame
-        gnu-free-mono-fonts
-        glibc-locale-source
-        cmake
-        dos2unix
-        findutils
-        gcc
-        make
-        qt qt-x11 motif expect
-        glibc.i686
-        astyle
-        asymptote
-        bc
-        blas-devel
-        can-utils
-        clang
-        clang-tools-extra
-        curl
-        doxygen
-        gcc
-        gedit
-        git
-        git-lfs
-        glibc.i686
-        gnu-free-mono-fonts
-        graphviz
-        ImageMagick
-        java
-        jq
-        lapack-devel
-        libasan
-        libasan-static
-        libffi-devel
-        libpcap-devel
-        libtsan
-        libtsan-static
-        libubsan
-        libubsan-static
-        llvm
-        lua
-        lzma-devel
-        mesa-dri-drivers
-        mesa-libGLU
-        minicom
-        ncurses
-        protobuf-devel
-        python3
-        python3-devel
-        python3-pygments
-        qt qt-x11 motif
-        SDL2_ttf-devel
-        SDL2-devel
-        socat
-        sudo
-        tcpdump
-        tcpreplay
-        texlive
-        texlive-scheme-full
-        wget
-        xauth
-        xorg-x11-server-Xvfb
-        xterm
-        xz-devel
-        zlib-devel
-        cvc4
-        E
-        eqp
-        gappa
-        gmp
-        gtksourceview2-devel
-        libgnomecanvas-devel
-        ocaml
-        ocaml-ocamldoc
-        opam
-        patch
-        yices
-        z3
-        zenon
-    ]]
-
-    script "menu-work"
-
-    -- NVidia drivers
-    -- https://docs.fedoraproject.org/en-US/quick-docs/how-to-set-nvidia-as-primary-gpu-on-optimus-based-laptops/
-    if cfg_yesno("nvidia", "Install NVidia drivers") then
-        dnf_install [[
-            xorg-x11-drv-nvidia akmod-nvidia
-            xorg-x11-drv-nvidia-cuda
-            gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-libs.i686
-        ]]
-        sh "sudo akmods --force || true"
-        sh "sudo dracut --force"
-        sh "sudo cp -p /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf"
-        if not read("/etc/X11/xorg.conf.d/nvidia.conf"):match[[Option "PrimaryGPU" "yes"]] then
-            -- add Option "PrimaryGPU" "yes" to OutputClass
-            sh "sudo vi /etc/X11/xorg.conf.d/nvidia.conf"
-        end
-    end
-
-    -- Google Drive
-    --if force or upgrade then
-    --    sh "pip install --user --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
-    --end
-
-    sh [[ pip3 install '--user'             \
-                awscli                      \
-                click                       \
-                junit-xml                   \
-                matplotlib                  \
-                pyaml                       \
-                python-can                  \
-                scipy                       \
-                tftpy                       \
-    ]]
-
-    if cfg_yesno("sphinx", "Install Sphinx?") then
-        sh [[ pip3 install '--user'             \
-                    breathe                     \
-                    recommonmark                \
-                    sphinx==2.4.4               \
-                    sphinxcontrib-globalsubs    \
-                    sphinxcontrib-needs         \
-                    sphinxcontrib-plantuml      \
-                    sphinxcontrib-wavedrom      \
-                    sphinx-multibuild           \
-                    sphinx_rtd_theme            \
-        ]]
-    end
-
-end
-
 function work_configuration()
     title "Work configuration"
 
@@ -2359,6 +2171,17 @@ function work_configuration()
             sh "sudo service docker start || true"
         end
     end
+
+    sh [[ pip3 install '--user'             \
+                awscli                      \
+                click                       \
+                junit-xml                   \
+                matplotlib                  \
+                pyaml                       \
+                python-can                  \
+                scipy                       \
+                tftpy                       \
+    ]]
 
     -- ROS: http://wiki.ros.org/Installation/Source
     if cfg_yesno("ros", "Install ROS?") then
