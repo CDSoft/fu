@@ -1776,6 +1776,14 @@ function i3_configuration()
         end
     end
 
+    -- urxvt
+    if force or upgrade or not file_exist "%(HOME)/.urxvt/ext/font-size" then
+        log "Urxvt font-size"
+        gitclone "https://github.com/majutsushi/urxvt-font-size"
+        mkdir "%(HOME)/.urxvt/ext/"
+        sh "cp %(repo_path)/urxvt-font-size/font-size %(HOME)/.urxvt/ext/"
+    end
+
     -- Default programs
 
     mime_default "%(BROWSER).desktop"
@@ -1799,6 +1807,7 @@ function i3_configuration()
     mime_default "nvim.desktop"
 
     script ".config/alacritty/alacritty.yml"
+    script ".Xdefaults"
 
     script ".config/i3/config"
     script ".xsession"

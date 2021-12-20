@@ -1,0 +1,83 @@
+URxvt.font: xft:%(FONT)-%(FONT_SIZE)
+
+URxvt*background: black
+URxvt*foreground: white
+
+URxvt*scrollBar: False
+
+# Extensions
+URxvt.perl-ext-common:  default,matcher,clipboard,url-select,keyboard-select,font-size
+
+# Right click to open a link in a browser
+URxvt.url-launcher:     %(BROWSER)
+URxvt.matcher.button:   3
+
+# https://addy-dclxvi.github.io/post/configuring-urxvt/
+
+!! Colorscheme
+
+! special
+#*.foreground: #93a1a1
+#*.background: #000000
+#*.cursorColor: #afbfbf
+
+! black
+*.color0: #000000
+*.color8: #666666
+
+! red
+*.color1: #cd3131
+*.color9: #f14c4c
+
+! green
+*.color2: #0dbc79
+*.color10: #23d18b
+
+! yellow
+*.color3: #e5e510
+*.color11: #f5f543
+
+! blue
+*.color4: #2472c8
+*.color12: #3b8eea
+
+! magenta
+*.color5: #bc3fbc
+*.color13: #d670d6
+
+! cyan
+*.color6: #11a8cd
+*.color14: #29b8db
+
+! white
+*.color7: #e5e5e5
+*.color15: #e5e5e5
+
+!! URxvt Appearance
+URxvt.cursorBlink: true
+URxvt.cursorUnderline: false
+URxvt.saveline: 10000
+URxvt.scrollBar: false
+URxvt.scrollBar_right: true
+URxvt.urgentOnBell: true
+URxvt.depth: 24
+URxvt.iso14755: false
+
+!! Copy Paste & Other Extensions
+URxvt.copyCommand: xclip -i -selection clipboard
+URxvt.pasteCommand: xclip -o -selection clipboard
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+URxvt.keysym.M-Escape: perl:keyboard-select:activate
+URxvt.keysym.M-s: perl:keyboard-select:search
+URxvt.keysym.M-u: perl:url-select:select_next
+URxvt.urlLauncher: firefox
+URxvt.underlineURLs: true
+URxvt.urlButton: 1
+
+# https://github.com/majutsushi/urxvt-font-size
+
+URxvt.keysym.C-KP_Add:          font-size:increase
+URxvt.keysym.C-KP_Subtract:     font-size:decrease
+URxvt.keysym.C-equal:           font-size:reset
