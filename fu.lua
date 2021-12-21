@@ -1716,7 +1716,7 @@ function i3_configuration()
         arandr
         sox
         fortune-mod ImageMagick
-        st sxiv ristretto
+        sxiv ristretto
         volumeicon pavucontrol
         adobe-source-code-pro-fonts
         mozilla-fira-mono-fonts
@@ -1748,7 +1748,7 @@ function i3_configuration()
         arandr
         sox
         fortune-mod imagemagick
-        stterm sxiv ristretto
+        sxiv ristretto
         volumeicon-alsa pavucontrol
         fonts-firacode
         rofi
@@ -1782,6 +1782,70 @@ function i3_configuration()
         gitclone "https://github.com/majutsushi/urxvt-font-size"
         mkdir "%(HOME)/.urxvt/ext/"
         sh "cp %(repo_path)/urxvt-font-size/font-size %(HOME)/.urxvt/ext/"
+    end
+
+    -- st
+    if force or upgrade or not file_exist "%(HOME)/.local/bin/st" then
+        log "st"
+        local version = "0.8.4"
+        gitclone("https://git.suckless.org/st")
+        sh "cd %(repo_path)/st && git reset --hard master && git checkout master && git clean -dfx && git fetch && git rebase"
+        sh("cd %(repo_path)/st && git checkout "..version)
+        sh[[cd %(repo_path)/st && sed -i 's/font =.*/font = "%(FONT):size=%(FONT_SIZE):antialias=true:autohint=true";/' config.def.h]]
+        local function patch(url)
+            local file = repo_path.."/st-patches/"..basename(url)
+            if not file_exist(file) then
+                mkdir(dirname(file))
+                sh("wget "..url.." -O "..file)
+            end
+            sh("cd %(repo_path)/st && patch -p1 < "..file)
+        end
+        patch "https://st.suckless.org/patches/dynamic-cursor-color/st-dynamic-cursor-color-0.8.4.diff"
+        patch "https://st.suckless.org/patches/moonfly/st-moonfly-0.8.2.diff"
+        patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb.diff"
+        patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.8.4.diff"
+        patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-20191024-a2c479c.diff"
+        --patch "https://st.suckless.org/patches/undercurl/st-undercurl-0.8.4-20210822.diff"
+        --patch "https://st.suckless.org/patches/universcroll/st-universcroll-0.8.4.diff"
+
+        -- Same colors than Alacritty
+
+        local colors = {
+            -- /* 8 normal colors */
+            [0] = "#000000",
+            [1] = "#cd3131",
+            [2] = "#0dbc79",
+            [3] = "#e5e510",
+            [4] = "#2472c8",
+            [5] = "#bc3fbc",
+            [6] = "#11a8cd",
+            [7] = "#e5e5e5",
+
+            -- /* 8 bright colors */
+            [8] = "#666666",
+            [9] = "#f14c4c",
+            [10] = "#23d18b",
+            [11] = "#f5f543",
+            [12] = "#3b8eea",
+            [13] = "#d670d6",
+            [14] = "#29b8db",
+            [15] = "#e5e5e5",
+
+            -- /* more colors can be added after 255 to use with DefaultXX */
+            [256] = "#000000",
+            [257] = "#f8f8f2",
+            [258] = "#000000",
+            [259]= "#eeeeee",
+        }
+        local config = read "%(repo_path)/st/config.def.h"
+        for i, c in pairs(colors) do
+            config = config:gsub('(%['..i..'%]) = "(#......)"', '%1 = "'..c..'"')
+        end
+        write("%(repo_path)/st/config.def.h", config)
+
+        sh[[cd %(repo_path)/st && sed -i 's#PREFIX =.*#PREFIX = %(HOME)/.local#' config.mk]]
+        sh[[cd %(repo_path)/st && sed -i 's#MANPREFIX =.*#MANPREFIX = %(HOME)/.local/man#' config.mk]]
+        sh "cd %(repo_path)/st && make install"
     end
 
     -- Default programs
