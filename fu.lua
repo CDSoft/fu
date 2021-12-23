@@ -113,7 +113,8 @@ function main()
     shell_configuration()
     network_configuration()
     if cfg_yesno("dropbox", "Install dropbox?") then dropbox_configuration() end
-    if cfg_yesno("nextcloud", "Install Nextcloud?") then nextcloud_configuration() end
+    if cfg_yesno("nextcloud-client", "Install Nextcloud client?") then nextcloud_client_configuration() end
+    if cfg_yesno("nextcloud-server", "Install Nextcloud server?") then nextcloud_server_configuration() end
     filesystem_configuration()
     if cfg_yesno("v", "Install V?") then v_configuration() end
     dev_configuration()
@@ -462,7 +463,7 @@ end
 
 function snap_install(names)
     if not UBUNTU then return end
-    if not cfg_yesno("snap", "Enable snap?") then return end
+    if not cfg_yesno("nextcloud-server", "Install Nextcloud server?") and not cfg_yesno("snap", "Enable snap?") then return end
     names = I(names)
     local all = set(names)
     local new_packages = set(names)
@@ -517,9 +518,9 @@ function upgrade_packages()
         end
         if UBUNTU then
             sh "sudo apt update && sudo apt upgrade"
-            if cfg_yesno("snap", "Enable snap?") then
-                sh "sudo snap refresh"
-            end
+        end
+        if cfg_yesno("snap", "Enable snap?") then
+            sh "sudo snap refresh"
         end
     end
 end
@@ -656,7 +657,7 @@ function system_configuration()
         git
     ]]
 
-    if UBUNTU then
+    if UBUNTU and not cfg_yesno("nextcloud-server", "Install Nextcloud server?") then
         if cfg_yesno("snap", "Enable snap?") then
             if not installed "snap" then
                 log "Install snap"
@@ -875,7 +876,7 @@ end
 
 -- Nextcloud configuration {{{
 
-function nextcloud_configuration()
+function nextcloud_client_configuration()
 
     local installed = file_exist "%(HOME)/.local/bin/Nextcloud"
     if force or upgrade or not installed then
@@ -894,6 +895,15 @@ function nextcloud_configuration()
             end)
         end
     end
+
+end
+
+function nextcloud_server_configuration()
+
+    apt_install "snapd"
+    dnf_install "snapd"
+
+    snap_install "nextcloud"
 
 end
 
