@@ -347,6 +347,12 @@ function with_tmpdir(f)
     sh("rm -rf "..tmp)
 end
 
+function with_file(name, f)
+    local content = read(name)
+    content = f(content)
+    write(name, content)
+end
+
 function sh(cmd) assert(os.execute(I(cmd))) end
 
 function mkdir(path) sh("mkdir -p "..path) end
@@ -1849,11 +1855,12 @@ function i3_configuration()
             [258] = "#000000",
             [259]= "#eeeeee",
         }
-        local config = read "%(repo_path)/st/config.def.h"
-        for i, c in pairs(colors) do
-            config = config:gsub('(%['..i..'%]) = "(#......)"', '%1 = "'..c..'"')
-        end
-        write("%(repo_path)/st/config.def.h", config)
+        with_file("%(repo_path)/st/config.def.h", function(config)
+            for i, c in pairs(colors) do
+                config = config:gsub('(%['..i..'%]) = "(#......)"', '%1 = "'..c..'"')
+            end
+            return config
+        end)
 
         sh[[cd %(repo_path)/st && sed -i 's#PREFIX =.*#PREFIX = %(HOME)/.local#' config.mk]]
         sh[[cd %(repo_path)/st && sed -i 's#MANPREFIX =.*#MANPREFIX = %(HOME)/.local/man#' config.mk]]
@@ -1939,9 +1946,9 @@ function i3_configuration()
     -- start VLC in a single instance
     if file_exist "%(HOME)/.config/vlc/vlcrc" then
         log "VLC configuration"
-        local vlcrc = read "%(HOME)/.config/vlc/vlcrc"
-        vlcrc = vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
-        write("%(HOME)/.config/vlc/vlcrc", vlcrc)
+        with_file("%(HOME)/.config/vlc/vlcrc", function(vlcrc)
+            return vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
+        end)
     end
 
     -- Xfce configuration for i3
