@@ -5,6 +5,7 @@ export PATH=~/.local/bin:~/bin:$PATH
 export EDITOR=nvim
 export VISUAL=nvim
 export BROWSER=%(BROWSER)
+export MANPAGER='nvim +Man!'
 
 export QT_QPA_PLATFORMTHEME=qt5ct
 
