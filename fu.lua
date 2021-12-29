@@ -1748,6 +1748,7 @@ function i3_configuration()
         xsetroot
         xfce4-notifyd
         xfce4-volumed
+        barrier
     ]]
     apt_install [[
         rxvt-unicode
@@ -1769,6 +1770,7 @@ function i3_configuration()
         xfce4-screenshooter
         xfce4-notifyd
         xfce4-volumed
+        barrier
     ]]
 
     -- alacritty
