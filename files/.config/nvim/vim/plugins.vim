@@ -9,6 +9,7 @@ Plug 'https://github.com/JuliaEditorSupport/julia-vim.git'
 Plug 'https://github.com/godlygeek/tabular.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc-syntax.git'
+Plug 'aklt/plantuml-syntax'
 Plug 'nvim-lua/plenary.nvim'
 %(when(cfg_yesno("nvim-telescope", "Use Telescope with Neovim?")) [[
 Plug 'nvim-telescope/telescope.nvim'
