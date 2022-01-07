@@ -1168,6 +1168,12 @@ function dev_configuration()
         end
     end
 
+    if cfg_yesno("lazygit", "Install lazygit?") then
+        if force or upgrade or not installed "lazygit" then
+            sh "go install github.com/jesseduffield/lazygit@latest && ln -sf %(HOME)/go/bin/lazygit %(HOME)/.local/bin/lazygit"
+        end
+    end
+
 end
 
 function lsp_configuration()
@@ -2315,6 +2321,12 @@ function work_configuration()
                 ros-desktop-full
                 ros-desktop-full-dev
             ]]
+        end
+    end
+
+    if cfg_yesno("lazydocker", "Install lazydocker?") then
+        if force or upgrade or not installed "lazydocker" then
+            sh "go install github.com/jesseduffield/lazydocker@latest && ln -sf %(HOME)/go/bin/lazydocker %(HOME)/.local/bin/lazydocker"
         end
     end
 
