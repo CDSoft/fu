@@ -1,0 +1,77 @@
+#!/bin/bash
+
+usage()
+{
+    cat <<EOF
+$(basename $0) [file.iso] [file.img]
+EOF
+}
+
+OPTS=""
+TITLE="vm"
+SUDO=""
+HAS_HS=false
+HAS_CD=false
+
+ISO_PATH=$HOME/iso
+IMG_PATH=$HOME/img
+
+while [ $# -ne 0 ]
+do
+    case "$1" in
+        -h)         usage
+                    exit
+                    ;;
+        *.iso)      ISO=$1
+                    test -f "$ISO" || ISO=$ISO_PATH/$ISO
+                    OPTS+=" -drive file=$ISO,media=cdrom"
+                    TITLE+=" $(basename $ISO)"
+                    HAS_CD=true
+                    ;;
+        *.img)      IMG=$1
+                    test -f "$IMG" || IMG=$IMG_PATH/$IMG
+                    if ! [ -e "$IMG" ]
+                    then
+                        read -p "$IMG not found. Enter the image size: " SIZE
+                        qemu-img create -f qcow2 "$IMG" "${SIZE}G" || exit 1
+                    fi
+                    OPTS+=" -drive file=$IMG,format=qcow2,media=disk"
+                    TITLE+=" $(basename $IMG)"
+                    HAS_HD=true
+                    ;;
+        /dev/sd*)   DEV=$1
+                    OPTS+=" -drive file=$DEV,media=disk"
+                    TITLE+=" $DEV"
+                    HAS_HD=true
+                    SUDO=sudo
+                    ;;
+        *)          if [ -d "$1" ]
+                    then
+                        #OPTS+=" -drive file=fat:rw:$1,media=disk"
+                        OPTS+=" -hdb fat:$1"
+                        TITLE+=" $1"
+                    else
+                        OPTS+=" $1"
+                        TITLE+=" $1"
+                    fi
+                    ;;
+    esac
+    shift
+done
+
+BOOT=
+$HAS_CD && BOOT="d"
+$HAS_HD && BOOT="dc"
+[ -n "$BOOT" ] && OPTS+=" -boot order=$BOOT"
+
+mkdir -p /tmp/vmshare
+$SUDO qemu-system-x86_64 $OPTS \
+    -smp 2 \
+    -m 4G \
+    -k fr \
+    -device AC97 \
+    -name "$TITLE" \
+    -enable-kvm \
+    -rtc base=localtime \
+    -vga std
+    #-drive file=fat:rw:/tmp/vmshare,media=disk \

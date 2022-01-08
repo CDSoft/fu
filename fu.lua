@@ -2214,6 +2214,10 @@ function virtualization_configuration()
         sh "sudo modprobe vboxdrv"
     end
 
+    script "vm"
+    script "sshfs-host"
+    script "sshfs-mount"
+
 end
 
 -- }}}

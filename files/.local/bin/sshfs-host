@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# This script shall be used within qemu to mount the host home directory
+
+sshfs-mount 10.0.2.2:/home/$USER host

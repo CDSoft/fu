@@ -1,0 +1,21 @@
+#!/bin/bash
+
+HOST_SPEC=$1
+MOUNT_NAME=$2
+
+if [ -z "$HOST_SPEC" ] || [ -z "$MOUNT_NAME" ]
+then
+    cat <<EOF
+usage: $0 USER@HOST:PATH MOUNT_NAME
+
+$0 mounts USER@HOST:PATH to /mnt/MOUNT_NAME
+EOF
+    exit 1
+fi
+
+if ! [ -d /mnt/$MOUNT_NAME ]
+then
+    sudo mkdir -p /mnt/$MOUNT_NAME
+    sudo chown $USER:$USER /mnt/$MOUNT_NAME
+fi
+sshfs $HOST_SPEC /mnt/$MOUNT_NAME
