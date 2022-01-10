@@ -402,6 +402,7 @@ function ppa(local_name, name)
     if UBUNTU and not file_exist(local_name) then
         name = I(name)
         log("Install ppa "..name, 1)
+        apt_install "software-properties-common"
         sh("sudo add-apt-repository "..name)
         sh("sudo apt update")
     end
