@@ -982,6 +982,7 @@ function dev_configuration()
         ccls
         cppcheck
         cmake
+        ninja-build
         ncurses-devel
         readline-devel
         meld
@@ -1032,6 +1033,7 @@ function dev_configuration()
         ccls
         cppcheck
         cmake
+        ninja-build
         ncurses-dev
         libreadline-dev
         meld
