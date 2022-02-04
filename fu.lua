@@ -975,6 +975,8 @@ function dev_configuration()
         apt_install [[ r-base r-base-dev ]]
     end
 
+    ppa("/etc/apt/sources.list.d/bartbes-ubuntu-love-stable-%(UBUNTU_CODENAME).list", "ppa:bartbes/love-stable")
+
     dnf_install [[
         git git-gui gitk qgit gitg tig git-lfs
         git-delta
@@ -997,6 +999,7 @@ function dev_configuration()
         lua lua-filesystem lua-fun lua-lpeg lua-posix lua-socket luajit
         luarocks
         lua-devel
+        love
         glfw
         flex bison
         perl-ExtUtils-MakeMaker
@@ -1046,6 +1049,7 @@ function dev_configuration()
         python3-pip
         pypy
         luarocks
+        love
         libglfw3
         flex bison
         libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-image-dev
