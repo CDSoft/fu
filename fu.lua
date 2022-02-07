@@ -83,7 +83,7 @@ function os_configuration()
                cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
                BROWSER
 
-    LATEST_LTS = "lts-18.17"
+    LATEST_LTS = "lts-18.24"
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
@@ -1246,9 +1246,9 @@ function haskell_configuration()
         "hoogle",
         --"matplotlib",
         --"gnuplot",
-        --"parallel",
-        --"MissingH",
-        --"timeit",
+        "parallel",
+        "MissingH",
+        "timeit",
     }
     if force or upgrade then
         for _, package in ipairs(HASKELL_PACKAGES) do
