@@ -759,7 +759,7 @@ function shell_configuration()
             sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
         else
             with_tmpfile(function(tmp)
-                sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && bash "..tmp.." -f -b ~/.local/bin")
+                sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && sh "..tmp.." -f -b ~/.local/bin")
             end)
         end
     end
