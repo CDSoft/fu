@@ -237,6 +237,9 @@ bindsym $mod+$alt+$ctrl+Down    move workspace to output down
 # move a window to the "Meetings" workspace
 bindsym $mod+Shift+m    move container to workspace "Meetings"; workspace "Meetings"
 
+# rename the active workspace
+bindsym $mod+Ctrl+n     exec menu renws
+
 # next/previous workspace
 bindsym $alt+Tab            workspace back_and_forth
 bindsym $mod+Tab            workspace back_and_forth
