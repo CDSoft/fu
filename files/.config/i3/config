@@ -34,6 +34,7 @@ client.background       #ffffff
 #bindsym XF86AudioLowerVolume    exec amixer -c 0 set Master 2dB- && amixer set Master unmute && notify_volume
 #bindsym XF86AudioMute           exec amixer set Master toggle && notify_volume
 #bindsym XF86AudioMicMute        exec amixer set Capture toggle && notify_volume
+bindsym $mod+Ctrl+s             exec pavucontrol
 
 # Brightness
 bindsym XF86MonBrightnessDown   exec brightness -5
@@ -103,6 +104,7 @@ for_window [title="Network Manager"]                            floating enable
 for_window [title="Configuration Center"]                       floating enable
 for_window [title="^floating fzfmenu$"]                         floating enable
 for_window [title="^Screen Layout Editor"]                      floating enable
+for_window [title="^Contrôle du volume"]                        floating enable, border normal
 for_window [title="^Xephyr on :"]                               border normal 8
 
 # kill focused window
