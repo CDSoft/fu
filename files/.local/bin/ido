@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# `ido` runs a command when some files change.
+# It can be used to build softwares or run tests whenever a file changes.
+# My main usage is to run «`ido make`» in a terminal to compile and run tests while coding.
+
+RED=41
+BLUE=44
+
+say()
+{
+    local COLOR=$1
+    local MSG=$2
+    local EOL=$3
+    printf "\\e[${COLOR}m### %-$(($(tput cols) - 4))s\\e[0m${EOL}" "$MSG"
+}
+
+while :
+do
+    say $BLUE "$*" "\n"
+    SECONDS=0
+    "$@" || say $RED "FAILED: $*" "\n"
+    S=$SECONDS
+
+    H=$((S/3600)); S=$((S%3600))
+    M=$((S/60));   S=$((S%60))
+    T=""
+    [ $H -gt 0 ] && T="${T}${H}h"
+    ( [ $M -gt 0 ] || [ $H -gt 0 ] ) && T="${T}${M}m"
+    T="${T}${S}s"
+    say $BLUE "[$T] waiting for changes..." "\r"
+
+    while ! inotifywait -q -r --exclude "\.git|\.sw." -e modify . > /dev/null; do :; done
+done

@@ -1181,6 +1181,8 @@ function dev_configuration()
         end
     end
 
+    script "ido"
+
 end
 
 function lsp_configuration()
