@@ -52,7 +52,7 @@ rename_workspace()
               awk -F: '$1 ~ /[0-9]+/ {print $1": "}'
             )
 
-    i3-input -F "rename workspace to \"${PREFIX}%s\"" -P 'New name of the current workspace: '
+    i3-input -f "%(I3_INPUT_FONT)" -F "rename workspace to \"${PREFIX}%s\"" -P 'New name of the current workspace: '
 
     CLEAN_NAME=$( i3-msg -t get_workspaces |
                   jq '.[] | select(.focused==true).name' |
@@ -65,7 +65,7 @@ rename_workspace()
 
 new_workspace()
 {
-    i3-input -F "workspace \"%s\"" -P 'New workspace: '
+    i3-input -f "%(I3_INPUT_FONT)" -F "workspace \"%s\"" -P 'New workspace: '
 }
 
 idle()

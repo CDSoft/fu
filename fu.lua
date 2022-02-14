@@ -77,6 +77,7 @@ function os_configuration()
     FONT_SIZE =    yres <= 1080 and 9
                 or yres <= 1440 and 9+4
                 or                  9+8
+    I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
 
     BROWSER = "firefox"
     BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
