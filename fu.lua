@@ -786,6 +786,12 @@ function shell_configuration()
         end
     end
 
+    if UBUNTU then
+        if not installed "fd" and installed "fdfind" then
+            sh "ln -s -f /usr/bin/fdfind ~/.local/bin/fd"
+        end
+    end
+
 end
 
 -- }}}

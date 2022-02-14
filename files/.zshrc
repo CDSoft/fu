@@ -21,8 +21,6 @@ alias lt='ll --sort newest'
 
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 
-%(when(UBUNTU) "alias fd=fdfind")
-
 alias more=less
 alias df='df -h'
 alias du='du -h'
