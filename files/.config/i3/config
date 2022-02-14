@@ -342,6 +342,6 @@ exec --no-startup-id vlc --qt-start-minimized &
 # run specific scripts at i3 startup
 
 %(when(cfg_yesno("dropbox", "Install Dropbox?")) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
-%(when(cfg_yesno("nextcloud-client", "Install Nextcloud client?")) "exec --no-startup-id Nextcloud")
+%(when(cfg_yesno("nextcloud-client", "Install Nextcloud client?") and cfg_yesno("nextcloud-client-start", "Start Nextcloud client after boot?")) "exec --no-startup-id Nextcloud")
 
 %(file_exist "%(HOME)/.config/i3/custom-config" and read "%(HOME)/.config/i3/custom-config" or "")
