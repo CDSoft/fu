@@ -38,7 +38,7 @@ fi
 [ -x ~/.local/bin/lua ] || (
     ( hash apt && ! ( hash curl && hash make && hash gcc ) ) 2>/dev/null && sudo apt install curl make gcc
     ( hash dnf && ! ( hash curl && hash make && hash gcc ) ) 2>/dev/null && sudo dnf install curl make gcc
-    LUA_VERSION=5.4.3
+    LUA_VERSION=5.4.4
     LUA_BUILD=/tmp/fu-lua-$LUA_VERSION
     mkdir -p $LUA_BUILD
     cd $LUA_BUILD
