@@ -1228,7 +1228,7 @@ function lsp_configuration()
               compile/install.sh
               cd ../..
               ./3rd/luamake/luamake rebuild
-              ln -s -f $PWD/bin/Linux/lua-language-server ~/.local/bin/ ]]
+              ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
     end
 
 end
