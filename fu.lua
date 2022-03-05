@@ -750,7 +750,7 @@ function shell_configuration()
     gitclone "https://github.com/zsh-users/zsh-autosuggestions"
 
     log "Starship prompt"
-    if force or not installed "starship" then
+    if force or upgrade or not installed "starship" then
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
         if cfg_yesno("rust", "Install Rust?") then
@@ -1370,11 +1370,20 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
+        {"bottom", "btm"},
+        "hyperfine",
+        "procs",
     }
     for _, package in ipairs(RUST_PACKAGES) do
-        if force or upgrade or not installed(package) then
+        local exe = nil
+        if type(package) == "table" then
+            package, exe = table.unpack(package)
+        else
+            exe = package
+        end
+        if force or upgrade or not installed(exe) then
             log("Rust package: "..package)
-            sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package)
+            sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package.." --root ~/.local")
         end
     end
 
