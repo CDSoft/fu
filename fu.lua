@@ -1370,9 +1370,9 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
-        {"bottom", "btm"},
-        "hyperfine",
-        "procs",
+        --{"bottom", "btm"},
+        --"hyperfine",
+        --"procs",
     }
     for _, package in ipairs(RUST_PACKAGES) do
         local exe = nil
