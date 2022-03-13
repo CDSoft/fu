@@ -1157,7 +1157,7 @@ function dev_configuration()
     -- pip
     if force or upgrade then
         log "pip upgrade"
-        sh "python3 -m pip install --user --upgrade pip"
+        sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring python3 -m pip install --user --upgrade pip"
     end
 
     -- git
@@ -1653,7 +1653,7 @@ function pandoc_configuration()
 
     if force or upgrade or not installed "blockdiag" then
         log "Blockdiag"
-        sh "pip3 install --user blockdiag seqdiag actdiag nwdiag"
+        sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user blockdiag seqdiag actdiag nwdiag"
     end
 
     if force or upgrade or not installed "mmdc" then
@@ -1710,7 +1710,7 @@ function neovim_configuration()
         xclip
     ]]
 
-    sh "pip3 install --user pynvim"
+    sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user pynvim"
 
     for config_file in ls ".config/nvim/*.vim" do
         script(config_file)
@@ -2274,7 +2274,7 @@ function work_configuration()
     -- AWS
     if force or upgrade then
         log "AWS configuration"
-        sh "pip3 install --user awscli boto3"
+        sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user awscli boto3"
         sh "sudo groupadd docker || true"
         sh "sudo usermod -a -G docker %(USER)"
         sh "sudo systemctl enable docker || true"
@@ -2309,7 +2309,8 @@ function work_configuration()
         end
     end
 
-    sh [[ pip3 install '--user'             \
+    sh [[ export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+          pip3 install '--user'             \
                 awscli                      \
                 click                       \
                 junit-xml                   \
