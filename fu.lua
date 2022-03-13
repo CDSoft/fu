@@ -665,6 +665,7 @@ function system_configuration()
 
     apt_install [[
         apt-file
+        software-properties-common
         git
     ]]
 
