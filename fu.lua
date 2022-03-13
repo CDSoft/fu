@@ -84,6 +84,9 @@ function os_configuration()
                cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
                BROWSER
 
+    WIKI = cfg_string("wiki", "Wiki directory (e.g.: ~/Nextcloud/Wiki):")
+    if WIKI == "" then WIKI = "~" end
+
     LATEST_LTS = "lts-18.24"
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
@@ -1744,6 +1747,11 @@ function neovim_configuration()
             log "ShellCheck"
             sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
         end
+    end
+
+    -- Notes, TO-DO lists and password manager
+    if WIKI ~= "~" then
+        mkdir "%(WIKI)"
     end
 
 end
