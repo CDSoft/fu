@@ -1729,13 +1729,27 @@ function neovim_configuration()
     sh "cp %(repo_path)/vim-plug/plug.vim %(HOME)/.config/nvim/autoload/"
 
     -- Asymptote syntax
-    if file_exist "/usr/share/asymptote/asy.vim" and file_exist "/usr/share/asymptote/asy_filetype.vim" then
-        log "Asymptote syntax"
-        mkdir "%(HOME)/.config/nvim/syntax"
-        mkdir "%(HOME)/.config/nvim/ftdetect"
-        sh "cp /usr/share/asymptote/asy.vim ~/.config/nvim/syntax/"
-        sh "cp /usr/share/asymptote/asy_filetype.vim ~/.config/nvim/ftdetect/asy.vim"
+    local function nvim_cp(msg, candidates, dest)
+        for _, src in ipairs(candidates) do
+            if file_exist(src) then
+                log(msg)
+                mkdir(dest)
+                sh("cp "..src.." "..dest)
+            end
+        end
     end
+    nvim_cp("Asymptote syntax",
+        { "/usr/share/asymptote/asy.vim",
+          "/usr/share/vim/addons/syntax/asy.vim",
+        },
+        "%(HOME)/.config/nvim/syntax"
+    )
+    nvim_cp("Asymptote syntax detection",
+        { "/usr/share/asymptote/asy_filetype.vim",
+          "/usr/share/vim/addons/ftdetect/asy_filetype.vim",
+        },
+        "%(HOME)/.config/nvim/ftdetect"
+    )
 
     -- update all plugins
     if force or upgrade then
