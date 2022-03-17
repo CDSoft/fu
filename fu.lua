@@ -130,8 +130,9 @@ function main()
     if cfg_yesno("swipl", "Install SWI Prolog (from sources)?") then swipl_configuration() end
     lsp_configuration()
     text_edition_configuration()
-    pandoc_configuration()
     if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
+    asymptote_configuration()
+    pandoc_configuration()
     neovim_configuration()
     i3_configuration()
     graphic_application_configuration()
@@ -1599,11 +1600,9 @@ function pandoc_configuration()
 
     dnf_install [[
         patat
-        asymptote
     ]]
     apt_install [[
         patat
-        asymptote
     ]]
 
     if force or upgrade or not installed "pandoc" then
@@ -1674,13 +1673,33 @@ function latex_configuration()
 
     dnf_install [[
         texlive texlive-scheme-full
-        graphviz plantuml asymptote
+        graphviz plantuml
     ]]
     apt_install [[
         texlive texlive-full
-        graphviz plantuml asymptote
+        graphviz plantuml
     ]]
 
+end
+
+-- }}}
+
+-- Asymptote configuration {{{
+
+function asymptote_configuration()
+    if cfg_yesno("asymptote-sources", "Install Asymptote from source?") then
+        if force or update or not file_exist "%(HOME)/.local/bin/asy" then
+            log "Asymptote"
+            gitclone "https://github.com/vectorgraphics/asymptote"
+            sh [[ cd %(repo_path)/asymptote && ./autogen.sh ]]
+            sh [[ cd %(repo_path)/asymptote && ./configure --prefix=%(HOME)/.local ]]
+            sh [[ cd %(repo_path)/asymptote && make all -j 4 ]]
+            sh [[ cd %(repo_path)/asymptote && make install ]]
+        end
+    else
+        dnf "asymptote"
+        apt "asymptote"
+    end
 end
 
 -- }}}
@@ -1733,22 +1752,25 @@ function neovim_configuration()
         for _, src in ipairs(candidates) do
             if file_exist(src) then
                 log(msg)
-                mkdir(dest)
+                mkdir(dirname(dest))
                 sh("cp "..src.." "..dest)
+                return
             end
         end
     end
     nvim_cp("Asymptote syntax",
-        { "/usr/share/asymptote/asy.vim",
+        { "%(HOME)/.local/share/asymptote/asy.vim",
+          "/usr/share/asymptote/asy.vim",
           "/usr/share/vim/addons/syntax/asy.vim",
         },
-        "%(HOME)/.config/nvim/syntax"
+        "%(HOME)/.config/nvim/syntax/asy.vim"
     )
     nvim_cp("Asymptote syntax detection",
-        { "/usr/share/asymptote/asy_filetype.vim",
+        { "%(HOME)/.local/share/asymptote/asy_filetype.vim",
+          "/usr/share/asymptote/asy_filetype.vim",
           "/usr/share/vim/addons/ftdetect/asy_filetype.vim",
         },
-        "%(HOME)/.config/nvim/ftdetect"
+        "%(HOME)/.config/nvim/ftdetect/asy_filetype.vim"
     )
 
     -- update all plugins
