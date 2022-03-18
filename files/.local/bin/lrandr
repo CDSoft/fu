@@ -1,0 +1,66 @@
+#!/usr/bin/env lua
+
+print "lrandr: automatic screen layout"
+
+local usage = [[
+usage: lrandr [single|clone|left|right|above]
+]]
+
+local resolutions = {
+    ["1920x1200"] = true,
+    ["1920x1080"] = true,
+}
+local default_layout = "right"
+
+local primary_screen = nil
+local secondary_screen = nil
+local disconnected_screens = {}
+local screen_resolution = {}
+
+local function xrandr(...)
+    local cmd = "xrandr "..table.concat({...}, " ")
+    print(cmd)
+    os.execute(cmd)
+end
+
+local layouts = {
+    single = function()
+        for _, s in ipairs(disconnected_screens) do xrandr("--output", s, "--off") end
+        if secondary_screen then xrandr("--output", secondary_screen, "--off") end
+    end,
+    clone = function() xrandr("--output", secondary_screen, "--auto", "--same-as", primary_screen, "--scale-from", screen_resolution[primary_screen]) end,
+    left = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], "--left-of", primary_screen) end,
+    right = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], "--right-of", primary_screen) end,
+    above = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], "--above", primary_screen) end,
+}
+
+local current_name = nil
+for s in io.popen("xrandr"):lines() do
+    s:gsub("([%w%-]+)%s+connected%s+(%w*)", function(name, primary)
+        if primary == "primary" then primary_screen = name else secondary_screen = name end
+        current_name = name
+    end)
+    s:gsub("([%w%-]+)%s+disconnected", function(name)
+        table.insert(disconnected_screens, name)
+        current_name = name
+    end)
+    if not screen_resolution[current_name] then
+        s:gsub("%s+(%w+)%s+", function(res)
+            if resolutions[res] then screen_resolution[current_name] = res end
+        end)
+    end
+end
+
+print("primary:    ", primary_screen, screen_resolution[primary_screen])
+print("secondary:  ", secondary_screen, screen_resolution[secondary_screen])
+print("disonnected:", table.concat(disconnected_screens, ", "))
+
+local layout = arg[1] or default_layout
+if not secondary_screen then layout = "single" end
+local layout_function = layouts[layout]
+if layout_function then
+    print("New layout: ", layout)
+    layout_function()
+else
+    print(usage)
+end

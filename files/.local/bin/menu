@@ -81,21 +81,21 @@ EXT_RES=1920x1200
 
 case "$1" in
     %(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
-    (single*)       move_to_int; xrandr --output HDMI-1 --off
+    (single*)       move_to_int; lrandr single
                     i3-msg reload
                     ;;
-    (clone*)        move_to_int; xrandr --output HDMI-1 --auto --same-as eDP-1 --scale-from 1920x1080
+    (clone*)        move_to_int; lrandr clone
                     i3-msg reload
                     ;;
-    (left*)         xrandr --output HDMI-1 --mode $EXT_RES --left-of eDP-1
+    (left*)         lrandr left
                     i3-msg move workspace to output left
                     i3-msg reload
                     ;;
-    (dual*|right*)  xrandr --output HDMI-1 --mode $EXT_RES --right-of eDP-1
+    (dual*|right*)  lrandr right
                     i3-msg move workspace to output right
                     i3-msg reload
                     ;;
-    (above*)        xrandr --output HDMI-1 --mode $EXT_RES --above eDP-1
+    (above*)        lrandr above
                     i3-msg move workspace to output up
                     i3-msg reload
                     ;;

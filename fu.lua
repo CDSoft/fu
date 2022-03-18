@@ -2013,6 +2013,8 @@ function i3_configuration()
 
     script "screenshot"
 
+    script "lrandr"
+
     script "menu"
     script "idle"
 
