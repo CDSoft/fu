@@ -1697,8 +1697,8 @@ function asymptote_configuration()
             sh [[ cd %(repo_path)/asymptote && make install ]]
         end
     else
-        dnf "asymptote"
-        apt "asymptote"
+        dnf_install "asymptote"
+        apt_install "asymptote"
     end
 end
 
