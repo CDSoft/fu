@@ -1400,14 +1400,14 @@ end
 
 function julia_configuration()
 
-    if force or upgrade or not installed "julia" then
+    if force or not installed "julia" then
 
         title "Julia configuration"
 
-        dnf_install [[ julia ]]
-        apt_install [[ julia ]]
+        --dnf_install [[ julia ]]
+        --apt_install [[ julia ]]
 
-        --[=[
+        -- [=[
         JULIA_URL = "https://julialang.org/downloads/"
 
         local index = pipe("curl -sSL %(JULIA_URL)")
