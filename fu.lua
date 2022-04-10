@@ -123,6 +123,7 @@ function main()
     if cfg_yesno("v", "Install V?") then v_configuration() end
     dev_configuration()
     if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
+    if cfg_yesno("ocaml", "Install OCaml?") then ocaml_configuration() end
     if cfg_yesno("frama-c", "Install Frama-C?") then framac_configuration() end
     if cfg_yesno("racket", "Install Racket?") then racket_configuration() end
     if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
@@ -1285,12 +1286,43 @@ end
 
 -- OCaml configuration {{{
 
+
+function ocaml_configuration()
+
+    title "OCaml installation"
+
+    dnf_install [[
+        opam
+    ]]
+
+    apt_install [[
+        opam
+    ]]
+
+    if force or not file_exist "%(HOME)/.opam/config" then
+        log "Opam configuration"
+        sh "opam init"
+        sh "opam update && opam upgrade"
+    elseif force then
+        log "Opam update"
+        sh "opam update && opam upgrade"
+    end
+
+    local packages = "dune ocaml-lsp-server merlin utop"
+
+    sh("opam install "..packages)
+
+    sh "opam user-setup install"
+
+end
+
 function framac_configuration()
 
     title "Frama-C installation"
 
+    if not cfg_yesno("ocaml", "Install OCaml?") then error("Frama-C requires OCaml") end
+
     dnf_install [[
-        opam
         z3
         cvc4
         frama-c
@@ -1301,24 +1333,16 @@ function framac_configuration()
     ]]
 
     apt_install [[
-        opam
         z3
         cvc4
     ]]
 
     if UBUNTU then
-        if force or not file_exist "%(HOME)/.opam/config" then
-            log "Opam configuration"
-            sh "opam init"
-            sh "opam update && opam upgrade"
-        elseif force then
-            log "Opam update"
-            sh "opam update && opam upgrade"
-        end
         if force or upgrade or not installed "frama-c" then
             log "Frama-C installation"
             sh "opam install depext"
             sh "opam depext frama-c"
+            sh "opam install alt-ergo"
             sh "opam install frama-c"
         end
     end

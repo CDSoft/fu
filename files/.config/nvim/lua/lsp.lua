@@ -111,3 +111,7 @@ local vls_binary = vls_root_path.."/cmd/vls/vls"
 require'lspconfig'.vls.setup {
   cmd = {vls_binary},
 }
+
+-- OCaml Language Server
+require'lspconfig'.ocamllsp.setup {
+}
