@@ -19,7 +19,7 @@ License
 
     Fedora Updater (fu): lightweight Fedora « distribution »
 
-    Copyright (C) 2018-2020 Christophe Delord
+    Copyright (C) 2018-2022 Christophe Delord
     https://github.com/CDSoft/fu
 
     This file is part of Fedora Updater (FU)

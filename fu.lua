@@ -1,10 +1,10 @@
-#!/bin/env lua
+#!/bin/env luax
 -- vim: set ts=4 sw=4 foldmethod=marker :
 
 --[[====================================================================
 Fedora Updater (fu): lightweight Fedora « distribution »
 
-Copyright (C) 2018-2021 Christophe Delord
+Copyright (C) 2018-2022 Christophe Delord
 https://github.com/CDSoft/fu
 
 This file is part of Fedora Updater (FU)

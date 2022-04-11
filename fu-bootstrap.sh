@@ -4,7 +4,7 @@
 ########################################################################
 # Fedora Updater (fu): lightweight Fedora « distribution »
 #
-# Copyright (C) 2018-2020 Christophe Delord
+# Copyright (C) 2018-2022 Christophe Delord
 # https://github.com/CDSoft/fu
 #
 # This file is part of Fedora Updater (FU)
@@ -34,21 +34,16 @@ then
     exec "$@"
 fi
 
-
-[ -x ~/.local/bin/lua ] || (
-    ( hash apt && ! ( hash curl && hash make && hash gcc ) ) 2>/dev/null && sudo apt install curl make gcc
-    ( hash dnf && ! ( hash curl && hash make && hash gcc ) ) 2>/dev/null && sudo dnf install curl make gcc
-    LUA_VERSION=5.4.4
-    LUA_BUILD=/tmp/fu-lua-$LUA_VERSION
-    mkdir -p $LUA_BUILD
-    cd $LUA_BUILD
-    curl -R -O http://www.lua.org/ftp/lua-$LUA_VERSION.tar.gz
-    rm -rf lua-$LUA_VERSION
-    tar zxf lua-$LUA_VERSION.tar.gz
-    cd lua-$LUA_VERSION
-    sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=~/.local#' Makefile
-    make linux test install
+[ -x ~/.local/bin/luax ] || (
+    LAPP_URL=http://cdelord.fr/lapp/lapp-linux-x86_64.tar.gz
+    TMP_LAPP=$(mktemp -d)
+    cd $TMP_LAPP
+    wget $LAPP_URL -O $(basename $LAPP_URL)
+    tar xzf $(basename $LAPP_URL)
+    mkdir -p ~/.local/bin
+    install -T lapp ~/.local/bin/lapp
+    install -T luax ~/.local/bin/luax
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
-~/.local/bin/lua ~/.local/bin/fu -u
+~/.local/bin/luax ~/.local/bin/fu -u
