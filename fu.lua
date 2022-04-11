@@ -2433,6 +2433,28 @@ function work_configuration()
         end
     end
 
+    -- VPN
+    if UBUNTU then
+        if not installed "AVPNC" then
+            -- https://docs.aviatrix.com/Downloads/samlclient.html#debian-ubuntu
+            apt_install "gedit resolvconf"
+            with_tmpdir(function(tmp)
+                sh("wget https://aviatrix-download.s3-us-west-2.amazonaws.com/AviatrixVPNClient/AVPNC_linux_FocalFossa.deb -O "..tmp.."/AVPNC_linux_FocalFossa.deb")
+                sh("sudo dpkg -i "..tmp.."/AVPNC_linux_FocalFossa.deb")
+            end)
+        end
+    end
+    if FEDORA then
+        if not file_exist "/etc/resolv.conf.orig" then
+            dnf_install "NetworkManager-openvpn-gnome"
+            sh "systemctl disable --now systemd-networkd"
+            if file_exist "/etc/resolv.conf" then
+                sh "sudo mv /etc/resolv.conf /etc/resolv.conf.orig"
+            end
+            sh "systemctl restart NetworkManager"
+        end
+    end
+
 end
 
 -- }}}
