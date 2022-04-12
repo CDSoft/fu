@@ -11,7 +11,7 @@ reboot              : reboot the computer
 exit                : exit i3
 lock                : lock screen
 
-%(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
+%(when(cfg.external_monitor) [=[
 single              : internal monitor only
 right               : external monitor on the right
 left                : external monitor on the left
@@ -80,7 +80,7 @@ idle()
 EXT_RES=1920x1200
 
 case "$1" in
-    %(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
+    %(when(cfg.external_monitor) [=[
     (single*)       move_to_int; lrandr single
                     i3-msg reload
                     ;;

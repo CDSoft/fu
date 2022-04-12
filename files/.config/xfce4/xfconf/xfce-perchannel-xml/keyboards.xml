@@ -2,6 +2,6 @@
 
 <channel name="keyboards" version="1.0">
   <property name="Default" type="empty">
-    <property name="Numlock" type="bool" value=%(cfg_yesno("numlockx", "Enable numclockx?") and "true" or "false")/>
+    <property name="Numlock" type="bool" value=%(cfg.numlockx and "true" or "false")/>
   </property>
 </channel>

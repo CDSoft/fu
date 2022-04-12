@@ -3,8 +3,8 @@
     fontdiff = -family \"DejaVu Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
     encoding = utf-8
 [user]
-    email = %(cfg_string("git_user_email", "Git user email:"))
-    name = %(cfg_string("git_user_name", "Git user name:"))
+    email = %(cfg.git_user_email)
+    name = %(cfg.git_user_name)
 [core]
     excludesfile = %(HOME)/.gitignore
 [alias]

@@ -55,7 +55,7 @@ zstyle ':completion:*:*:make:*' tag-order 'targets'
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
 
-%(when(cfg_yesno("haskell", "Install Haskell?")) 'eval "$(stack --bash-completion-script stack)"')
+%(when(cfg.haskell) 'eval "$(stack --bash-completion-script stack)"')
 eval "$(pandoc --bash-completion)"
 
 # zoxide
@@ -64,8 +64,8 @@ eval "$(zoxide init zsh)"
 
 # Third-party configuration
 
-%(when(cfg_yesno("frama-c", "Install Frama-C?")) '[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
-%(when(cfg_yesno("rust", "Install Rust?")) '. ~/.cargo/env')
+%(when(cfg.frama_c) '[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
+%(when(cfg.rust) '. ~/.cargo/env')
 
 # Plugins
 
@@ -114,7 +114,7 @@ eval "$(luarocks path --bin)"
 # Lua Language Server
 alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
 
-%(when(cfg_yesno("work", "Install work configuration")) [==[
+%(when(cfg.work) [==[
 # Work configuration
 
 #alias docker='docker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -v /dev/bus/usb:/dev/bus/usb --privileged -p host_port:container_port/tcp'
@@ -127,7 +127,7 @@ alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
 alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-run-if-empty docker rmi"
 alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
 
-%(when(FEDORA and cfg_yesno("ros", "Install ROS?"))
+%(when(FEDORA and cfg.ros)
     ". /usr/lib64/ros/setup.zsh")
 ]==])
 

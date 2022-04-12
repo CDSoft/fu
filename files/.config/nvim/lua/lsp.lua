@@ -44,8 +44,8 @@ local servers = {
     "clangd",
     "dotls",
     "pyright",
-    --%(when(cfg_yesno("haskell", "Install Haskell?")) [["hls",]])
-    %(when(cfg_yesno("zig", "Install Zig?")) [["zls",]])
+    --%(when(cfg.haskell) [["hls",]])
+    %(when(cfg.zig) [["zls",]])
 }
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {

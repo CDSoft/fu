@@ -1,8 +1,8 @@
 #!/usr/bin/env lua
 
 local INDEXES = {
-%(when(cfg_yesno("wallpaper-nasa", "Use NASA wallpaper?")) [[    {url="https://apod.nasa.gov/apod/astropix.html", pattern="href=\"([^\"]-%.jpg)\""},]])
-%(when(cfg_yesno("wallpaper-bing", "Use BING wallpaper?")) [[    {url="https://bing.gifposter.com/",              pattern="https://[^\"]-%.jpg"},]])
+%(when(cfg.wallpaper_nasa) [[    {url="https://apod.nasa.gov/apod/astropix.html", pattern="href=\"([^\"]-%.jpg)\""},]])
+%(when(cfg.wallpaper_bing) [[    {url="https://bing.gifposter.com/",              pattern="https://[^\"]-%.jpg"},]])
 }
 local CACHE = "%(HOME)/.local/var/wallpaper_of_the_day"
 local COUNTER = CACHE.."/.counter"

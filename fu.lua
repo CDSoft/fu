@@ -48,6 +48,9 @@ hooks:
 ]]
 end
 
+local fun = require "fun"
+local fs = require "fs"
+
 function fu_configuration()
     HOME = os.getenv "HOME"
     USER = os.getenv "USER"
@@ -56,6 +59,72 @@ function fu_configuration()
     config_path = I"%(fu_path)/config"
     repo_path = I"%(fu_path)/repos"
     src_files = dirname(pipe "realpath %(arg[0])").."/files"
+
+    configured = db(fs.join(config_path, "configured.lua"))
+    installed_packages = db(fs.join(config_path, "packages.lua"))
+    installed_snap_packages = db(fs.join(config_path, "snap_packages.lua"))
+    installed_lua_packages = db(fs.join(config_path, "lua_packages.lua"))
+
+    cfg = interactive(fs.join(config_path, "config.lua")) {
+
+        hostname = {"Hostname:", "str"},
+        wiki = {"Wiki directory (e.g.: ~/Nextcloud/Wiki):", "str"},
+        git_user_email = {"Git user email:", "str"},
+        git_user_name = {"Git user name:", "str"},
+
+        numlockx = {"Enable numclockx?", "yn"},
+        external_monitor = {"Add shortcuts for external monitor?", "yn"},
+        i3_fnkeys = {"Use Fn keys to change workspaces?", "yn"},
+        wallpaper = {"Use daily wallpaper?", "yn"},
+        wallpaper_nasa = {"Use NASA wallpaper?", "yn"},
+        wallpaper_bing = {"Use BING wallpaper?", "yn"},
+
+        chrome_as_alternative_browser = {"Use Google Chrome as alternative browser?", "yn"},
+        chromium_as_alternative_browser = {"Use Chromium as alternative browser?", "yn"},
+        thunderbird_mailer = {"Use Thunderbird as the default mailer?", "yn"},
+        chrome = {"Install Google Chrome?", "yn"},
+        chromium = {"Install Chromium?", "yn"},
+
+        haskell = {"Install Haskell?", "yn"},
+        ocaml = {"Install OCaml?", "yn"},
+        racket = {"Install Racket?", "yn"},
+        julia = {"Install Julia?", "yn"},
+        swipl = {"Install SWI Prolog (from sources)?", "yn"},
+        zig = {"Install Zig?", "yn"},
+        frama_c = {"Install Frama-C?", "yn"},
+        rust = {"Install Rust?", "yn"},
+        v = {"Install V?", "yn"},
+        R = {"Install R?", "yn"},
+        asymptote_sources = {"Install Asymptote from source?", "yn"},
+
+        latex = {"Install LaTeX?", "yn"},
+        povray = {"Install Povray?", "yn"},
+        snap = {"Enable snap?", "yn"},
+        lazygit = {"Install lazygit?", "yn"},
+        lazydocker = {"Install lazydocker?", "yn"},
+        abp = {"Install abp?", "yn"},
+        pp = {"Install pp?", "yn"},
+
+        zoom = {"Install Zoom?", "yn"},
+        teams = {"Install Teams?", "yn"},
+
+        virtualization = {"Install virtualization tools?", "yn"},
+
+        work = {"Install work configuration?", "yn"},
+        ros = {"Install ROS?", "yn"},
+        move_docker_to_home = {"Move /var/lib/docker to /home/docker?", "yn"},
+
+        nvim_telescope = {"Use Telescope with Neovim?", "yn"},
+        nvim_fzf = {"Use FZF with Neovim?", "yn"},
+
+        nextcloud_client = {"Install Nextcloud client?", "yn"},
+        nextcloud_client_start = {"Start Nextcloud client after boot?", "yn"},
+        nextcloud_server = {"Install Nextcloud server?", "yn"},
+        dropbox = {"Install Dropbox?", "yn"},
+
+        startvlc = {"Autostart VLC in the systray?", "yn"},
+
+    }
 end
 
 function os_configuration()
@@ -80,11 +149,11 @@ function os_configuration()
     I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
 
     BROWSER = "firefox"
-    BROWSER2 = cfg_yesno("chrome-as-alternative-browser", "Use Google Chrome as alternative browser?") and "google-chrome" or
-               cfg_yesno("chromium-as-alternative-browser", "Use Chromium as alternative browser?") and "chromium-browser" or
+    BROWSER2 = cfg.chrome_as_alternative_browser and "google-chrome" or
+               cfg.chromium_as_alternative_browser and "chromium-browser" or
                BROWSER
 
-    WIKI = cfg_string("wiki", "Wiki directory (e.g.: ~/Nextcloud/Wiki):")
+    WIKI = cfg.wiki
     if WIKI == "" then WIKI = "~" end
 
     LATEST_LTS = "lts-18.24"
@@ -113,36 +182,36 @@ function main()
     check_last_upgrade()
 
     system_configuration()
-    if cfg_yesno("rust", "Install Rust?") then rust_configuration() end
+    if cfg.rust then rust_configuration() end
     shell_configuration()
     network_configuration()
-    if cfg_yesno("dropbox", "Install dropbox?") then dropbox_configuration() end
-    if cfg_yesno("nextcloud-client", "Install Nextcloud client?") then nextcloud_client_configuration() end
-    if cfg_yesno("nextcloud-server", "Install Nextcloud server?") then nextcloud_server_configuration() end
+    if cfg.dropbox then dropbox_configuration() end
+    if cfg.nextcloud_client then nextcloud_client_configuration() end
+    if cfg.nextcloud_server then nextcloud_server_configuration() end
     filesystem_configuration()
-    if cfg_yesno("v", "Install V?") then v_configuration() end
+    if cfg.v then v_configuration() end
     dev_configuration()
-    if cfg_yesno("haskell", "Install Haskell?") then haskell_configuration() end
-    if cfg_yesno("ocaml", "Install OCaml?") then ocaml_configuration() end
-    if cfg_yesno("frama-c", "Install Frama-C?") then framac_configuration() end
-    if cfg_yesno("racket", "Install Racket?") then racket_configuration() end
-    if cfg_yesno("julia", "Install Julia?") then julia_configuration() end
-    if cfg_yesno("zig", "Install Zig?") then zig_configuration() end
-    if cfg_yesno("swipl", "Install SWI Prolog (from sources)?") then swipl_configuration() end
+    if cfg.haskell then haskell_configuration() end
+    if cfg.ocaml then ocaml_configuration() end
+    if cfg.frama_c then framac_configuration() end
+    if cfg.racket then racket_configuration() end
+    if cfg.julia then julia_configuration() end
+    if cfg.zig then zig_configuration() end
+    if cfg.swipl then swipl_configuration() end
     lsp_configuration()
     text_edition_configuration()
-    if cfg_yesno("latex", "Install LaTeX?") then latex_configuration() end
+    if cfg.latex then latex_configuration() end
     asymptote_configuration()
     pandoc_configuration()
     neovim_configuration()
     i3_configuration()
     graphic_application_configuration()
-    if cfg_yesno("povray", "Install Povray?") then povray_configuration() end
+    if cfg.povray then povray_configuration() end
     internet_configuration()
-    if cfg_yesno("zoom", "Install Zoom?") then zoom_configuration() end
-    if cfg_yesno("teams", "Install Teams?") then teams_configuration() end
-    if cfg_yesno("virtualization", "Install virtualization tools?") then virtualization_configuration() end
-    if cfg_yesno("work", "Install work configuration?") then work_configuration() end
+    if cfg.zoom then zoom_configuration() end
+    if cfg.teams then teams_configuration() end
+    if cfg.virtualization then virtualization_configuration() end
+    if cfg.work then work_configuration() end
 
     upgrade_packages()
 
@@ -161,42 +230,106 @@ function ask_yesno(question)
         io.write(question.." [y/n] ")
         answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
     until answer:match "[yn]"
-    return answer:match "y"
-end
-
-function ask_string(question)
-    local answer = nil
-    repeat
-        io.write(I(question).." ")
-        answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
-    until #answer > 0
-    return answer
-end
-
-function cfg_yesno(param, question)
-    local config_file = config_path.."/"..param
-    if not file_exist(config_file) then
-        local answer = ask_yesno(question) and "y" or "n"
-        mkdir(config_path)
-        write(config_file, answer)
-    end
-    local answer = read(config_file):lower():gsub("^%s*(%S).*$", "%1")
-    return answer:match "y"
-end
-
-function cfg_string(param, question)
-    local config_file = config_path.."/"..param
-    if not file_exist(config_file) then
-        local answer = ask_string(question)
-        mkdir(config_path)
-        write(config_file, answer)
-    end
-    local answer = read(config_file):gsub("^%s+", ""):gsub("%s+$", "")
-    return answer
+    return answer:match "y" == "y"
 end
 
 function when(cond)
     return function(s) return cond and s or "" end
+end
+
+do -- configuration management
+
+    local function read(filename)
+        local f = io.open(filename, "r")
+        if not f then return {} end
+        local content = assert(f:read"a")
+        local t = {}
+        local chunk = assert(load(content, filename, "t", t))
+        chunk()
+        f:close()
+        return t
+    end
+
+    local function write(filename, params)
+        local conf = fun.map(fun.keys(params), function(k)
+            local v = params[k]
+            local fmt = type(v) == "string" and "%q" or "%s"
+            return ("_ENV['%%s'] = %s\n"):format(fmt):format(k, v)
+        end)
+        mkdir(fs.dirname(filename))
+        local f = io.open(filename, "w")
+        if not f then return end
+        f:write(table.concat(conf))
+        f:close()
+    end
+
+    function interactive(filename)
+        return function(definitions)
+
+            local questions = {
+                ["yn"] = function(question)
+                    local answer = nil
+                    repeat
+                        io.write(question.." [y/n] ")
+                        answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
+                    until answer:match "[yn]"
+                    return answer:match "y" == "y"
+                end,
+                ["str"] = function(question)
+                    local answer = nil
+                    repeat
+                        io.write(question.." ")
+                        answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
+                    until #answer > 0
+                    return answer
+                end,
+                ["num"] = function(question)
+                    local answer = nil
+                    repeat
+                        io.write(question.." ")
+                        answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
+                    until #answer > 0 and tonumber(answer)
+                    return tonumber(answer)
+                end,
+            }
+
+            local params = read(filename)
+
+            local mt = {}
+
+            function mt.__index(_, key)
+                if params[key] == nil then
+                    local qdef = assert(definitions[key], ("Undefined configuration parameter: %s"):format(key))
+                    local question, question_type = table.unpack(qdef)
+                    ask = assert(questions[question_type], ("Question type not implemented: %s"):format(question_type))
+                    params[key] = ask(question)
+                    write(filename, params)
+                end
+                return params[key]
+            end
+
+            return setmetatable({}, mt)
+        end
+    end
+
+    function db(filename)
+        local params = read(filename)
+
+        local mt = {}
+
+        function mt.__index(_, key)
+            return params[key]
+        end
+
+        function mt.__newindex(_, key, val)
+            params[key] = val
+            write(filename, params)
+        end
+
+        return setmetatable({}, mt)
+
+    end
+
 end
 
 -- }}}
@@ -383,7 +516,7 @@ function identification()
     RELEASE = FEDORA and pipe "rpm -E %fedora"
               or UBUNTU and OS_RELEASE_VERSION_ID
 
-    MYHOSTNAME = cfg_string("hostname", "Hostname:")
+    MYHOSTNAME = cfg.hostname
     log "hostname: %(MYHOSTNAME)"
     log "username: %(USER)"
 end
@@ -430,95 +563,63 @@ end
 
 function dnf_install(names)
     if not FEDORA then return end
-    names = I(names)
-    local all = set(names)
-    local new_packages = set(names)
-    local already_installed = set()
-    if file_exist "%(config_path)/packages" then
-        local old_names = read "%(config_path)/packages"
-        already_installed.add(old_names)
-        all.add(old_names)
+    names = I(names):words()
+    local new_packages = {}
+    for _, name in ipairs(names) do
+        if not installed_packages[name] then table.insert(new_packages, name) end
     end
-    local new = false
-    for _, name in new_packages.ipairs() do
-        new = new or not already_installed.has(name)
-    end
-    if new then
-        names = new_packages.concat " "
+    if #new_packages > 0 then
+        names = table.concat(new_packages, " ")
         log("Install packages: "..names, 1)
         sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
-        write("%(config_path)/packages", all.concat("\n").."\n")
+        fun.foreach(new_packages, function(name) installed_packages[name] = true end)
     end
 end
 
 function apt_install(names)
     if not UBUNTU then return end
-    names = I(names)
-    local all = set(names)
-    local new_packages = set(names)
-    local already_installed = set()
-    if file_exist "%(config_path)/packages" then
-        local old_names = read "%(config_path)/packages"
-        already_installed.add(old_names)
-        all.add(old_names)
+    names = I(names):words()
+    local new_packages = {}
+    for _, name in ipairs(names) do
+        if not installed_packages[name] then table.insert(new_packages, name) end
     end
-    local new = false
-    for _, name in new_packages.ipairs() do
-        new = new or not already_installed.has(name)
-    end
-    if new then
-        names = new_packages.concat " "
+    if #new_packages > 0 then
+        names = table.concat(new_packages, " ")
         log("Install packages: "..names, 1)
         sh("sudo apt install "..names)
-        write("%(config_path)/packages", all.concat("\n").."\n")
+        fun.foreach(new_packages, function(name) installed_packages[name] = true end)
     end
 end
 
 function snap_install(names)
     if not UBUNTU then return end
-    if not cfg_yesno("nextcloud-server", "Install Nextcloud server?") and not cfg_yesno("snap", "Enable snap?") then return end
-    names = I(names)
-    local all = set(names)
-    local new_packages = set(names)
-    local already_installed = set()
-    if file_exist "%(config_path)/snap_packages" then
-        local old_names = read "%(config_path)/snap_packages"
-        already_installed.add(old_names)
-        all.add(old_names)
+    if not cfg.nextcloud_server and not cfg.snap then return end
+    names = I(names):words()
+    local new_packages = {}
+    for _, name in ipairs(names) do
+        if not installed_snap_packages[name] then table.insert(new_packages, name) end
     end
-    local new = false
-    for _, name in new_packages.ipairs() do
-        new = new or not already_installed.has(name)
-    end
-    if new then
-        names = new_packages.concat " "
+    if #new_packages > 0 then
+        names = table.concat(new_packages, " ")
         log("Install snap packages: "..names, 1)
         sh("sudo snap install "..names)
-        write("%(config_path)/snap_packages", all.concat("\n").."\n")
+        fun.foreach(new_packages, function(name) installed_snap_packages[name] = true end)
     end
 end
 
 function luarocks(names)
-    names = I(names)
-    local all = set(names)
-    local new_packages = set(names)
-    local already_installed = set()
-    if file_exist "%(config_path)/luarocks" then
-        local old_names = read "%(config_path)/luarocks"
-        already_installed.add(old_names)
-        all.add(old_names)
+    names = I(names):words()
+    local new_packages = {}
+    for _, name in ipairs(names) do
+        if not installed_lua_packages[name] then table.insert(new_packages, name) end
     end
-    local new = force or upgrade
-    for _, name in new_packages.ipairs() do
-        new = new or not already_installed.has(name)
-    end
-    if new then
-        names = new_packages.concat " "
+    if #new_packages > 0 then
+        names = table.concat(new_packages, " ")
         log("Install luarocks: "..names, 1)
         for _, name in new_packages.ipairs() do
             sh("luarocks install --local "..name)
         end
-        write("%(config_path)/luarocks", all.concat("\n").."\n")
+        fun.foreach(new_packages, function(name) installed_lua_packages[name] = true end)
     end
 end
 
@@ -532,7 +633,7 @@ function upgrade_packages()
         if UBUNTU then
             sh "sudo apt update && sudo apt upgrade"
         end
-        if cfg_yesno("snap", "Enable snap?") then
+        if cfg.snap then
             sh "sudo snap refresh"
         end
     end
@@ -579,15 +680,14 @@ end
 function mime_default(desktop_file)
     desktop_file = I(desktop_file)
     log("Mime default: "..desktop_file, 1)
-    local config_flag = I("%(config_path)/"..desktop_file..".already_configured")
     local path = "/usr/share/applications/"..desktop_file
-    if file_exist(path) and (force or upgrade or not file_exist(config_flag)) then
+    if file_exist(path) and (force or upgrade or not configured[desktop_file]) then
         read(path):gsub("MimeType=([^\n]*)", function(mimetypes)
             mimetypes:gsub("[^;]+", function(mimetype)
                 sh("xdg-mime default "..desktop_file.." "..mimetype)
             end)
         end)
-        sh("touch "..config_flag)
+        configured[desktop_file] = true
     end
 end
 
@@ -671,8 +771,8 @@ function system_configuration()
         git
     ]]
 
-    if UBUNTU and not cfg_yesno("nextcloud-server", "Install Nextcloud server?") then
-        if cfg_yesno("snap", "Enable snap?") then
+    if UBUNTU and not cfg.nextcloud_server then
+        if cfg.snap then
             if not installed "snap" then
                 log "Install snap"
                 sh "sudo apt install snapd"
@@ -759,7 +859,7 @@ function shell_configuration()
     if force or upgrade or not installed "starship" then
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
-        if cfg_yesno("rust", "Install Rust?") then
+        if cfg.rust then
             dnf_install "openssl-devel"
             apt_install "libssl-dev"
             gitclone "https://github.com/starship/starship.git"
@@ -985,7 +1085,7 @@ end
 function dev_configuration()
     title "Development environment configuration"
 
-    if cfg_yesno("R", "Install R?") then
+    if cfg.R then
         dnf_install [[ R ]]
         apt_install [[ r-base r-base-dev ]]
     end
@@ -1093,7 +1193,7 @@ function dev_configuration()
         libgc-dev
     ]]
     if force or update or not installed "tokei" then
-        if cfg_yesno("rust", "Install Rust?") then
+        if cfg.rust then
             log "Tokei"
             sh "~/.cargo/bin/cargo install tokei --root ~/.local"
         end
@@ -1179,7 +1279,7 @@ function dev_configuration()
     -- interactive scratchpad: https://github.com/metakirby5/codi.vim
     script "codi"
 
-    if cfg_yesno("v", "Install V?") then
+    if cfg.v then
         if force or upgrade or not installed "vls" then
             gitclone "https://github.com/nedpals/tree-sitter-v"
             sh "mkdir -p ~/.vmodules/; ln -sf %(repo_path)/tree-sitter-v ~/.vmodules/tree_sitter_v"
@@ -1190,7 +1290,7 @@ function dev_configuration()
         end
     end
 
-    if cfg_yesno("lazygit", "Install lazygit?") then
+    if cfg.lazygit then
         if force or upgrade or not installed "lazygit" then
             sh "go install github.com/jesseduffield/lazygit@latest && ln -sf %(HOME)/go/bin/lazygit %(HOME)/.local/bin/lazygit"
         end
@@ -1215,7 +1315,7 @@ function lsp_configuration()
         sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
     end
     --[[
-    if cfg_yesno("haskell", "Install Haskell?") then
+    if cfg.haskell then
         if force or upgrade or not installed "haskell-language-server" then
             log "Haskell Language Server"
             gitclone("https://github.com/haskell/haskell-language-server", {"--recurse-submodules"})
@@ -1320,7 +1420,7 @@ function framac_configuration()
 
     title "Frama-C installation"
 
-    if not cfg_yesno("ocaml", "Install OCaml?") then error("Frama-C requires OCaml") end
+    if not cfg.ocaml then error("Frama-C requires OCaml") end
 
     dnf_install [[
         z3
@@ -1651,14 +1751,14 @@ function pandoc_configuration()
         sh "cd %(repo_path)/upp && make install"
     end
 
-    if cfg_yesno("haskell", "Install Haskell?") and cfg_yesno("abp", "Install abp?") then
+    if cfg.haskell and cfg.abp then
         if force or upgrade or not installed "abp" then
             gitclone "http://github.com/cdsoft/abp"
             sh "cd %(repo_path)/abp && stack install"
         end
     end
 
-    if cfg_yesno("haskell", "Install Haskell?") and cfg_yesno("pp", "Install pp?") then
+    if cfg.haskell and cfg.pp then
         if force or upgrade or not installed "pp" then
             gitclone "http://github.com/cdsoft/pp"
             sh "cd %(repo_path)/pp && make install"
@@ -1711,7 +1811,7 @@ end
 -- Asymptote configuration {{{
 
 function asymptote_configuration()
-    if cfg_yesno("asymptote-sources", "Install Asymptote from source?") then
+    if cfg.asymptote_sources then
         if force or update or not file_exist "%(HOME)/.local/bin/asy" then
             log "Asymptote"
             gitclone "https://github.com/vectorgraphics/asymptote"
@@ -1803,7 +1903,7 @@ function neovim_configuration()
         sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
     end
 
-    if cfg_yesno("haskell", "Install Haskell?") then
+    if cfg.haskell then
         if force or upgrade or not installed "shellcheck" then
             log "ShellCheck"
             sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
@@ -1884,7 +1984,7 @@ function i3_configuration()
     -- alacritty
     if force or upgrade or not installed "alacritty" then
         log "Alacritty"
-        if cfg_yesno("rust", "Install Rust?") then
+        if cfg.rust then
             dnf_install [[ cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++ ]]
             apt_install [[ cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 ]]
             sh "~/.cargo/bin/cargo install alacritty --root ~/.local"
@@ -1981,7 +2081,7 @@ function i3_configuration()
     mime_default "libreoffice-startcenter.desktop"
     mime_default "libreoffice-writer.desktop"
     mime_default "libreoffice-xsltfilter.desktop"
-    if cfg_yesno("thunderbird-mailer", "Use Thunderbird as the default mailer?") then
+    if cfg.thunderbird_mailer then
         mime_default "mozilla-thunderbird.desktop"
     end
     mime_default "atril.desktop"
@@ -2181,7 +2281,7 @@ function internet_configuration()
         transmission
     ]]
 
-    if cfg_yesno("chrome", "Install Google Chrome?") then
+    if cfg.chrome then
         if FEDORA then sh "sudo dnf config-manager --set-enabled google-chrome" end
         if UBUNTU then
             deblist("/etc/apt/sources.list.d/google-chrome.list", "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main")
@@ -2190,7 +2290,7 @@ function internet_configuration()
         dnf_install "google-chrome-stable"
         apt_install "google-chrome-stable"
     end
-    if cfg_yesno("chromium", "Install Chromium?") then
+    if cfg.chromium then
         dnf_install "chromium"
         apt_install "chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra"
     end
@@ -2355,7 +2455,7 @@ function work_configuration()
         sh "sudo usermod -a -G docker %(USER)"
     end
 
-    if cfg_yesno("move-docker-to-home", "Move /var/lib/docker to /home/docker?") then
+    if cfg.move_docker_to_home then
         if not dir_exist "/home/docker" then
             log "Move /var/lib/docker to /home/docker"
             sh "sudo service docker stop"
@@ -2385,7 +2485,7 @@ function work_configuration()
     ]]
 
     -- ROS: http://wiki.ros.org/Installation/Source
-    if cfg_yesno("ros", "Install ROS?") then
+    if cfg.ros then
         if FEDORA then
             copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo", "thofmann/ros")
             if tonumber(OS_RELEASE_VERSION_ID) <= 34 then
@@ -2427,7 +2527,7 @@ function work_configuration()
         end
     end
 
-    if cfg_yesno("lazydocker", "Install lazydocker?") then
+    if cfg.lazydocker then
         if force or upgrade or not installed "lazydocker" then
             sh "go install github.com/jesseduffield/lazydocker@latest && ln -sf %(HOME)/go/bin/lazydocker %(HOME)/.local/bin/lazydocker"
         end

@@ -59,7 +59,7 @@ bindsym $mod+o          scratchpad show
 #
 bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
-%(when(cfg_yesno("work", "Install work configuration?")) [=[
+%(when(cfg.work) [=[
 bindsym $mod+Shift+w            exec menu-work
 ]=])
 
@@ -77,7 +77,7 @@ bindsym $win+Ctrl+i             exec ristretto "`xcwd`" &
 bindsym $win+Ctrl+m             exec vlc "`xcwd`" &
 
 bindsym $mod+x                  exec menu
-%(when(cfg_yesno("external-monitor", "Add shortcuts for external monitor?")) [=[
+%(when(cfg.external_monitor) [=[
 bindsym $mod+$alt+Ctrl+i        exec menu single # single internal monitor
 bindsym $mod+$alt+Ctrl+e        exec menu dual # dual external + internal monitor
 bindsym $mod+$alt+Ctrl+c        exec menu clone # dual internal monitor cloned to the external one
@@ -193,7 +193,7 @@ bindsym $mod+egrave     workspace number $ws7
 bindsym $mod+underscore workspace number $ws8
 bindsym $mod+ccedilla   workspace number $ws9
 bindsym $mod+agrave     workspace number $ws10
-%(when(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?")) [[
+%(when(cfg.i3_fnkeys) [[
 bindsym $mod+F1         workspace number $ws1
 bindsym $mod+F2         workspace number $ws2
 bindsym $mod+F3         workspace number $ws3
@@ -219,7 +219,7 @@ bindsym $mod+Shift+egrave       move container to workspace number $ws7
 bindsym $mod+Shift+underscore   move container to workspace number $ws8
 bindsym $mod+Shift+ccedilla     move container to workspace number $ws9
 bindsym $mod+Shift+agrave       move container to workspace number $ws10
-%(when(cfg_yesno("i3_fnkeys", "Use Fn keys to change workspaces?")) [[
+%(when(cfg.i3_fnkeys) [[
 bindsym $mod+Shift+F1           move container to workspace number $ws1
 bindsym $mod+Shift+F2           move container to workspace number $ws2
 bindsym $mod+Shift+F3           move container to workspace number $ws3
@@ -320,11 +320,11 @@ bar {
 # Autostart applications
 
 exec --no-startup-id picom -bc
-exec --no-startup-id numlockx %(cfg_yesno("numlockx", "Enable numclockx?") and "on" or "off")
+exec --no-startup-id numlockx %(cfg.numlockx and "on" or "off")
 exec --no-startup-id %(FEDORA and "/usr/lib64" or UBUNTU and "/lib/x86_64-linux-gnu")/xfce4/notifyd/xfce4-notifyd &
 exec --no-startup-id xfce4-volumed-pulse &
 exec --no-startup-id hsetroot -solid '#020608'
-%(when(cfg_yesno("wallpaper", "Use daily wallpaper?")) [[exec --no-startup-id every 1h wallpaper_of_the_day]])
+%(when(cfg.wallpaper) [[exec --no-startup-id every 1h wallpaper_of_the_day]])
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'
@@ -334,14 +334,14 @@ exec --no-startup-id xautolock -time 15 -locker '~/.local/bin/lock' &
 
 exec --no-startup-id st -t ssh-agent -e ~/.local/bin/ssha &
 
-%(when(cfg_yesno("startvlc", "Autostart VLC in the systray?")) [=[
+%(when(cfg.startvlc) [=[
 # VLC minimized
 exec --no-startup-id vlc --qt-start-minimized &
 ]=])
 
 # run specific scripts at i3 startup
 
-%(when(cfg_yesno("dropbox", "Install Dropbox?")) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
-%(when(cfg_yesno("nextcloud-client", "Install Nextcloud client?") and cfg_yesno("nextcloud-client-start", "Start Nextcloud client after boot?")) "exec --no-startup-id Nextcloud")
+%(when(cfg.dropbox) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
+%(when(cfg.nextcloud_client and cfg.nextcloud_client_start) "exec --no-startup-id Nextcloud")
 
 %(file_exist "%(HOME)/.config/i3/custom-config" and read "%(HOME)/.config/i3/custom-config" or "")

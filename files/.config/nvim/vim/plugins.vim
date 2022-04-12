@@ -11,10 +11,10 @@ Plug 'https://github.com/vim-pandoc/vim-pandoc.git'
 Plug 'https://github.com/vim-pandoc/vim-pandoc-syntax.git'
 Plug 'aklt/plantuml-syntax'
 Plug 'nvim-lua/plenary.nvim'
-%(when(cfg_yesno("nvim-telescope", "Use Telescope with Neovim?")) [[
+%(when(cfg.nvim_telescope) [[
 Plug 'nvim-telescope/telescope.nvim'
 ]])
-%(when(cfg_yesno("nvim-fzf", "Use FZF with Neovim?")) [[
+%(when(cfg.nvim_fzf) [[
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 ]])
@@ -53,6 +53,6 @@ Plug 'L3MON4D3/LuaSnip'
 
 Plug 'ollykel/v-vim'
 
-%(when(cfg_yesno("work", "Install work configuration?")) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
+%(when(cfg.work) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
 
 call plug#end()
