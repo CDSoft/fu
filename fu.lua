@@ -849,7 +849,7 @@ function shell_configuration()
         -- If Rust is installed, building from sources is better.
         if cfg.rust then
             dnf_install "openssl-devel"
-            apt_install "libssl-dev"
+            apt_install "gcc libssl-dev"
             gitclone "https://github.com/starship/starship.git"
             sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
         else
