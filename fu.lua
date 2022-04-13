@@ -2182,6 +2182,7 @@ function graphic_application_configuration()
         simple-scan
         evince okular mupdf qpdfview
         atril
+        xournal
 
         vlc ffmpeg
         gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
@@ -2196,6 +2197,7 @@ function graphic_application_configuration()
         simple-scan
         evince okular mupdf qpdfview
         atril
+        xournal
 
         vlc ffmpeg
     ]]
