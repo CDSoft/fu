@@ -707,17 +707,11 @@ end
 -- Force upgrade when the last upgrade is too old {{{
 
 function check_last_upgrade()
+    local now = os.time()
     if not force then
         title "Check last force upgrade"
-
-        local outdated
-        if file_exist "%(config_path)/last_force_upgrade" then
-            local last_force_upgrade = tonumber(pipe "date +%s -r %(config_path)/last_force_upgrade")
-            local now = tonumber(pipe "date +%s")
-            outdated = now - last_force_upgrade > 60*86400
-        else
-            outdated = true
-        end
+        local last_force_upgrade = installed_packages.last_force_upgrade or 0
+        local outdated = now - last_force_upgrade > 60*86400
         if outdated then
             force = ask_yesno "The last force upgrade is too old. Force upgrade now?"
         end
@@ -725,15 +719,8 @@ function check_last_upgrade()
     end
     if not upgrade then
         title "Check last upgrade"
-
-        local outdated
-        if file_exist "%(config_path)/last_upgrade" then
-            local last_upgrade = tonumber(pipe "date +%s -r %(config_path)/last_upgrade")
-            local now = tonumber(pipe "date +%s")
-            outdated = now - last_upgrade > 15*86400
-        else
-            outdated = true
-        end
+        local last_upgrade = installed_packages.last_upgrade or 0
+        local outdated = now - last_upgrade > 15*86400
         if outdated then
             upgrade = ask_yesno "The last upgrade is too old. Force upgrade now?"
         end
@@ -741,11 +728,12 @@ function check_last_upgrade()
 end
 
 function store_upgrade_date()
+    local now = os.time()
     if force then
-        sh "touch %(config_path)/last_force_upgrade"
+        installed_packages.last_force_upgrade = now
     end
     if upgrade then
-        sh "touch %(config_path)/last_upgrade"
+        installed_packages.last_upgrade = now
     end
 end
 
