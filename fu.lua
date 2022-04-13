@@ -1475,6 +1475,9 @@ end
 
 function rust_configuration()
 
+    dnf_install "curl"
+    apt_install "curl"
+
     if not installed "rustc" then
         title "Rust configuration"
         with_tmpfile(function(tmp)
