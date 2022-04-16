@@ -1889,6 +1889,9 @@ function neovim_configuration()
             log "ShellCheck"
             sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
         end
+    else
+        dnf_install "ShellCheck"
+        apt_install "shellcheck"
     end
 
     -- Notes, TO-DO lists and password manager
