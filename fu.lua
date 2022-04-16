@@ -2111,7 +2111,7 @@ function i3_configuration()
 
     if FEDORA then
         if force or upgrade or not installed "hsetroot" then
-            dnf_install "imlib2-devel"
+            dnf_install "imlib2-devel libXinerama-devel"
             gitclone "https://github.com/himdel/hsetroot"
             sh "cd %(repo_path)/hsetroot && make && DESTDIR=%(HOME) PREFIX=/.local make install"
         end
