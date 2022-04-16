@@ -1202,7 +1202,7 @@ function dev_configuration()
         end
     end
 
-    if not file_exist "%(HOME)/.local/bin/lua" or not pipe"ldd %(HOME)/.local/bin/lua":match"readline" then
+    if force or not file_exist "%(HOME)/.local/bin/lua" or not pipe"ldd %(HOME)/.local/bin/lua":match"readline" then
         log "Lua"
         sh [[
             cd %(repo_path) &&
