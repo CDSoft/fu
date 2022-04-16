@@ -1388,7 +1388,7 @@ function ocaml_configuration()
         opam
     ]]
 
-    if force or not file_exist "%(HOME)/.opam/config" then
+    if not file_exist "%(HOME)/.opam/config" then
         log "Opam configuration"
         sh "opam init"
         sh "opam update && opam upgrade"
@@ -1401,8 +1401,6 @@ function ocaml_configuration()
 
     sh("opam install "..packages)
 
-    sh "opam user-setup install"
-
 end
 
 function framac_configuration()
@@ -1414,11 +1412,6 @@ function framac_configuration()
     dnf_install [[
         z3
         cvc4
-        frama-c
-        coq
-        why3
-        alt-ergo
-        ocaml-seq-devel
     ]]
 
     apt_install [[
@@ -1426,14 +1419,10 @@ function framac_configuration()
         cvc4
     ]]
 
-    if UBUNTU then
-        if force or upgrade or not installed "frama-c" then
-            log "Frama-C installation"
-            sh "opam install depext"
-            sh "opam depext frama-c"
-            sh "opam install alt-ergo"
-            sh "opam install frama-c"
-        end
+    if force or upgrade or not installed "frama-c" then
+        log "Frama-C installation"
+        sh "opam install alt-ergo"
+        sh "opam install frama-c"
     end
 
 end
