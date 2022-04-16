@@ -96,6 +96,7 @@ function fu_configuration()
         v = {"Install V?", "yn"},
         R = {"Install R?", "yn"},
         asymptote_sources = {"Install Asymptote from source?", "yn"},
+        geogebra = {"Install GeoGebra?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -2174,6 +2175,7 @@ function graphic_application_configuration()
         evince okular mupdf qpdfview
         atril
         xournal
+        curl
 
         vlc ffmpeg
         gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
@@ -2181,7 +2183,6 @@ function graphic_application_configuration()
     apt_install [[
         feh gimp imagemagick scribus inkscape
         gnuplot
-        geogebra
         qrencode
         libreoffice libreoffice-l10n-fr libreoffice-help-fr
         vokoscreen-ng
@@ -2189,48 +2190,27 @@ function graphic_application_configuration()
         evince okular mupdf qpdfview
         atril
         xournal
+        curl
 
         vlc ffmpeg
     ]]
 
-    --[[
-    if FEDORA and (force or not installed "geogebra") then
-        local GEOGEBRA_URL = "http://www.geogebra.org/download/rpm.php?arch=amd64&ver=6"
-        with_tmpdir(function(tmp)
-            sh("wget '"..GEOGEBRA_URL.."' -O "..tmp.."/geogebra-classic.x86_64.rpm")
-            sh("sudo dnf install "..tmp.."/geogebra-classic.x86_64.rpm")
-        end)
+    -- GeoGebra
+    if cfg.geogebra then
+        if force or update or not installed "geogebra" then
+            title "GeoGebra installation"
+            local GEOGEBRA_URL = "https://download.geogebra.org"
+            local GEOGEBRA_REDIR
+            pipe("curl -i "..GEOGEBRA_URL.."/package/linux-port6"):gsub("Location:%s*(.*)", function(redir)
+                GEOGEBRA_REDIR = GEOGEBRA_URL..redir:trim()
+            end)
+            if not file_exist("~/.local/opt/"..fs.basename(GEOGEBRA_REDIR)) then
+                sh("curl --output-dir ~/.local/opt/ -O "..GEOGEBRA_REDIR)
+            end
+            sh("cd ~/.local/opt/ && rm -rf GeoGebra-linux-x64 && unzip "..fs.basename(GEOGEBRA_REDIR))
+            sh("ln -f -s ~/.local/opt/GeoGebra-linux-x64/GeoGebra ~/.local/bin/geogebra")
+        end
     end
-    --]]
-
-    --[=[
-    if UBUNTU then
-        apt_install [[
-            git dpkg-dev
-            gobject-introspection libdjvulibre-dev libgail-3-dev
-            libgirepository1.0-dev libgtk-3-dev libgxps-dev
-            libkpathsea-dev libpoppler-glib-dev libsecret-1-dev
-            libspectre-dev libtiff-dev libwebkit2gtk-4.0-dev libxapp-dev
-            mate-common meson xsltproc yelp-tools
-        ]]
-        gitclone "https://github.com/linuxmint/xreader.git"
-        sh [[
-            cd %(repo_path)/xreader &&
-                meson debian/build \
-                    --prefix=%(HOME)/.local \
-                    --buildtype=plain \
-                    -D deprecated_warnings=false \
-                    -D djvu=true \
-                    -D dvi=true \
-                    -D t1lib=true \
-                    -D pixbuf=true \
-                    -D comics=true \
-                    -D introspection=true &&
-                ninja -C debian/build &&
-                ninja -C debian/build install
-        ]]
-    end
-    --]=]
 
 end
 
