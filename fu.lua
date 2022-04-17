@@ -1048,7 +1048,7 @@ function filesystem_configuration()
         p7zip-full p7zip-rar
         mc pcmanfm thunar
         pmount
-        exfat-utils exfat-fuse
+        exfatprogs exfat-fuse
         syslinux
         backintime-common backintime-qt
         timeshift
@@ -1058,6 +1058,9 @@ function filesystem_configuration()
         xz-utils unrar
         archivemount fuseiso sshfs curlftpfs
     ]]
+    if UBUNTU and OS_RELEASE_VERSION_ID < "22.04" then
+        apt_install "exfat-utils"
+    end
 
 end
 
