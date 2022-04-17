@@ -745,6 +745,22 @@ end
 function system_configuration()
     title "System configuration"
 
+    if FEDORA then
+        local dnf_conf = read("/etc/dnf/dnf.conf")
+        local function add_param(name, val)
+            local n
+            dnf_conf, n = dnf_conf:gsub(name.."=(.-)\n", name.."="..val.."\n")
+            if n == 0 then dnf_conf = dnf_conf..name.."="..val.."\n" end
+        end
+        add_param("fastestmirrors", "true")
+        add_param("max_parallel_downloads", "10")
+        add_param("defaultyes", "true")
+        with_tmpfile(function(tmp)
+            write(tmp, dnf_conf)
+            sh("sudo cp "..tmp.." /etc/dnf/dnf.conf")
+        end)
+    end
+
     repo("/etc/yum.repos.d/rpmfusion-free.repo", "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm")
     repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", "http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
 
