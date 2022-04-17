@@ -566,7 +566,7 @@ function dnf_install(names)
     names = I(names):words()
     local new_packages = {}
     for _, name in ipairs(names) do
-        if not installed_packages[name] then table.insert(new_packages, name) end
+        if force or update or not installed_packages[name] then table.insert(new_packages, name) end
     end
     if #new_packages > 0 then
         names = table.concat(new_packages, " ")
@@ -581,7 +581,7 @@ function apt_install(names)
     names = I(names):words()
     local new_packages = {}
     for _, name in ipairs(names) do
-        if not installed_packages[name] then table.insert(new_packages, name) end
+        if force or update or not installed_packages[name] then table.insert(new_packages, name) end
     end
     if #new_packages > 0 then
         names = table.concat(new_packages, " ")
@@ -597,7 +597,7 @@ function snap_install(names)
     names = I(names):words()
     local new_packages = {}
     for _, name in ipairs(names) do
-        if not installed_snap_packages[name] then table.insert(new_packages, name) end
+        if force or update or not installed_snap_packages[name] then table.insert(new_packages, name) end
     end
     if #new_packages > 0 then
         names = table.concat(new_packages, " ")
