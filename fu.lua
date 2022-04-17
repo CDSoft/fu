@@ -100,7 +100,6 @@ function fu_configuration()
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
-        snap = {"Enable snap?", "yn"},
         lazygit = {"Install lazygit?", "yn"},
         lazydocker = {"Install lazydocker?", "yn"},
         abp = {"Install abp?", "yn"},
@@ -634,9 +633,7 @@ function upgrade_packages()
         if UBUNTU then
             sh "sudo apt update && sudo apt upgrade"
         end
-        if cfg.snap then
-            sh "sudo snap refresh"
-        end
+        sh "sudo snap refresh"
     end
 end
 
@@ -775,22 +772,6 @@ function system_configuration()
         software-properties-common
         git
     ]]
-
-    if UBUNTU and not cfg.nextcloud_server then
-        if cfg.snap then
-            if not installed "snap" then
-                log "Install snap"
-                sh "sudo apt install snapd"
-            end
-        else
-            -- Remove snap
-            if installed "snap" then
-                log "Remove snap"
-                sh "sudo apt purge snapd"
-                sh "sudo rm -rf ~/snap /snap /var/snap /var/lib/snapd"
-            end
-        end
-    end
 
     -- Locale and timezone
     log "Timezone and keyboard"
@@ -1026,9 +1007,6 @@ function nextcloud_client_configuration()
 end
 
 function nextcloud_server_configuration()
-
-    apt_install "snapd"
-    dnf_install "snapd"
 
     snap_install "nextcloud"
 
