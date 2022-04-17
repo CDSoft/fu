@@ -137,6 +137,7 @@ function os_configuration()
 
     I3_THEME = -- "blue" (default), "green"
            UBUNTU and "blue"
+        or DEBIAN and "green"
         or FEDORA and "green"
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
@@ -510,11 +511,12 @@ function identification()
 
     FEDORA = (OS_RELEASE_ID == "fedora")
     UBUNTU = (OS_RELEASE_ID == "ubuntu")
+    DEBIAN = (OS_RELEASE_ID == "linuxmint" or OS_RELEASE_ID == "debian")
 
-    assert(FEDORA or UBUNTU, "Unsupported distribution: "..OS_RELEASE_PRETTY_NAME)
+    assert(FEDORA or UBUNTU or DEBIAN, "Unsupported distribution: "..OS_RELEASE_PRETTY_NAME)
 
     RELEASE = FEDORA and pipe "rpm -E %fedora"
-              or UBUNTU and OS_RELEASE_VERSION_ID
+              or (UBUNTU or DEBIAN) and OS_RELEASE_VERSION_ID
 
     MYHOSTNAME = cfg.hostname
     log "hostname: %(MYHOSTNAME)"
@@ -548,7 +550,7 @@ function ppa(local_name, name)
 end
 
 function deblist(local_name, name)
-    if UBUNTU and not file_exist(local_name) then
+    if (UBUNTU or DEBIAN) and not file_exist(local_name) then
         name = I(name)
         log("Install deb.list "..name, 1)
         with_tmpfile(function(tmp)
@@ -577,7 +579,7 @@ function dnf_install(names)
 end
 
 function apt_install(names)
-    if not UBUNTU then return end
+    if not (UBUNTU or DEBIAN) then return end
     names = I(names):words()
     local new_packages = {}
     for _, name in ipairs(names) do
@@ -630,10 +632,12 @@ function upgrade_packages()
             sh "sudo dnf update --refresh"
             sh "sudo dnf upgrade --best --allowerasing"
         end
-        if UBUNTU then
+        if UBUNTU or DEBIAN then
             sh "sudo apt update && sudo apt upgrade"
         end
-        sh "sudo snap refresh"
+        if UBUNTU then
+            sh "sudo snap refresh"
+        end
     end
 end
 
@@ -878,7 +882,7 @@ function shell_configuration()
         end
     end
 
-    if UBUNTU then
+    if UBUNTU or DEBIAN then
         if not installed "fd" and installed "fdfind" then
             sh "ln -s -f /usr/bin/fdfind ~/.local/bin/fd"
         end
@@ -937,7 +941,7 @@ function network_configuration()
         sh "sudo systemctl start sshd"
         sh "sudo systemctl enable sshd"
     end
-    if UBUNTU then
+    if UBUNTU or DEBIAN then
         log "sshd"
         sh "sudo systemctl start ssh"
         sh "sudo systemctl enable ssh"
@@ -1058,7 +1062,7 @@ function filesystem_configuration()
         xz-utils unrar
         archivemount fuseiso sshfs curlftpfs
     ]]
-    if UBUNTU and OS_RELEASE_VERSION_ID < "22.04" then
+    if (UBUNTU and OS_RELEASE_VERSION_ID < "22.04") or DEBIAN then
         apt_install "exfat-utils"
     end
 
@@ -1162,7 +1166,7 @@ function dev_configuration()
         python3-yaml python3-termcolor
         pkg-config
         libboost-all-dev
-        libjpeg-turbo8-dev libpng-dev libtiff-dev
+        libpng-dev libtiff-dev
         npm
         liblzma-dev
         libprotobuf-dev python3-protobuf
@@ -1178,6 +1182,8 @@ function dev_configuration()
         libicu-dev ncurses-dev
         libgc-dev
     ]]
+    if UBUNTU then apt_install "libjpeg-turbo8-dev" end
+
     if force or update or not installed "tokei" then
         if cfg.rust then
             log "Tokei"
@@ -1185,12 +1191,12 @@ function dev_configuration()
         end
     end
 
-    if UBUNTU then
+    if UBUNTU or DEBIAN then
         if force or upgrade or not installed "delta" then
             with_tmpdir(function(tmp)
                 local curr_version = pipe("delta --version"):match("[%d%.]+")
                 local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
-                if UBUNTU and version ~= curr_version then
+                if version ~= curr_version then
                     log "Delta"
                     sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
                     sh("sudo dpkg -i "..tmp.."/delta.deb")
@@ -1974,6 +1980,8 @@ function i3_configuration()
         elseif UBUNTU then
             ppa("/etc/apt/sources.list.d/aslatter-ubuntu-ppa-%(UBUNTU_CODENAME).list", "ppa:aslatter/ppa")
             apt_install "alacritty"
+        elseif DEBIAN then
+            error("Rust is required to install alacritty on DEBIAN")
         end
     end
 
@@ -2105,7 +2113,7 @@ function i3_configuration()
             sh "cd %(repo_path)/hsetroot && make && DESTDIR=%(HOME) PREFIX=/.local make install"
         end
     end
-    if UBUNTU then
+    if UBUNTU or DEBIAN then
         apt_install "hsetroot"
     end
 
@@ -2245,7 +2253,7 @@ function internet_configuration()
 
     if cfg.chrome then
         if FEDORA then sh "sudo dnf config-manager --set-enabled google-chrome" end
-        if UBUNTU then
+        if UBUNTU or DEBIAN then
             deblist("/etc/apt/sources.list.d/google-chrome.list", "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main")
             sh "wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -"
         end
@@ -2302,7 +2310,7 @@ function zoom_configuration()
                 sh("wget https://zoom.us/client/latest/zoom_x86_64.rpm -O "..tmp.."/zoom_x86_64.rpm")
                 sh("sudo dnf install "..tmp.."/zoom_x86_64.rpm")
             end
-            if UBUNTU then
+            if UBUNTU or DEBIAN then
                 sh("wget https://zoom.us/client/latest/zoom_amd64.deb -O "..tmp.."/zoom_amd64.deb")
                 sh("sudo apt install "..tmp.."/zoom_amd64.deb")
             end
@@ -2340,7 +2348,7 @@ function teams_configuration()
             mime_default "teams.desktop"
         end
 
-        if UBUNTU then
+        if UBUNTU or DEBIAN then
             sh "curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -"
             deblist("/etc/apt/sources.list.d/teams.list", "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main")
             apt_install "teams"
@@ -2370,7 +2378,7 @@ function virtualization_configuration()
     ]]
     dnf_install "akmod-VirtualBox kernel-devel-%(pipe 'uname -r')"
     apt_install "virtualbox-dkms linux-headers-%(pipe 'uname -r')"
-    if UBUNTU then
+    if UBUNTU or DEBIAN then
         sh "sudo modprobe vboxdrv"
     end
 
@@ -2481,7 +2489,7 @@ function work_configuration()
                     ]]
                 end
                 --]=]
-        if UBUNTU then
+        if UBUNTU or DEBIAN then
             apt_install [[
                 ros-desktop-full
                 ros-desktop-full-dev
@@ -2496,7 +2504,7 @@ function work_configuration()
     end
 
     -- VPN
-    if UBUNTU then
+    if UBUNTU or DEBIAN then
         if not installed "AVPNC" then
             -- https://docs.aviatrix.com/Downloads/samlclient.html#debian-ubuntu
             apt_install "gedit resolvconf"
