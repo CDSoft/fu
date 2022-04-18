@@ -1698,11 +1698,11 @@ function text_edition_configuration()
         wkhtmltopdf
         aspell-fr aspell-en
         figlet
-        translate-shell
         doxygen
         gnuplot
         graphviz
     ]]
+    if UBUNTU then apt_install "translate-shell" end
 
 end
 
