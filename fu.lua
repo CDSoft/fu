@@ -1427,8 +1427,12 @@ function framac_configuration()
 
     if force or upgrade or not installed "frama-c" then
         log "Frama-C installation"
-        sh "opam install alt-ergo"
-        sh "opam install frama-c"
+        if DEBIAN then
+            apt_install "alt-ergo frama-c-base"
+        else
+            sh "opam install alt-ergo"
+            sh "opam install frama-c"
+        end
     end
 
 end
