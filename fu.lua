@@ -1990,7 +1990,7 @@ function i3_configuration()
             ppa("/etc/apt/sources.list.d/aslatter-ubuntu-ppa-%(UBUNTU_CODENAME).list", "ppa:aslatter/ppa")
             apt_install "alacritty"
         elseif DEBIAN then
-            error("Rust is required to install alacritty on DEBIAN")
+            error("Rust is required to install alacritty on Debian")
         end
     end
 
