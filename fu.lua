@@ -1971,9 +1971,11 @@ function i3_configuration()
         xfce4-settings
         xfce4-screenshooter
         xfce4-notifyd
-        xfce4-volumed
         barrier
     ]]
+    if UBUNTU then
+        apt_install "xfce4-volumed"
+    end
 
     -- alacritty
     if force or upgrade or not installed "alacritty" then
