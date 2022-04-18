@@ -1049,7 +1049,7 @@ function filesystem_configuration()
         udftools
         encfs
         cryfs
-        p7zip-full p7zip-rar
+        p7zip-full
         mc pcmanfm thunar
         pmount
         exfatprogs exfat-fuse
@@ -1059,9 +1059,15 @@ function filesystem_configuration()
         cryptsetup
         squashfs-tools squashfuse
         baobab ncdu
-        xz-utils unrar
+        xz-utils 
         archivemount fuseiso sshfs curlftpfs
     ]]
+    if UBUNTU then
+        apt_install [[
+            p7zip-rar
+            unrar
+        ]]
+    end
     if (UBUNTU and OS_RELEASE_VERSION_ID < "22.04") or DEBIAN then
         apt_install "exfat-utils"
     end
