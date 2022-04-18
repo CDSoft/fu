@@ -35,14 +35,14 @@ then
 fi
 
 [ -x ~/.local/bin/luax ] || (
-    LAPP_URL=http://cdelord.fr/lapp/lapp-linux-x86_64.tar.gz
+    LAPP_URL=https://github.com/CDSoft/lapp
     TMP_LAPP=$(mktemp -d)
     cd $TMP_LAPP
-    wget $LAPP_URL -O $(basename $LAPP_URL)
-    tar xzf $(basename $LAPP_URL)
-    mkdir -p ~/.local/bin
-    install -T lapp ~/.local/bin/lapp
-    install -T luax ~/.local/bin/luax
+    git clone $LAPP_URL
+    cd lapp
+    sudo make dep
+    make submodules
+    make install
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
