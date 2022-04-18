@@ -2301,6 +2301,11 @@ function internet_configuration()
     end
 
     -- Remove unecessary language symlinks
+    apt_install [[
+        myspell-tools
+        myspell-fr-fr myspell-fr-gut
+        myspell-uk
+    ]]
     log "Remove unecessary language symlinks"
     sh "sudo find /usr/share/myspell -type l -exec rm -v {} \\;"
 
