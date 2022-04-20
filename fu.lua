@@ -677,6 +677,7 @@ function gitclone(url, options)
         log("Clone "..url.." to "..path, 1)
         sh("git clone "..url.." "..path.." "..options)
     end
+    sh("cd "..path.." && git submodule sync && git submodule update --init --recursive")
 end
 
 function mime_default(desktop_file)
@@ -1327,10 +1328,10 @@ function lsp_configuration()
         log "Lua Language Server"
         gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
         sh [[ cd %(repo_path)/lua-language-server &&
-              cd 3rd/luamake
-              compile/install.sh
-              cd ../..
-              ./3rd/luamake/luamake rebuild
+              cd 3rd/luamake &&
+              compile/install.sh &&
+              cd ../.. &&
+              ./3rd/luamake/luamake rebuild &&
               ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
     end
 
