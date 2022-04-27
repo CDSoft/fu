@@ -1330,9 +1330,9 @@ function lsp_configuration()
         gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
         sh [[ cd %(repo_path)/lua-language-server &&
               cd 3rd/luamake &&
-              compile/install.sh &&
-              cd ../.. &&
-              ./3rd/luamake/luamake rebuild &&
+              compile/install.sh
+              cd ../..
+              ./3rd/luamake/luamake rebuild
               ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
     end
 
