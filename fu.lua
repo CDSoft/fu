@@ -1826,8 +1826,8 @@ end
 function neovim_configuration()
     title "neovim configuration"
 
-    -- copr not needed on fedora 36, Neovim 0.7 is already in the Fedora repository
-    --copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:agriffis:neovim-nightly.repo", "agriffis/neovim-nightly")
+    -- copr to be removed when Neovim 0.7 is in the Fedora repository
+    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:agriffis:neovim-nightly.repo", "agriffis/neovim-nightly")
 
     ppa("/etc/apt/sources.list.d/neovim-ppa-ubuntu-unstable-%(UBUNTU_CODENAME).list", "ppa:neovim-ppa/unstable")
 
