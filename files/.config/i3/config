@@ -106,6 +106,7 @@ for_window [title="^floating fzfmenu$"]                         floating enable
 for_window [title="^Screen Layout Editor"]                      floating enable
 for_window [title="^Contrôle du volume"]                        floating enable, border normal
 for_window [title="^Xephyr on :"]                               border normal 8
+for_window [title="^Timeshift$"]                                floating enable, border normal 4
 
 # kill focused window
 bindsym $mod+q          kill
