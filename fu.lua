@@ -94,6 +94,7 @@ function fu_configuration()
         frama_c = {"Install Frama-C?", "yn"},
         rust = {"Install Rust?", "yn"},
         v = {"Install V?", "yn"},
+        vls = {"Install V Language Server?", "yn"},
         R = {"Install R?", "yn"},
         asymptote_sources = {"Install Asymptote from source?", "yn"},
         geogebra = {"Install GeoGebra?", "yn"},
@@ -123,6 +124,28 @@ function fu_configuration()
         dropbox = {"Install Dropbox?", "yn"},
 
         startvlc = {"Autostart VLC in the systray?", "yn"},
+
+        devel = {"Install extended development packages?", "yn"},
+        tokei = {"Install tokei?", "yn"},
+        delta = {"Install delta?", "yn"},
+        pmccabe = {"Install PMcCabe?", "yn"},
+
+        bash_language_server = {"Install bash language server?", "yn"},
+        dot_language_server = {"Install dot (Graphviz) language server?", "yn"},
+        haskell_language_server = {"Install Haskell language server?", "yn"},
+        python_language_server = {"Install Python language server?", "yn"},
+        lua_language_server = {"Install Lua language server?", "yn"},
+        zig_language_server = {"Install Zig language server?", "yn"},
+
+        hcalc = {"Install hCalc?", "yn"},
+
+        patat = {"Install patat?", "yn"},
+        plantuml = {"Install PlantUML?", "yn"},
+        ditaa = {"Install ditaa?", "yn"},
+        blockdiag = {"Install blockdiag?", "yn"},
+        mermaid = {"Install mermaid?", "yn"},
+        asymptote = {"Install Asymptote?", "yn"},
+        shellcheck = {"Install ShellCheck?", "yn"},
 
     }
 end
@@ -202,7 +225,7 @@ function main()
     lsp_configuration()
     text_edition_configuration()
     if cfg.latex then latex_configuration() end
-    asymptote_configuration()
+    if cfg.asymptote then asymptote_configuration() end
     pandoc_configuration()
     neovim_configuration()
     i3_configuration()
@@ -1088,108 +1111,122 @@ function dev_configuration()
     ppa("/etc/apt/sources.list.d/bartbes-ubuntu-love-stable-%(UBUNTU_CODENAME).list", "ppa:bartbes/love-stable")
 
     dnf_install [[
-        git git-gui gitk qgit gitg tig git-lfs
-        git-delta
-        subversion
-        clang llvm clang-tools-extra
-        ccls
-        cppcheck
-        cmake
-        ninja-build
-        ncurses-devel
-        readline-devel
-        meld
-        pl pl-xpce pl-devel
-        libev-devel startup-notification-devel xcb-util-devel xcb-util-cursor-devel xcb-util-keysyms-devel xcb-proto xcb-util-wm-devel xcb-util-xrm-devel libxkbcommon-devel libxkbcommon-x11-devel yajl-devel
-        arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++ arm-none-eabi-gdb
-        mingw64-gcc
-        gcc-gnat
-        python-pip
-        pypy
-        lua lua-filesystem lua-fun lua-lpeg lua-posix lua-socket luajit
-        luarocks
-        lua-devel
-        love
-        glfw
-        flex bison
-        perl-ExtUtils-MakeMaker
-        SDL2-devel SDL2_ttf-devel SDL2_gfx-devel SDL2_mixer-devel SDL2_image-devel
-        libpcap-devel
-        libyaml libyaml-devel
-        libubsan libubsan-static libasan libasan-static libtsan libtsan-static
-        expect
-        python3-devel
-        python3-PyYAML python3-termcolor
-        pkgconfig
-        boost boost-devel
-        libjpeg-turbo-devel libpng-devel libtiff-devel
-        npm
-        liblzma-devel
-        protobuf-devel python3-protobuf
-        lzma-devel xz-devel zlib-devel
-        blas-devel lapack-devel
-        gnuplot
-        openssl-devel
-        golang
-        libX11-devel
-        libXft-devel
-        octave
-        libcurl-devel
-        libicu-devel ncurses-devel zlib-devel
-        libstdc++-static
-        gc-devel
+        git git-gui meld
     ]]
 
     apt_install [[
-        git git-gui gitk qgit gitg tig git-lfs
-        subversion
-        clang llvm clang-tidy clang-format clangd clang-tools
-        ccls
-        cppcheck
-        cmake
-        ninja-build
-        ncurses-dev
-        libreadline-dev
-        meld
-        swi-prolog-full
-        libev-dev libstartup-notification0-dev libxcb-util-dev libxcb-cursor-dev libxcb-keysyms1-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-render-util0-dev libxcb-util0-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libyajl-dev
-        gcc-arm-none-eabi gdb-arm-none-eabi
-        gcc-mingw-w64
-        gnat
-        python3-pip
-        pypy
-        luarocks
-        love
-        libglfw3
-        flex bison
-        libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-image-dev
-        libpcap-dev
-        libyaml-0-2 libyaml-dev
-        libubsan1 libasan6 libtsan0
-        expect
-        python3-dev
-        python3-yaml python3-termcolor
-        pkg-config
-        libboost-all-dev
-        libpng-dev libtiff-dev
-        npm
-        liblzma-dev
-        libprotobuf-dev python3-protobuf
-        lzma-dev
-        libopenblas-dev liblapack-dev
-        gnuplot
-        libssl-dev
-        golang
-        libx11-dev
-        libxft-dev
-        octave
-        libcurl4-openssl-dev
-        libicu-dev ncurses-dev
-        libgc-dev
+        git git-gui meld
     ]]
-    if UBUNTU then apt_install "libjpeg-turbo8-dev" end
 
-    if force or update or not installed "tokei" then
+    if cfg.devel then
+        dnf_install [[
+            git git-gui gitk qgit gitg tig git-lfs
+            git-delta
+            subversion
+            clang llvm clang-tools-extra
+            ccls
+            cppcheck
+            cmake
+            ninja-build
+            ncurses-devel
+            readline-devel
+            meld
+            pl pl-xpce pl-devel
+            libev-devel startup-notification-devel xcb-util-devel xcb-util-cursor-devel xcb-util-keysyms-devel xcb-proto xcb-util-wm-devel xcb-util-xrm-devel libxkbcommon-devel libxkbcommon-x11-devel yajl-devel
+            arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++ arm-none-eabi-gdb
+            mingw64-gcc
+            gcc-gnat
+            python-pip
+            pypy
+            lua lua-filesystem lua-fun lua-lpeg lua-posix lua-socket luajit
+            luarocks
+            lua-devel
+            love
+            glfw
+            flex bison
+            perl-ExtUtils-MakeMaker
+            SDL2-devel SDL2_ttf-devel SDL2_gfx-devel SDL2_mixer-devel SDL2_image-devel
+            libpcap-devel
+            libyaml libyaml-devel
+            libubsan libubsan-static libasan libasan-static libtsan libtsan-static
+            expect
+            python3-devel
+            python3-PyYAML python3-termcolor
+            pkgconfig
+            boost boost-devel
+            libjpeg-turbo-devel libpng-devel libtiff-devel
+            npm
+            liblzma-devel
+            protobuf-devel python3-protobuf
+            lzma-devel xz-devel zlib-devel
+            blas-devel lapack-devel
+            gnuplot
+            openssl-devel
+            golang
+            libX11-devel
+            libXft-devel
+            octave
+            libcurl-devel
+            libicu-devel ncurses-devel zlib-devel
+            libstdc++-static
+            gc-devel
+            doxygen
+            graphviz
+        ]]
+
+        apt_install [[
+            git git-gui gitk qgit gitg tig git-lfs
+            subversion
+            clang llvm clang-tidy clang-format clangd clang-tools
+            ccls
+            cppcheck
+            cmake
+            ninja-build
+            ncurses-dev
+            libreadline-dev
+            meld
+            swi-prolog-full
+            libev-dev libstartup-notification0-dev libxcb-util-dev libxcb-cursor-dev libxcb-keysyms1-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-render-util0-dev libxcb-util0-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libyajl-dev
+            gcc-arm-none-eabi gdb-arm-none-eabi
+            gcc-mingw-w64
+            gnat
+            python3-pip
+            pypy
+            luarocks
+            love
+            libglfw3
+            flex bison
+            libsdl2-dev libsdl2-ttf-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-image-dev
+            libpcap-dev
+            libyaml-0-2 libyaml-dev
+            libubsan1 libasan6 libtsan0
+            expect
+            python3-dev
+            python3-yaml python3-termcolor
+            pkg-config
+            libboost-all-dev
+            libpng-dev libtiff-dev
+            npm
+            liblzma-dev
+            libprotobuf-dev python3-protobuf
+            lzma-dev
+            libopenblas-dev liblapack-dev
+            gnuplot
+            libssl-dev
+            golang
+            libx11-dev
+            libxft-dev
+            octave
+            libcurl4-openssl-dev
+            libicu-dev ncurses-dev
+            libgc-dev
+            doxygen
+            graphviz
+        ]]
+        if UBUNTU then apt_install "libjpeg-turbo8-dev" end
+    end
+
+    if cfg.tokei and (force or update or not installed "tokei") then
         if cfg.rust then
             log "Tokei"
             sh "~/.cargo/bin/cargo install tokei --root ~/.local"
@@ -1197,7 +1234,7 @@ function dev_configuration()
     end
 
     if UBUNTU or DEBIAN then
-        if force or upgrade or not installed "delta" then
+        if cfg.delta and (force or upgrade or not installed "delta") then
             with_tmpdir(function(tmp)
                 local curr_version = pipe("delta --version"):match("[%d%.]+")
                 local version = pipe("curl -sSL https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
@@ -1268,7 +1305,7 @@ function dev_configuration()
     sh "git config --global core.excludesfile ~/.gitignore"
 
     -- PMcCabe
-    if force or upgrade or not installed "pmccabe" then
+    if cfg.pmccabe and (force or upgrade or not installed "pmccabe") then
         gitclone "https://github.com/datacom-teracom/pmccabe"
         sh "cd %(repo_path)/pmccabe && make && cp pmccabe ~/.local/bin"
     end
@@ -1276,7 +1313,7 @@ function dev_configuration()
     -- interactive scratchpad: https://github.com/metakirby5/codi.vim
     script "codi"
 
-    if cfg.v then
+    if cfg.v and cfg.vls then
         if force or upgrade or not installed "vls" then
             gitclone "https://github.com/nedpals/tree-sitter-v"
             sh "mkdir -p ~/.vmodules/; ln -sf %(repo_path)/tree-sitter-v ~/.vmodules/tree_sitter_v"
@@ -1301,18 +1338,22 @@ function lsp_configuration()
 
     title "Language servers configuration"
 
-    if force or upgrade or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
-        log "Bash Language Server"
-        mkdir "%(HOME)/.local/opt/bash-language-server"
-        sh "cd ~/.local/opt/bash-language-server && npm install bash-language-server && ln -s -f $PWD/node_modules/.bin/bash-language-server ~/.local/bin/"
+    if cfg.bash_language_server then
+        if force or upgrade or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
+            log "Bash Language Server"
+            mkdir "%(HOME)/.local/opt/bash-language-server"
+            sh "cd ~/.local/opt/bash-language-server && npm install bash-language-server && ln -s -f $PWD/node_modules/.bin/bash-language-server ~/.local/bin/"
+        end
     end
-    if force or upgrade or not file_exist "%(HOME)/.local/opt/dot-language-server/node_modules/.bin/dot-language-server" then
-        log "Dot Language Server"
-        mkdir "%(HOME)/.local/opt/dot-language-server"
-        sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
+    if cfg.dot_language_server then
+        if force or upgrade or not file_exist "%(HOME)/.local/opt/dot-language-server/node_modules/.bin/dot-language-server" then
+            log "Dot Language Server"
+            mkdir "%(HOME)/.local/opt/dot-language-server"
+            sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
+        end
     end
     --[[
-    if cfg.haskell then
+    if cfg.haskell and cfg.haskell_language_server then
         if force or upgrade or not installed "haskell-language-server" then
             log "Haskell Language Server"
             gitclone("https://github.com/haskell/haskell-language-server", {"--recurse-submodules"})
@@ -1320,20 +1361,24 @@ function lsp_configuration()
         end
     end
     --]]
-    if force or upgrade or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
-        log "Python Language Server"
-        mkdir "%(HOME)/.local/opt/pyright-langserver"
-        sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
+    if cfg.python_language_server then
+        if force or upgrade or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
+            log "Python Language Server"
+            mkdir "%(HOME)/.local/opt/pyright-langserver"
+            sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
+        end
     end
-    if force or upgrade or not installed "lua-language-server" then
-        log "Lua Language Server"
-        gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
-        sh [[ cd %(repo_path)/lua-language-server &&
-              cd 3rd/luamake &&
-              compile/install.sh
-              cd ../..
-              ./3rd/luamake/luamake rebuild
-              ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
+    if cfg.lua_language_server then
+        if force or upgrade or not installed "lua-language-server" then
+            log "Lua Language Server"
+            gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
+            sh [[ cd %(repo_path)/lua-language-server &&
+                cd 3rd/luamake &&
+                compile/install.sh
+                cd ../..
+                ./3rd/luamake/luamake rebuild
+                ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
+        end
     end
 
 end
@@ -1372,7 +1417,7 @@ function haskell_configuration()
     end
 
     -- hCalc
-    if force or upgrade or not installed "hcalc" then
+    if cfg.hcalc and (force or upgrade or not installed "hcalc") then
         gitclone "http://github.com/cdsoft/hcalc"
         sh "cd %(repo_path)/hcalc && make install"
     end
@@ -1596,7 +1641,7 @@ function zig_configuration()
         end
     end
 
-    if force or upgrade or not installed "zls" then
+    if cfg.zig_language_server and (force or upgrade or not installed "zls") then
         title "Zig Language Server installation"
         local curr_version = installed_packages.zls_version
         local version = pipe("curl -sSL https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
@@ -1692,17 +1737,11 @@ function text_edition_configuration()
         aspell-fr aspell-en
         figlet
         translate-shell
-        doxygen
-        gnuplot
-        graphviz
     ]]
     apt_install [[
         wkhtmltopdf
         aspell-fr aspell-en
         figlet
-        doxygen
-        gnuplot
-        graphviz
     ]]
     if UBUNTU then apt_install "translate-shell" end
 
@@ -1715,12 +1754,14 @@ end
 function pandoc_configuration()
     title "Pandoc configuration"
 
-    dnf_install [[
-        patat
-    ]]
-    apt_install [[
-        patat
-    ]]
+    if cfg.patat then
+        dnf_install [[
+            patat
+        ]]
+        apt_install [[
+            patat
+        ]]
+    end
 
     if force or upgrade or not installed "pandoc" then
         local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
@@ -1758,25 +1799,33 @@ function pandoc_configuration()
         end
     end
 
-    if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
-        log "plantuml.jar"
-        sh "wget http://sourceforge.net/projects/plantuml/files/plantuml.jar -O ~/.local/bin/plantuml.jar"
+    if cfg.plantuml then
+        if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
+            log "plantuml.jar"
+            sh "wget http://sourceforge.net/projects/plantuml/files/plantuml.jar -O ~/.local/bin/plantuml.jar"
+        end
     end
 
-    if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
-        log "ditaa.jar"
-        sh "wget https://github.com/stathissideris/ditaa/releases/download/v0.11.0/ditaa-0.11.0-standalone.jar -O ~/.local/bin/ditaa.jar"
+    if cfg.ditaa then
+        if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
+            log "ditaa.jar"
+            sh "wget https://github.com/stathissideris/ditaa/releases/download/v0.11.0/ditaa-0.11.0-standalone.jar -O ~/.local/bin/ditaa.jar"
+        end
     end
 
-    if force or upgrade or not installed "blockdiag" then
-        log "Blockdiag"
-        sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user blockdiag seqdiag actdiag nwdiag"
+    if cfg.blockdiag then
+        if force or upgrade or not installed "blockdiag" then
+            log "Blockdiag"
+            sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user blockdiag seqdiag actdiag nwdiag"
+        end
     end
 
-    if force or upgrade or not installed "mmdc" then
-        log "Mermaid"
-        mkdir "%(HOME)/.local/opt/mermaid"
-        sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
+    if cfg.mermaid then
+        if force or upgrade or not installed "mmdc" then
+            log "Mermaid"
+            mkdir "%(HOME)/.local/opt/mermaid"
+            sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
+        end
     end
 
 end
@@ -1897,14 +1946,16 @@ function neovim_configuration()
         sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
     end
 
-    if cfg.haskell then
-        if force or upgrade or not installed "shellcheck" then
-            log "ShellCheck"
-            sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
+    if cfg.shellcheck then
+        if cfg.haskell then
+            if force or upgrade or not installed "shellcheck" then
+                log "ShellCheck"
+                sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
+            end
+        else
+            dnf_install "ShellCheck"
+            apt_install "shellcheck"
         end
-    else
-        dnf_install "ShellCheck"
-        apt_install "shellcheck"
     end
 
     -- Notes, TO-DO lists and password manager

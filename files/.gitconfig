@@ -10,6 +10,7 @@
 [alias]
     meld = !git difftool -t meld --dir-diff
 
+%(when(cfg.delta) [==[
 [pager]
     diff = delta
     log = delta
@@ -38,3 +39,4 @@
     line-numbers-right-style = cyan
     line-numbers-minus-style = 124
     line-numbers-plus-style = 28
+]==])

@@ -34,6 +34,8 @@ then
     exec "$@"
 fi
 
+mkdir -p ~/.local/bin
+
 [ -x ~/.local/bin/luax ] || (
     LAPP_URL=https://github.com/CDSoft/lapp
     TMP_LAPP=$(mktemp -d)
