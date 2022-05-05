@@ -996,7 +996,7 @@ function nextcloud_client_configuration()
         if installed then
             version = pipe("%(HOME)/.local/bin/Nextcloud -v"):match("version%s+([%d%.]+)")
         end
-        new_version = pipe("curl -s https://github.com/nextcloud/desktop/releases/latest/"):match("tag/v([%d%.]+)")
+        new_version = pipe("curl -sSL https://github.com/nextcloud/desktop/releases/latest/"):match("tag/v([%d%.]+)")
         new_version = new_version == "3.4.3" and "3.4.2"
                    or new_version
         if new_version ~= version then
@@ -1200,7 +1200,7 @@ function dev_configuration()
         if force or upgrade or not installed "delta" then
             with_tmpdir(function(tmp)
                 local curr_version = pipe("delta --version"):match("[%d%.]+")
-                local version = pipe("curl -s https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
+                local version = pipe("curl -sSL https://github.com/dandavison/delta/releases/latest/"):match("tag/([%d%.]+)")
                 if version ~= curr_version then
                     log "Delta"
                     sh("wget https://github.com/dandavison/delta/releases/download/"..version.."/git-delta_"..version.."_amd64.deb -O "..tmp.."/delta.deb")
@@ -1599,7 +1599,7 @@ function zig_configuration()
     if force or upgrade or not installed "zls" then
         title "Zig Language Server installation"
         local curr_version = installed_packages.zls_version
-        local version = pipe("curl -s https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
+        local version = pipe("curl -sSL https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
         if version ~= curr_version then
             with_tmpdir(function(tmp)
                 sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/x86_64-linux.tar.xz -O "..tmp.."/x86_64-linux.tar.xz")
@@ -1724,7 +1724,7 @@ function pandoc_configuration()
 
     if force or upgrade or not installed "pandoc" then
         local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
-        local version = pipe("curl -s https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
+        local version = pipe("curl -sSL https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
         if version ~= curr_version then
             log "Pandoc"
             with_tmpdir(function(tmp)
