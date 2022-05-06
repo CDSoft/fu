@@ -2005,6 +2005,7 @@ function i3_configuration()
         xfce4-notifyd
         xfce4-volumed
         barrier
+        redshift
     ]]
     apt_install [[
         rxvt-unicode
@@ -2026,6 +2027,7 @@ function i3_configuration()
         xfce4-screenshooter
         xfce4-notifyd
         barrier
+        redshift
     ]]
     if UBUNTU then
         apt_install "xfce4-volumed"
