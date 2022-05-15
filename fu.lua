@@ -2439,6 +2439,7 @@ function virtualization_configuration()
         VirtualBox
         virtualbox-guest-additions
         qemu-system-x86
+        qemu-img
     ]]
     apt_install [[
         virtualbox-qt
