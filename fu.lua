@@ -879,6 +879,8 @@ function shell_configuration()
             gitclone "https://github.com/starship/starship.git"
             sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
         else
+            dnf_install "curl"
+            apt_install "curl"
             with_tmpfile(function(tmp)
                 sh("curl -fsSL https://starship.rs/install.sh -o "..tmp.." && sh "..tmp.." -f -b ~/.local/bin")
             end)
