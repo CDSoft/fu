@@ -475,7 +475,7 @@ end
 
 function pipe(cmd, stdin)
     local mode = stdin and "w" or "r"
-    local f = io.popen(I(cmd), mode)
+    local f = assert(io.popen(I(cmd), mode))
     if stdin then
         f:write(I(stdin))
         f:close()
@@ -488,7 +488,7 @@ end
 
 function ls(pattern)
     local files = dirname(pipe "realpath %(arg[0])").."/files/"
-    local p = io.popen("ls "..files..I(pattern))
+    local p = assert(io.popen("ls "..files..I(pattern)))
     return function()
         local name = p:read "l"
         if name then return name:sub(#files+1) end
