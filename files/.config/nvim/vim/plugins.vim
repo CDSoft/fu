@@ -53,6 +53,8 @@ Plug 'L3MON4D3/LuaSnip'
 
 Plug 'ollykel/v-vim'
 
+Plug 'vifm/vifm.vim'
+
 %(when(cfg.work) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
 
 call plug#end()

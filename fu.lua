@@ -1059,7 +1059,7 @@ function filesystem_configuration()
         encfs
         cryfs
         p7zip p7zip-gui p7zip-plugins
-        mc pcmanfm thunar
+        mc pcmanfm thunar vifm
         pmount
         exfatprogs fuse-exfat
         syslinux
@@ -1078,7 +1078,7 @@ function filesystem_configuration()
         encfs
         cryfs
         p7zip-full
-        mc pcmanfm thunar
+        mc pcmanfm thunar vifm
         pmount
         exfatprogs exfat-fuse
         syslinux
