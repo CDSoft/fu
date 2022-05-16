@@ -1115,6 +1115,7 @@ function dev_configuration()
 
     dnf_install [[
         git git-gui meld
+        gtksourceview5
     ]]
 
     apt_install [[
