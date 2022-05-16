@@ -790,6 +790,7 @@ function system_configuration()
     repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", "http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
 
     dnf_install [[
+        @workstation-product-environment
         dnf-plugins-core dnfdragora
         fedora-workstation-repositories
         git
