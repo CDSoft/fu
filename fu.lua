@@ -2360,7 +2360,6 @@ function internet_configuration()
 
     -- Remove unecessary language symlinks
     apt_install [[
-        myspell-tools
         myspell-fr-fr myspell-fr-gut
         myspell-uk
     ]]
