@@ -396,7 +396,7 @@ function set(init)
         end)
     end
     function self.ipairs() return ipairs(ordered) end
-    function self.has(name)return set[name] end
+    function self.has(name) return set[name] end
     function self.concat(sep) return table.concat(ordered, sep) end
     if init then self.add(init) end
     return self
@@ -1074,6 +1074,7 @@ function filesystem_configuration()
         baobab ncdu qdirstat
         xz unrar
         archivemount fuseiso sshfs curlftpfs fuse-7z
+        fuse-zip
     ]]
 
     apt_install [[
@@ -1100,6 +1101,8 @@ function filesystem_configuration()
             unrar
         ]]
     end
+
+    script ".config/vifm/vifmrc"
 
 end
 
