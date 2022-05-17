@@ -454,6 +454,10 @@ function write(path, content)
     f:close()
 end
 
+function modify(path, mod)
+    write(path, mod(read(path)))
+end
+
 function rootfile(path, content)
     with_tmpfile(function(tmp)
         write(tmp, content)
@@ -2476,6 +2480,13 @@ function work_configuration()
     ]]
     apt_install [[
         docker.io docker-compose
+    ]]
+
+    dnf_install [[
+        astyle
+    ]]
+    apt_install [[
+        astyle
     ]]
 
     -- AWS
