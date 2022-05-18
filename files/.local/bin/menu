@@ -77,6 +77,14 @@ idle()
         -e bash -c "idle && $1"
 }
 
+bluetooth()
+{
+    case "$1" in
+        start)  rkfill unblock bluetooth ;;
+        stop)   rkfill block bluetooth ;;
+    esac
+}
+
 EXT_RES=1920x1200
 
 case "$1" in
@@ -112,9 +120,9 @@ case "$1" in
     (newws*)        new_workspace ;;
 
     ("lock"*)               lock ;;
-    ("suspend when idle"*)  idle "lock && systemctl suspend" ;;
-    ("suspend"*)            lock && systemctl suspend ;;
-    ("hibernate"*)          lock && systemctl hybrid-sleep ;;
+    ("suspend when idle"*)  idle "bluetooth start; lock && systemctl suspend; bluetooth stop" ;;
+    ("suspend"*)            bluetooth start; lock && systemctl suspend; bluetooth stop ;;
+    ("hibernate"*)          bluetooth start; lock && systemctl hybrid-sleep; bluetooth stop ;;
     ("power-off"*)          systemctl poweroff ;;
     ("reboot"*)             systemctl reboot ;;
     ("exit"*)               i3-msg exit ;;
