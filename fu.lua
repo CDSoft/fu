@@ -1342,6 +1342,7 @@ function dev_configuration()
     end
 
     script "ido"
+    script "retry"
 
 end
 
