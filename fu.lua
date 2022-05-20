@@ -67,6 +67,8 @@ function fu_configuration()
 
     cfg = interactive(fs.join(config_path, "config.lua")) {
 
+        in_docker = {"Installation in a docker?", "yn"},
+
         hostname = {"Hostname:", "str"},
         wiki = {"Wiki directory (e.g.: ~/Nextcloud/Wiki):", "str"},
         git_user_email = {"Git user email:", "str"},
@@ -209,9 +211,9 @@ function main()
     if cfg.rust then rust_configuration() end
     shell_configuration()
     network_configuration()
-    if cfg.dropbox then dropbox_configuration() end
-    if cfg.nextcloud_client then nextcloud_client_configuration() end
-    if cfg.nextcloud_server then nextcloud_server_configuration() end
+    if not cfg.in_docker and cfg.dropbox then dropbox_configuration() end
+    if not cfg.in_docker and cfg.nextcloud_client then nextcloud_client_configuration() end
+    if not cfg.in_docker and cfg.nextcloud_server then nextcloud_server_configuration() end
     filesystem_configuration()
     if cfg.v then v_configuration() end
     dev_configuration()
@@ -228,13 +230,13 @@ function main()
     if cfg.asymptote then asymptote_configuration() end
     pandoc_configuration()
     neovim_configuration()
-    i3_configuration()
-    graphic_application_configuration()
+    if not cfg.in_docker then i3_configuration() end
+    if not cfg.in_docker then graphic_application_configuration() end
     if cfg.povray then povray_configuration() end
-    internet_configuration()
-    if cfg.zoom then zoom_configuration() end
-    if cfg.teams then teams_configuration() end
-    if cfg.virtualization then virtualization_configuration() end
+    if not cfg.in_docker then internet_configuration() end
+    if not cfg.in_docker and cfg.zoom then zoom_configuration() end
+    if not cfg.in_docker and cfg.teams then teams_configuration() end
+    if not cfg.in_docker and cfg.virtualization then virtualization_configuration() end
     if cfg.work then work_configuration() end
 
     upgrade_packages()
@@ -793,28 +795,37 @@ function system_configuration()
     repo("/etc/yum.repos.d/rpmfusion-free.repo", "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-%(RELEASE).noarch.rpm")
     repo("/etc/yum.repos.d/rpmfusion-nonfree.repo", "http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-%(RELEASE).noarch.rpm")
 
+    if not cfg.in_docker then
+        dnf_install "@workstation-product-environment"
+    end
     dnf_install [[
         @workstation-product-environment
         dnf-plugins-core dnfdragora
         fedora-workstation-repositories
         git
+        curl wget
     ]]
 
     apt_install [[
         apt-file
         software-properties-common
         git
+        curl wget
     ]]
 
-    -- Locale and timezone
-    log "Timezone and keyboard"
-    sh "sudo timedatectl set-timezone %(TIMEZONE)"
-    if FEDORA then sh "sudo localectl set-keymap %(KEYMAP)" end -- TODO : à corriger pour UBUNTU
-    sh "sudo localectl set-locale %(LOCALE)"
+    if not cfg.in_docker then
 
-    -- No more poweroff
-    log "Disable power key"
-    sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
+        -- Locale and timezone
+        log "Timezone and keyboard"
+        sh "sudo timedatectl set-timezone %(TIMEZONE)"
+        if FEDORA then sh "sudo localectl set-keymap %(KEYMAP)" end -- TODO : à corriger pour UBUNTU
+        sh "sudo localectl set-locale %(LOCALE)"
+
+        -- No more poweroff
+        log "Disable power key"
+        sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
+
+    end
 end
 
 -- }}}
@@ -1057,18 +1068,31 @@ function filesystem_configuration()
     -- cryfs is already in the Fedora repository
     --copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:fcsm:cryfs.repo", "fcsm/cryfs")
 
+    if not cfg.in_docker then
+        dnf_install [[
+            gparted
+            pcmanfm thunar
+            backintime-common backintime-qt4
+            timeshift
+        ]]
+
+        apt_install [[
+            gparted
+            pcmanfm thunar
+            backintime-common backintime-qt
+            timeshift
+        ]]
+    end
+
     dnf_install [[
-        gparted
         udftools
         encfs
         cryfs
         p7zip p7zip-gui p7zip-plugins
-        mc pcmanfm thunar vifm
+        mc vifm
         pmount
         exfatprogs fuse-exfat
         syslinux
-        backintime-common backintime-qt4
-        timeshift
         cryptsetup
         squashfs-tools squashfuse
         baobab ncdu qdirstat
@@ -1078,17 +1102,14 @@ function filesystem_configuration()
     ]]
 
     apt_install [[
-        gparted
         udftools
         encfs
         cryfs
         p7zip-full
-        mc pcmanfm thunar vifm
+        mc vifm
         pmount
         exfatprogs exfat-fuse
         syslinux
-        backintime-common backintime-qt
-        timeshift
         cryptsetup
         squashfs-tools squashfuse
         baobab ncdu
@@ -1241,6 +1262,10 @@ function dev_configuration()
         if cfg.rust then
             log "Tokei"
             sh "~/.cargo/bin/cargo install tokei --root ~/.local"
+        else
+            dnf_install [[
+                tokei
+            ]]
         end
     end
 
