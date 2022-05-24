@@ -74,6 +74,7 @@ function fu_configuration()
         git_user_email = {"Git user email:", "str"},
         git_user_name = {"Git user name:", "str"},
 
+        picom = {"Start picom?", "yn"},
         numlockx = {"Enable numclockx?", "yn"},
         external_monitor = {"Add shortcuts for external monitor?", "yn"},
         i3_fnkeys = {"Use Fn keys to change workspaces?", "yn"},
