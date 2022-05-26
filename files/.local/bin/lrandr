@@ -1,6 +1,6 @@
 #!/usr/bin/env lua
 
-print "lrandr: automatic screen layout"
+print "Predefined screen layouts for XRandR\n"
 
 local usage = [[
 usage: lrandr [single|clone|left|right|above]
@@ -51,9 +51,9 @@ for s in io.popen("xrandr"):lines() do
     end
 end
 
-print("primary:    ", primary_screen, screen_resolution[primary_screen])
-print("secondary:  ", secondary_screen, screen_resolution[secondary_screen])
-print("disonnected:", table.concat(disconnected_screens, ", "))
+print("primary:     ", primary_screen, screen_resolution[primary_screen])
+print("secondary:   ", secondary_screen, screen_resolution[secondary_screen])
+print("disconnected:", table.concat(disconnected_screens, ", "))
 
 local layout = arg[1] or default_layout
 if not secondary_screen then layout = "single" end
