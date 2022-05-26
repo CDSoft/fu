@@ -1,5 +1,5 @@
 configuration {
-    font: "%(FONT) %(FONT_VARIANT) %(FONT_SIZE)";
+    font: "%(FONT) %(FONT_VARIANT) %(FONT_SIZE+2)";
     modi: "window,run,drun";
     combi-modi: "window,drun,run";
     monitor: "-1";
@@ -7,3 +7,13 @@ configuration {
 }
 
 @theme "/usr/share/rofi/themes/glue_pro_blue.rasi"
+
+window {
+    location: center;
+    anchor: center;
+}
+listview {
+    lines: 25;
+    fixed-height: false;
+    dynamic: false;
+}

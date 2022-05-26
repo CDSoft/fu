@@ -167,8 +167,6 @@ function os_configuration()
         or FEDORA and "green"
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
-    NORMAL_FONT_SIZE = 9
-    SMALL_FONT_SIZE = 9
     local yres = tonumber(pipe "xdpyinfo | awk '/dimensions/ {print $2}' | awk -F 'x' '{print $2}'") or 1080
     FONT_SIZE =    yres <= 1080 and 9
                 or yres <= 1440 and 9+4
