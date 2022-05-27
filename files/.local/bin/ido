@@ -31,4 +31,5 @@ do
     say $BLUE "[$T] waiting for changes..." "\r"
 
     while ! inotifywait -q -r --exclude "\.git|\.sw." -e modify . > /dev/null; do :; done
+    sleep 0.5s
 done
