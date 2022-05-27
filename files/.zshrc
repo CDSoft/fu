@@ -66,6 +66,13 @@ eval "$(zoxide init zsh)"
 
 %(when(cfg.frama_c) '[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true')
 %(when(cfg.rust) '. ~/.cargo/env')
+%(when(cfg.freepascal_language_server) [=[
+export FPCDIR='/usr/share/fpcsrc'       # FPC source directory (This is the only required option for the server to work).
+export PP='/usr/bin/ppcx64'             # Path to the Free Pascal compiler executable.
+export LAZARUSDIR='/usr/lib64/lazarus'  # Path to the Lazarus sources.
+export FPCTARGET=''                     # Target operating system for cross compiling.
+export FPCTARGETCPU='x86_64'            # Target CPU for cross compiling.
+]=])
 
 # Plugins
 

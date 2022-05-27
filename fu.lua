@@ -101,6 +101,7 @@ function fu_configuration()
         R = {"Install R?", "yn"},
         asymptote_sources = {"Install Asymptote from source?", "yn"},
         geogebra = {"Install GeoGebra?", "yn"},
+        freepascal_language_server = {"Install Pascal Language Server?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -1203,6 +1204,7 @@ function dev_configuration()
             gc-devel
             doxygen
             graphviz
+            fpc lazarus
         ]]
 
         apt_install [[
@@ -1253,6 +1255,7 @@ function dev_configuration()
             libgc-dev
             doxygen
             graphviz
+            fpc lazarus
         ]]
         if UBUNTU then apt_install "libjpeg-turbo8-dev" end
     end
@@ -1414,6 +1417,18 @@ function lsp_configuration()
                 cd ../..
                 ./3rd/luamake/luamake rebuild
                 ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
+        end
+    end
+    if cfg.freepascal_language_server then
+        if force or upgrade or not installed "pasls" then
+            log "Pascal Language Server"
+            dnf_install [[
+                lazarus
+                libsqlite3x sqlite-devel
+            ]]
+            gitclone("https://github.com/genericptr/pascal-language-server", {"--recurse-submodules"})
+            sh [[ cd %(repo_path)/pascal-language-server && lazbuild pasls.lpi
+                  ln -s -f %(repo_path)/pascal-language-server/lib/x86_64-linux/pasls ~/.local/bin/ ]]
         end
     end
 

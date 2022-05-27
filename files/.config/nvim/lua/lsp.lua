@@ -43,6 +43,7 @@ local servers = {
     --"ccls",   -- no ccls until I can figure out how to use compile_flags.txt
     "clangd",
     "dotls",
+    "pasls",
     "pyright",
     --%(when(cfg.haskell) [["hls",]])
     %(when(cfg.zig) [["zls",]])
@@ -114,4 +115,8 @@ require'lspconfig'.vls.setup {
 
 -- OCaml Language Server
 require'lspconfig'.ocamllsp.setup {
+}
+
+-- Pascal Language Server
+require'lspconfig'.pasls.setup {
 }
