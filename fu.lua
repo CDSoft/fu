@@ -2290,7 +2290,7 @@ function graphic_application_configuration()
         xournal
         curl
 
-        vlc ffmpeg
+        vlc ffmpeg mplayer
         gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras
     ]]
     apt_install [[
@@ -2305,7 +2305,7 @@ function graphic_application_configuration()
         xournal
         curl
 
-        vlc ffmpeg
+        vlc ffmpeg mplayer
     ]]
 
     -- GeoGebra
