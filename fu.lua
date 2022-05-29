@@ -805,6 +805,7 @@ function system_configuration()
         fedora-workstation-repositories
         git
         curl wget
+        xmlstarlet
     ]]
 
     apt_install [[
@@ -812,6 +813,7 @@ function system_configuration()
         software-properties-common
         git
         curl wget
+        xmlstarlet
     ]]
 
     if not cfg.in_docker then
