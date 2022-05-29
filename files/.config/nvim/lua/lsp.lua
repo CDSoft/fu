@@ -120,3 +120,7 @@ require'lspconfig'.ocamllsp.setup {
 -- Pascal Language Server
 require'lspconfig'.pasls.setup {
 }
+
+-- Typescript Language Server
+require'lspconfig'.tsserver.setup {
+}

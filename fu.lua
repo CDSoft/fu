@@ -140,6 +140,7 @@ function fu_configuration()
         python_language_server = {"Install Python language server?", "yn"},
         lua_language_server = {"Install Lua language server?", "yn"},
         zig_language_server = {"Install Zig language server?", "yn"},
+        typescript_language_server = {"Install Typescript language server?", "yn"},
 
         hcalc = {"Install hCalc?", "yn"},
 
@@ -1429,6 +1430,13 @@ function lsp_configuration()
             gitclone("https://github.com/genericptr/pascal-language-server", {"--recurse-submodules"})
             sh [[ cd %(repo_path)/pascal-language-server && lazbuild pasls.lpi
                   ln -s -f %(repo_path)/pascal-language-server/lib/x86_64-linux/pasls ~/.local/bin/ ]]
+        end
+    end
+    if cfg.typescript_language_server then
+        if force or upgrade or not installed "xxxx" then
+            log "Typescript Language Server"
+            mkdir "%(HOME)/.local/opt/typescript-language-server"
+            sh "cd ~/.local/opt/typescript-language-server && npm install typescript typescript-language-server && ln -s -f $PWD/node_modules/.bin/typescript-language-server ~/.local/bin/"
         end
     end
 
