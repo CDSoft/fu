@@ -142,6 +142,7 @@ function fu_configuration()
         lua_language_server = {"Install Lua language server?", "yn"},
         zig_language_server = {"Install Zig language server?", "yn"},
         typescript_language_server = {"Install Typescript language server?", "yn"},
+        elm_language_server = {"Install ELM language server?", "yn"},
 
         hcalc = {"Install hCalc?", "yn"},
 
@@ -1450,6 +1451,17 @@ function lsp_configuration()
                   npm install typescript typescript-language-server &&
                   ln -s -f $PWD/node_modules/.bin/tsc ~/.local/bin/ &&
                   ln -s -f $PWD/node_modules/.bin/typescript-language-server ~/.local/bin/
+            ]]
+        end
+    end
+    if cfg.elm_language_server then
+        if force or upgrade or not installed "elm-language-server" then
+            log "ELM Language Server"
+            mkdir "%(HOME)/.local/opt/elm-language-server"
+            sh [[ cd ~/.local/opt/elm-language-server &&
+                  npm install elm elm-test elm-format @elm-tooling/elm-language-server &&
+                  ln -s -f $PWD/node_modules/.bin/elm ~/.local/bin/ &&
+                  ln -s -f $PWD/node_modules/.bin/elm-language-server ~/.local/bin/
             ]]
         end
     end

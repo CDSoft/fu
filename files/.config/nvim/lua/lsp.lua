@@ -124,3 +124,7 @@ require'lspconfig'.pasls.setup {
 -- Typescript Language Server
 require'lspconfig'.tsserver.setup {
 }
+
+-- ELM Language Server
+require'lspconfig'.elmls.setup {
+}
