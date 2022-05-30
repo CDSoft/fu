@@ -1443,10 +1443,14 @@ function lsp_configuration()
         end
     end
     if cfg.typescript_language_server then
-        if force or upgrade or not installed "xxxx" then
+        if force or upgrade or not installed "typescript-language-server" then
             log "Typescript Language Server"
             mkdir "%(HOME)/.local/opt/typescript-language-server"
-            sh "cd ~/.local/opt/typescript-language-server && npm install typescript typescript-language-server && ln -s -f $PWD/node_modules/.bin/typescript-language-server ~/.local/bin/"
+            sh [[ cd ~/.local/opt/typescript-language-server &&
+                  npm install typescript typescript-language-server &&
+                  ln -s -f $PWD/node_modules/.bin/tsc ~/.local/bin/ &&
+                  ln -s -f $PWD/node_modules/.bin/typescript-language-server ~/.local/bin/
+            ]]
         end
     end
 
