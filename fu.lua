@@ -101,6 +101,7 @@ function fu_configuration()
         R = {"Install R?", "yn"},
         asymptote_sources = {"Install Asymptote from source?", "yn"},
         geogebra = {"Install GeoGebra?", "yn"},
+        freepascal = {"Install Free Pascal?", "yn"},
         freepascal_language_server = {"Install Pascal Language Server?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
@@ -1207,7 +1208,6 @@ function dev_configuration()
             gc-devel
             doxygen
             graphviz
-            fpc lazarus
         ]]
 
         apt_install [[
@@ -1258,9 +1258,17 @@ function dev_configuration()
             libgc-dev
             doxygen
             graphviz
-            fpc lazarus
         ]]
         if UBUNTU then apt_install "libjpeg-turbo8-dev" end
+    end
+
+    if cfg.freepascal then
+        dnf_install [[
+            fpc lazarus
+        ]]
+        apt_install [[
+            fpc lazarus
+        ]]
     end
 
     if cfg.tokei and (force or update or not installed "tokei") then
@@ -1422,7 +1430,7 @@ function lsp_configuration()
                 ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
         end
     end
-    if cfg.freepascal_language_server then
+    if cfg.freepascal and cfg.freepascal_language_server then
         if force or upgrade or not installed "pasls" then
             log "Pascal Language Server"
             dnf_install [[
