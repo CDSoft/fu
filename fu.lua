@@ -1733,7 +1733,7 @@ function zig_configuration()
         if version ~= curr_version then
             with_tmpdir(function(tmp)
                 sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/x86_64-linux.tar.xz -O "..tmp.."/x86_64-linux.tar.xz")
-                sh("cd "..tmp.."; tar xJf x86_64-linux.tar.xz && mv bin/zls %(HOME)/.local/bin/zls")
+                sh("cd "..tmp.."; tar xJf x86_64-linux.tar.xz && mv bin/zls %(HOME)/.local/bin/zls && chmod +x %(HOME)/.local/bin/zls")
                 installed_packages.zls_version = version
             end)
         end
