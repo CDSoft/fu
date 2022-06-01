@@ -103,6 +103,8 @@ function fu_configuration()
         geogebra = {"Install GeoGebra?", "yn"},
         freepascal = {"Install Free Pascal?", "yn"},
         freepascal_language_server = {"Install Pascal Language Server?", "yn"},
+        nim = {"Install Nim?", "yn"},
+        nim_language_server = {"Install Nim Language Server?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -226,6 +228,7 @@ function main()
     if cfg.racket then racket_configuration() end
     if cfg.julia then julia_configuration() end
     if cfg.zig then zig_configuration() end
+    if cfg.nim then nim_configuration() end
     if cfg.swipl then swipl_configuration() end
     lsp_configuration()
     text_edition_configuration()
@@ -1737,6 +1740,49 @@ function zig_configuration()
                 installed_packages.zls_version = version
             end)
         end
+    end
+
+end
+
+-- }}}
+
+-- Nim configuration {{{
+
+function nim_configuration()
+
+    if force or upgrade or not installed "nim" then
+
+        title "Nim configuration"
+
+        NIM_URL = "https://nim-lang.org/install_unix.html"
+
+        local index = pipe("curl -sSL %(NIM_URL)")
+        NIM_ARCHIVE = nil
+        index:gsub([[(download/(nim%-[0-9.]+)%-linux_x64%.tar%.xz)]], function(url, name)
+            if not NIM_ARCHIVE then
+                NIM_ARCHIVE = dirname(NIM_URL)..url
+                NIM_DIR = name
+            end
+        end)
+        assert(NIM_ARCHIVE and NIM_DIR, "Can not determine Nim version")
+        local curr_version = pipe("nim --version"):match("Version ([%d%.]+)")
+        local version = NIM_ARCHIVE:match("nim%-([%d%.]+)")
+
+        if version ~= curr_version then
+            sh "wget %(NIM_ARCHIVE) -c -O ~/.local/opt/%(basename(NIM_ARCHIVE))"
+            sh "rm -rf ~/.local/opt/%(NIM_DIR)"
+            sh "tar xJf ~/.local/opt/%(basename(NIM_ARCHIVE)) -C ~/.local/opt"
+            sh "ln -f -s ~/.local/opt/%(NIM_DIR)/bin/nim ~/.local/bin/nim"
+            sh "ln -f -s ~/.local/opt/%(NIM_DIR)/bin/nimble ~/.local/bin/nimble"
+            sh "ln -f -s ~/.local/opt/%(NIM_DIR)/bin/nimsuggest ~/.local/bin/nimsuggest"
+        end
+
+    end
+
+    if cfg.nim_language_server and (force or upgrade or not file_exist "%(HOME)/.nimble/bin/nimlsp") then
+        title "Nim Language Server installation"
+        NIM_VERSION = pipe("nim --version"):match("Version ([%d%.]+)")
+        sh "~/.local/opt/nim-%(NIM_VERSION)/bin/nimble install nimlsp"
     end
 
 end

@@ -128,3 +128,8 @@ require'lspconfig'.tsserver.setup {
 -- ELM Language Server
 require'lspconfig'.elmls.setup {
 }
+
+-- Nim Language Server
+require'lspconfig'.nimls.setup {
+    cmd = { "%(HOME)/.nimble/bin/nimlsp" },
+}
