@@ -15,14 +15,16 @@ local function counter()
         f:close()
     end
     f = io.open(COUNTER, "w")
-    f:write(tostring(n+1))
-    f:close()
+    if f then
+        f:write(tostring(n+1))
+        f:close()
+    end
     return n
 end
 
 local function pipe(...)
     local cmd = table.concat({...}, " ")
-    local p = io.popen(cmd, "r")
+    local p = assert(io.popen(cmd, "r"))
     local content = p:read "a"
     p:close()
     return content
