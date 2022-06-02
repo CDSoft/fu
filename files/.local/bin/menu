@@ -2,7 +2,7 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -p " 🧰 "
+    local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -p "menu"
 suspend             : lock screen & suspend to memory
 suspend when idle   : lock screen & suspend to memory when the OS is idle
 hibernate           : suspend to disk
@@ -78,8 +78,6 @@ bluetooth()
         stop)   rkfill block bluetooth ;;
     esac
 }
-
-EXT_RES=1920x1200
 
 case "$1" in
     %(when(cfg.external_monitor) [=[
