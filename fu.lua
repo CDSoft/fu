@@ -860,6 +860,7 @@ function shell_configuration()
         the_silver_searcher
         hexyl
         zoxide
+        dialog
     ]]
 
     apt_install [[
@@ -876,6 +877,7 @@ function shell_configuration()
         tldr
         hexyl
         zoxide
+        dialog
     ]]
 
     if not os.getenv "SHELL" :match "/bin/zsh" then
