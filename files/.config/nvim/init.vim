@@ -24,6 +24,7 @@ runtime vim/neoformat.vim
 runtime vim/vimwiki.vim
 runtime vim/lac.vim
 runtime vim/completion.vim
+runtime vim/vim-zig.vim
 
 lua require'nvim-colorizer'
 lua require 'luasnip'
