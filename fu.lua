@@ -105,6 +105,7 @@ function fu_configuration()
         freepascal_language_server = {"Install Pascal Language Server?", "yn"},
         nim = {"Install Nim?", "yn"},
         nim_language_server = {"Install Nim Language Server?", "yn"},
+        vscode = {"Install VSCode?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -236,6 +237,7 @@ function main()
     if cfg.asymptote then asymptote_configuration() end
     pandoc_configuration()
     neovim_configuration()
+    if cfg.vscode then vscode_configuration() end
     if not cfg.in_docker then i3_configuration() end
     if not cfg.in_docker then graphic_application_configuration() end
     if cfg.povray then povray_configuration() end
@@ -2094,6 +2096,37 @@ function neovim_configuration()
     -- Notes, TO-DO lists and password manager
     if WIKI ~= "~" then
         mkdir "%(WIKI)"
+    end
+
+end
+
+-- }}}
+
+-- VSCode configuration {{{
+
+function vscode_configuration()
+    title "VSCode configuration"
+
+    if FEDORA and (force or upgrade or not installed "code") then
+        with_tmpdir(function(tmp)
+            sh("cd "..tmp.." && "
+               .."sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &&"
+               ..[=[ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo' ]=]
+            )
+        end)
+        dnf_install "code"
+    end
+
+    if (UBUNTU or DEBIAN) and (force or upgrade or not installed "code") then
+        apt_install "wget gpg"
+        with_tmpdir(function(tmp)
+            sh("cd "..tmp.." && "
+               .."( wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg ) && "
+               .."sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/ && "
+               ..[=[ sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' ]=]
+            )
+        end)
+        apt_install "apt-transport-https code"
     end
 
 end
