@@ -2695,6 +2695,7 @@ function work_configuration()
                 python-can                  \
                 scipy                       \
                 tftpy                       \
+                pydantic                    \
     ]]
 
     -- ROS: http://wiki.ros.org/Installation/Source
@@ -2766,6 +2767,53 @@ function work_configuration()
             end
             sh "systemctl restart NetworkManager"
         end
+    end
+
+    if force and cfg.haskell then
+        sh [[ stack install --resolver=lts-18.19 \
+            network-multicast-0.3.2 \
+            pcap-0.4.5.2 \
+            proto-lens-runtime-0.7.0.2 \
+            proto-lens-protoc-0.7.1.1 \
+            proto-lens-0.7.1.1
+        ]]
+        sh [[ stack install --resolver=lts-18.19 \
+            binary \
+            bytestring \
+            clock \
+            containers \
+            data-default \
+            deepseq \
+            directory \
+            extra \
+            filemanip \
+            filepath \
+            hmatrix \
+            hspec \
+            hspec-junit-formatter \
+            HUnit \
+            matplotlib \
+            microlens \
+            network \
+            network-multicast \
+            network-simple \
+            pcap \
+            pretty-simple \
+            process \
+            proto-lens \
+            proto-lens-runtime \
+            random \
+            sdl2 \
+            sdl2-ttf \
+            split \
+            stm \
+            template-haskell \
+            temporary \
+            text \
+            th-lift \
+            time \
+            vector
+        ]]
     end
 
 end
