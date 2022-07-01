@@ -1216,6 +1216,7 @@ function dev_configuration()
             gc-devel
             doxygen
             graphviz
+            musl-clang musl-devel musl-gcc musl-libc-static musl-libc
         ]]
 
         apt_install [[
@@ -1266,6 +1267,7 @@ function dev_configuration()
             libgc-dev
             doxygen
             graphviz
+            musl-clang musl-devel musl-gcc musl-libc-static musl-libc
         ]]
         if UBUNTU then apt_install "libjpeg-turbo8-dev" end
     end
