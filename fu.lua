@@ -2771,26 +2771,6 @@ function work_configuration()
         end
     end
 
-    if force and cfg.haskell then
-        sh [[ stack install --resolver=lts-18.19 \
-            network-multicast-0.3.2 \
-            pcap-0.4.5.2 \
-            proto-lens-runtime-0.7.0.2 \
-            proto-lens-protoc-0.7.1.1 \
-            proto-lens-0.7.1.1
-        ]]
-        sh [[ stack install --resolver=lts-11.19 \
-            aws-0.20 \
-            io-streams-1.3.6.1 \
-            lens-labels-0.2.0.1 \
-            lzma-streams-0.1.0.0 \
-            network-socket-options-0.2.0.1 \
-            pcap-0.4.5.2 \
-            proto-lens-0.3.1.0 \
-            proto-lens-protoc-0.3.1.0
-        ]]
-    end
-
 end
 
 -- }}}
