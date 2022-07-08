@@ -67,8 +67,8 @@ bindsym $mod+t                  exec alacritty -e vi %(WIKI)/todo.txt
 bindsym $mod+n                  exec alacritty -e vi %(WIKI)/notes.txt
 bindsym $mod+p                  exec alacritty -e vi %(WIKI)/secret.pwd
 
-bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap hcalc" or "-t '🖩 bc' -e bc")
-bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap hcalc" or "-t '🖩 bc' -e bc")
+bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap -pGreen hcalc" or "-t '🖩 bc' -e bc")
+bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap -pGreen hcalc" or "-t '🖩 bc' -e bc")
 
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
