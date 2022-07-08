@@ -28,6 +28,7 @@ alias ncdu='ncdu --color dark'
 
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
+alias luax='rlwrap --prompt-colour=Green luax'
 
 function gd()
 {
