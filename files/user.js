@@ -16,3 +16,8 @@ user_pref("mozilla.widget.use-argb-visuals", false);
 /* Ignore windows size at startup and let i3 do its job */
 //user_pref("privacy.resistFingerprinting", true);  // causes other troubles (wrong timestamps in Slack and Jira)
 user_pref("privacy.resistFingerprinting", false);
+
+/* Open Firefox in the current workspace, not in the previous one */
+/* https://bugs.kde.org/show_bug.cgi?id=434818 */
+/* https://technologytales.com/2021/10/12/stopping-firefox-from-launching-on-the-wrong-virtual-desktop-on-linux-mint/ */
+user_pref("widget.disable-workspace-management", true);
