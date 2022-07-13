@@ -21,3 +21,10 @@ user_pref("privacy.resistFingerprinting", false);
 /* https://bugs.kde.org/show_bug.cgi?id=434818 */
 /* https://technologytales.com/2021/10/12/stopping-firefox-from-launching-on-the-wrong-virtual-desktop-on-linux-mint/ */
 user_pref("widget.disable-workspace-management", true);
+
+/* Hardware acceleration */
+/* https://support.mozilla.org/en-US/questions/1232970 */
+user_pref("browser.preferences.defaultPerformanceSettings.enabled", false);
+user_perf("layers.acceleration.force-enabled", true);
+user_perf("layers.force-active", true);
+//user_perf("gfx.xrender.enabled", true);
