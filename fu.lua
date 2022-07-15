@@ -262,6 +262,7 @@ function ask_yesno(question)
     local answer = nil
     repeat
         io.write(question.." [y/n] ")
+        io.flush()
         answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
     until answer:match "[yn]"
     return answer:match "y" == "y"
@@ -305,6 +306,7 @@ do -- configuration management
                     local answer = nil
                     repeat
                         io.write(question.." [y/n] ")
+                        io.flush()
                         answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
                     until answer:match "[yn]"
                     return answer:match "y" == "y"
@@ -313,6 +315,7 @@ do -- configuration management
                     local answer = nil
                     repeat
                         io.write(question.." ")
+                        io.flush()
                         answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
                     until #answer > 0
                     return answer
@@ -321,6 +324,7 @@ do -- configuration management
                     local answer = nil
                     repeat
                         io.write(question.." ")
+                        io.flush()
                         answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
                     until #answer > 0 and tonumber(answer)
                     return tonumber(answer)
