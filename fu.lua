@@ -971,6 +971,7 @@ function network_configuration()
         curl
         wget
         python3-pip
+        lftp
     ]]
 
     apt_install [[
@@ -987,6 +988,7 @@ function network_configuration()
         curl
         wget
         python3-pip
+        lftp
     ]]
 
     -- hostname
