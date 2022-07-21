@@ -74,8 +74,8 @@ idle()
 bluetooth()
 {
     case "$1" in
-        start)  rkfill unblock bluetooth ;;
-        stop)   rkfill block bluetooth ;;
+        start)  rfkill unblock bluetooth ;;
+        stop)   rfkill block bluetooth ;;
     esac
 }
 
@@ -112,9 +112,9 @@ case "$1" in
     (newws*)        new_workspace ;;
 
     ("lock"*)               lock ;;
-    ("suspend when idle"*)  idle "bluetooth start; lock && systemctl suspend; bluetooth stop" ;;
-    ("suspend"*)            bluetooth start; lock && systemctl suspend; bluetooth stop ;;
-    ("hibernate"*)          bluetooth start; lock && systemctl hybrid-sleep; bluetooth stop ;;
+    ("suspend when idle"*)  idle "bluetooth stop; lock && systemctl suspend; bluetooth start" ;;
+    ("suspend"*)            bluetooth stop; lock && systemctl suspend; bluetooth start ;;
+    ("hibernate"*)          bluetooth stop; lock && systemctl hybrid-sleep; bluetooth start ;;
     ("power-off"*)          systemctl poweroff ;;
     ("reboot"*)             systemctl reboot ;;
     ("exit"*)               i3-msg exit ;;
