@@ -1,0 +1,84 @@
+#!/usr/bin/env luax
+
+local profiles = {
+    { name="empty",    level= 5, icon="battery-empty", title="Battery empty", message="Suspend...",    period=10, duration= 7, suspend=true},
+    { name="critical", level=10, icon="battery-empty", title="Battery empty", message="Please charge", period=10, duration= 7, suspend=false},
+    { name="low",      level=15, icon="battery-low",   title="Battery low",   message="Please charge", period=60, duration=10, suspend=false},
+}
+
+local fun = require "fun"
+local ps = require "ps"
+local fs = require "fs"
+
+local daemon = arg[1] == "-d"
+
+if daemon then
+    function print(...) end
+end
+
+local function sh(...)
+    os.execute(table.concat(fun.flatten(...), " "))
+end
+
+local function suspend()
+    sh "rfkill block bluetooth"
+    sh "lock"
+    sh "systemctl suspend"
+    sh "rfkill unblock bluetooth"
+end
+
+local function read(name)
+    local f = io.open(name)
+    if f then
+        local value = f:read("a"):trim()
+        f:close()
+        return value
+    end
+    return nil
+end
+
+local function battery(param)
+    return read(fs.join("/sys/class/power_supply/BAT0", param))
+end
+
+local function q(s) return ("'%s'"):format(s) end
+
+local function monitor()
+    local level = tonumber(battery "capacity")
+    if not level then
+        print("No battery")
+        os.exit()
+    end
+    local status = battery "status"
+
+    print("Battery status:  ", status)
+    print("Battery capacity:", level)
+
+    if status ~= "Charging" then
+        for _, profile in ipairs(profiles) do
+            if level <= profile.level then
+                print("Battery level:  ", profile.name)
+                sh("notify-send",
+                    q(profile.title), q(profile.message),
+                    "--icon="..profile.icon,
+                    "--expire-time="..(profile.duration*1000))
+                if profile.suspend then suspend() end
+                return profile.period
+            end
+        end
+    end
+    return profiles[#profiles].period
+end
+
+local function forever(f)
+    while true do
+        local period = f()
+        ps.sleep(period)
+    end
+end
+
+if daemon then
+    forever(monitor)
+else
+    monitor()
+end

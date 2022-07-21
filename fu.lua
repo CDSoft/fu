@@ -2332,6 +2332,7 @@ function i3_configuration()
 
     script "wallpaper_of_the_day"
     script "every"
+    script "batmon"
 
     script "xi3"
 
