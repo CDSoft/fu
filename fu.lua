@@ -671,7 +671,7 @@ function upgrade_packages()
         title "Upgrade packages"
         if FEDORA then
             sh "sudo dnf update --refresh"
-            sh "sudo dnf upgrade --best --allowerasing"
+            sh "sudo dnf upgrade"
         end
         if UBUNTU or DEBIAN then
             sh "sudo apt update && sudo apt upgrade"
