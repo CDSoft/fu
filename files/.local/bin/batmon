@@ -21,10 +21,10 @@ local function sh(...)
 end
 
 local function suspend()
-    sh "rfkill block bluetooth"
+    sh "rfkill block all"
     sh "lock"
     sh "systemctl suspend"
-    sh "rfkill unblock bluetooth"
+    sh "rfkill unblock all"
 end
 
 local function read(name)

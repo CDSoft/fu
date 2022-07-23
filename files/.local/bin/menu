@@ -71,11 +71,11 @@ idle()
         -e bash -c "idle && $1"
 }
 
-bluetooth()
+rf()
 {
     case "$1" in
-        start)  rfkill unblock bluetooth ;;
-        stop)   rfkill block bluetooth ;;
+        on)     rfkill unblock all ;;
+        off)    rfkill block all ;;
     esac
 }
 
@@ -112,9 +112,9 @@ case "$1" in
     (newws*)        new_workspace ;;
 
     ("lock"*)               lock ;;
-    ("suspend when idle"*)  idle "bluetooth stop; lock && systemctl suspend; bluetooth start" ;;
-    ("suspend"*)            bluetooth stop; lock && systemctl suspend; bluetooth start ;;
-    ("hibernate"*)          bluetooth stop; lock && systemctl hybrid-sleep; bluetooth start ;;
+    ("suspend when idle"*)  idle "rf off; lock && systemctl suspend; rf on" ;;
+    ("suspend"*)            rf off; lock && systemctl suspend; rf on ;;
+    ("hibernate"*)          rf off; lock && systemctl hybrid-sleep; rf on ;;
     ("power-off"*)          systemctl poweroff ;;
     ("reboot"*)             systemctl reboot ;;
     ("exit"*)               i3-msg exit ;;
