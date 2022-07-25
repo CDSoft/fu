@@ -2700,13 +2700,14 @@ function work_configuration()
           pip3 install '--user'             \
                 awscli                      \
                 click                       \
+                junitparser                 \
                 junit-xml                   \
                 matplotlib                  \
                 pyaml                       \
+                pydantic                    \
                 python-can                  \
                 scipy                       \
                 tftpy                       \
-                pydantic                    \
     ]]
 
     -- ROS: http://wiki.ros.org/Installation/Source
