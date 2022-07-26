@@ -69,3 +69,7 @@ format = "[$symbol $status]($style) "
 [env_var]
 variable = "CUSTOM_PROMPT"
 style = "white bold dimmed"
+
+# Custom modules from ~/myconf.lua
+
+%(myconf.starship or "")

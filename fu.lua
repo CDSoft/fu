@@ -44,7 +44,10 @@ options:
     -r          reset
 
 hooks:
-    ~/.zuser    additional definitions loaded at the end of .zshrc
+    ~/.zuser        additional definitions loaded at the end of .zshrc
+    ~/.myconf       various parameters
+        starship    custom configuration added to starship.toml
+        i3          custom configuration added to the i3 configuration
 ]]
 end
 
@@ -54,6 +57,9 @@ local fs = require "fs"
 function fu_configuration()
     HOME = os.getenv "HOME"
     USER = os.getenv "USER"
+
+    myconf = {}
+    assert(loadfile(fs.join(HOME, ".myconf"), "t", myconf))()
 
     fu_path = I"%(HOME)/.config/fu"
     config_path = I"%(fu_path)/config"
