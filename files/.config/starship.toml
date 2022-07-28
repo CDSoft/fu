@@ -33,7 +33,7 @@ rust           = {disabled = true}
 shlvl          = {disabled = true}
 singularity    = {disabled = true}
 swift          = {disabled = true}
-terraform       = {disabled = true}
+terraform      = {disabled = true}
 zig            = {disabled = true}
 
 # Prompt format
@@ -63,6 +63,11 @@ truncate_to_repo = false
 disabled = false
 symbol = "✗"
 format = "[$symbol $status]($style) "
+
+# sudo credentials
+
+[sudo]
+disabled = false
 
 # Custom environment variable
 
