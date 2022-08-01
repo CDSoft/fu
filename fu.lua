@@ -1179,7 +1179,7 @@ function dev_configuration()
             git git-gui gitk qgit gitg tig git-lfs
             git-delta
             subversion
-            clang llvm clang-tools-extra
+            clang llvm clang-tools-extra llvm-devel clang-devel lld-devel
             ccls
             cppcheck
             cmake
@@ -1234,7 +1234,7 @@ function dev_configuration()
         apt_install [[
             git git-gui gitk qgit gitg tig git-lfs
             subversion
-            clang llvm clang-tidy clang-format clangd clang-tools
+            clang llvm clang-tidy clang-format clangd clang-tools llvm-devel clang-devel lld-devel
             ccls
             cppcheck
             cmake
