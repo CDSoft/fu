@@ -37,13 +37,11 @@ fi
 mkdir -p ~/.local/bin
 
 [ -x ~/.local/bin/luax ] || (
-    LAPP_URL=https://github.com/CDSoft/lapp
-    TMP_LAPP=$(mktemp -d)
-    cd $TMP_LAPP
-    git clone $LAPP_URL
-    cd lapp
-    sudo make dep
-    make submodules
+    LUAX_URL=https://github.com/CDSoft/luax
+    TMP_LUAX=$(mktemp -d)
+    cd $TMP_LUAX
+    git clone $LUAX_URL
+    cd luax
     make install
 )
 
