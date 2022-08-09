@@ -125,6 +125,10 @@ require'lspconfig'.pasls.setup {
 require'lspconfig'.tsserver.setup {
 }
 
+-- Purescript Language Server
+require'lspconfig'.purescriptls.setup {
+}
+
 -- ELM Language Server
 require'lspconfig'.elmls.setup {
 }

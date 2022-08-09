@@ -151,6 +151,7 @@ function fu_configuration()
         lua_language_server = {"Install Lua language server?", "yn"},
         zig_language_server = {"Install Zig language server?", "yn"},
         typescript_language_server = {"Install Typescript language server?", "yn"},
+        purescript_language_server = {"Install Purescript language server?", "yn"},
         elm_language_server = {"Install ELM language server?", "yn"},
 
         hcalc = {"Install hCalc?", "yn"},
@@ -1472,6 +1473,18 @@ function lsp_configuration()
                   npm install typescript typescript-language-server &&
                   ln -s -f $PWD/node_modules/.bin/tsc ~/.local/bin/ &&
                   ln -s -f $PWD/node_modules/.bin/typescript-language-server ~/.local/bin/
+            ]]
+        end
+    end
+    if cfg.purescript_language_server then
+        if force or upgrade or not installed "purescript-language-server" then
+            log "Purescript Language Server"
+            mkdir "%(HOME)/.local/opt/purescript-language-server"
+            sh [[ cd ~/.local/opt/purescript-language-server &&
+                  npm install purescript spago purescript-language-server &&
+                  ln -s -f $PWD/node_modules/.bin/purs ~/.local/bin/ &&
+                  ln -s -f $PWD/node_modules/.bin/spago ~/.local/bin/ &&
+                  ln -s -f $PWD/node_modules/.bin/purescript-language-server ~/.local/bin/
             ]]
         end
     end
