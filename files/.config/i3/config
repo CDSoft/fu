@@ -63,9 +63,9 @@ bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec menu-work
 ]=])
 
-bindsym $mod+t                  exec alacritty -e vi %(WIKI)/todo.txt
-bindsym $mod+n                  exec alacritty -e vi %(WIKI)/notes.txt
-bindsym $mod+p                  exec alacritty -e vi %(WIKI)/secret.pwd
+bindsym $mod+t                  exec alacritty --working-directory %(WIKI) -e vi todo.txt
+bindsym $mod+n                  exec alacritty --working-directory %(WIKI) -e vi notes.txt
+bindsym $mod+p                  exec alacritty --working-directory %(WIKI) -e vi secret.pwd
 
 bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap -pGreen hcalc" or "-t '🖩 bc' -e bc -l")
 bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap -pGreen hcalc" or "-t '🖩 bc' -e bc -l")
