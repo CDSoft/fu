@@ -36,6 +36,16 @@ fi
 
 mkdir -p ~/.local/bin
 
+[ -x ~/.local/bin/zig ] || (
+    ZIG_VERSION=0.9.1
+    ZIG_URL=https://ziglang.org/download/$ZIG_VERSION/zig-linux-x86_64-$ZIG_VERSION.tar.xz
+    mkdir -p ~/.local/opt/
+    cd ~/.local/opt/
+    wget $ZIG_URL -O $(basename $ZIG_URL)
+    tar xJf $(basename $ZIG_URL)
+    ln -sf ~/.local/opt/$(basename $ZIG_URL .tar.xz)/zig ~/.local/bin/zig
+)
+
 [ -x ~/.local/bin/luax ] || (
     LUAX_URL=https://github.com/CDSoft/luax
     TMP_LUAX=$(mktemp -d)
