@@ -139,6 +139,9 @@ alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run
     ". /usr/lib64/ros/setup.zsh")
 ]==])
 
+# no warnings in Wine
+export WINEDEBUG=-all
+
 # Other user configuration
 
 if [ -f ~/.zuser ]
