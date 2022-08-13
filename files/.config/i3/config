@@ -348,6 +348,6 @@ exec --no-startup-id vlc --qt-start-minimized &
 %(when(cfg.dropbox) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
 %(when(cfg.nextcloud_client and cfg.nextcloud_client_start) "exec --no-startup-id Nextcloud")
 
-# custom configuration from ~/myconf.lua
+# custom configuration from ~/.myconf
 
 %(myconf.i3 or "")
