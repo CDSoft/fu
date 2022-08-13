@@ -913,8 +913,8 @@ function shell_configuration()
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
         if cfg.rust then
-            dnf_install "openssl-devel"
-            apt_install "gcc libssl-dev"
+            dnf_install "openssl-devel cmake"
+            apt_install "gcc libssl-dev cmake"
             gitclone "https://github.com/starship/starship.git"
             sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
         else
