@@ -155,6 +155,9 @@ function fu_configuration()
         elm_language_server = {"Install ELM language server?", "yn"},
 
         hcalc = {"Install hCalc?", "yn"},
+        calculadoira = {"Install Calculadoira?", "yn"},
+        hcalc_shortcut = {"Bind hCalc to Win-C?", "yn"},
+        calculadoira_shortcut = {"Bind Calculadoira to Win-C?", "yn"},
 
         patat = {"Install patat?", "yn"},
         plantuml = {"Install PlantUML?", "yn"},
@@ -1404,6 +1407,12 @@ function dev_configuration()
 
     script "ido"
     script "retry"
+
+    -- Calculadoira
+    if cfg.calculadoira and (force or upgrade or not installed "calculadoira") then
+        gitclone "http://github.com/cdsoft/calculadoira"
+        sh "cd %(repo_path)/calculadoira && make install"
+    end
 
 end
 

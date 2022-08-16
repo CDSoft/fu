@@ -67,8 +67,18 @@ bindsym $mod+t                  exec alacritty --working-directory %(WIKI) -e vi
 bindsym $mod+n                  exec alacritty --working-directory %(WIKI) -e vi notes.txt
 bindsym $mod+p                  exec alacritty --working-directory %(WIKI) -e vi secret.pwd
 
-bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap -pGreen hcalc" or "-t '🖩 bc' -e bc -l")
-bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 %(file_exist "%(HOME)/.local/bin/hcalc" and "-t '🖩 hCalc' -e rlwrap -pGreen hcalc" or "-t '🖩 bc' -e bc -l")
+%(when(cfg.hcalc and cfg.hcalc_shortcut) [=[
+bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
+bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
+]=])
+%(when(cfg.calculadoira and cfg.calculadoira_shortcut) [=[
+bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e rlwrap -pGreen calculadoira
+bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e rlwrap -pGreen calculadoira
+]=])
+%(when(not (cfg.hcalc and cfg.hcalc_shortcut) and not (cfg.calculadoira and cfg.calculadoira_shortcut)) [=[
+bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 bc' -e bc -l
+bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 bc' -e bc -l
+]=])
 
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
@@ -95,6 +105,7 @@ bindsym $mod+Ctrl+b     border toggle
 for_window [window_role="pop-up"]                               floating enable
 for_window [window_role="task_dialog"]                          floating enable
 for_window [title="^🖩 hCalc$"]                                  floating enable
+for_window [title="^🖩 Calculadoira$"]                           floating enable
 for_window [title="^🖩 bc$"]                                     floating enable
 for_window [title="^ssh-agent$"]                                floating enable
 for_window [title="VM VirtualBox$"]                             floating enable, border normal 8
