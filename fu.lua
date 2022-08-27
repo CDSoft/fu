@@ -1666,6 +1666,13 @@ function rust_configuration()
         sh "rustup update stable"
     end
 
+    -- Rust Language Server
+    if force or upgrade or not installed "rust-analyzer" then
+        sh "curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer"
+        sh "chmod +x ~/.local/bin/rust-analyzer"
+        sh "rustup component add rust-src"
+    end
+
     local RUST_PACKAGES = {
         --{"bottom", "btm"},
         --"hyperfine",

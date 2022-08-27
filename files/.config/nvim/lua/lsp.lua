@@ -47,6 +47,7 @@ local servers = {
     "pyright",
     --%(when(cfg.haskell) [["hls",]])
     %(when(cfg.zig) [["zls",]])
+    %(when(cfg.rust) [["rust_analyzer",]])
 }
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {

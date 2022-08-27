@@ -29,12 +29,12 @@ php            = {disabled = true}
 purescript     = {disabled = true}
 python         = {disabled = true}
 ruby           = {disabled = true}
-rust           = {disabled = true}
+rust           = {disabled = false}
 shlvl          = {disabled = true}
 singularity    = {disabled = true}
 swift          = {disabled = true}
 terraform      = {disabled = true}
-zig            = {disabled = true}
+zig            = {disabled = false}
 
 # Prompt format
 
