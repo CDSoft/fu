@@ -919,7 +919,7 @@ function shell_configuration()
             dnf_install "openssl-devel cmake"
             apt_install "gcc libssl-dev cmake"
             gitclone "https://github.com/starship/starship.git"
-            sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --force --path . --root ~/.local"
+            sh "cd %(repo_path)/starship && ~/.cargo/bin/cargo install --locked --force --path . --root ~/.local"
         else
             dnf_install "curl"
             apt_install "curl"
