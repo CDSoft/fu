@@ -72,8 +72,8 @@ bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o 
 bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
 ]=])
 %(when(cfg.calculadoira and cfg.calculadoira_shortcut) [=[
-bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e rlwrap -pGreen calculadoira
-bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e rlwrap -pGreen calculadoira
+bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e calculadoira
+bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e calculadoira
 ]=])
 %(when(not (cfg.hcalc and cfg.hcalc_shortcut) and not (cfg.calculadoira and cfg.calculadoira_shortcut)) [=[
 bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 bc' -e bc -l
