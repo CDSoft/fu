@@ -737,7 +737,8 @@
 #
 # If the same trigger is assigned to multiple actions, all of them are executed
 # in the order they were defined in.
-#key_bindings:
+key_bindings:
+  - { key: NumpadEnter, chars: "\r" } # let NumpadEnter and Return behave identically (see https://unix.stackexchange.com/questions/703899/two-enter-keys-are-behaving-differently)
   #- { key: Paste,                                       action: Paste          }
   #- { key: Copy,                                        action: Copy           }
   #- { key: L,         mods: Control,                    action: ClearLogNotice }
