@@ -5,7 +5,10 @@
 
 " Terminal setup
 
-    tnoremap <Esc> <C-\><C-n>
+    " tnoremap <Esc> <C-\><C-n> prevents fzf to exit with Escape
+    " (see https://github.com/junegunn/fzf.vim/issues/544)
+    tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
+
     autocmd TermOpen * setlocal noruler|setlocal noshowcmd|setlocal nonumber|startinsert
 
 " Key bindings

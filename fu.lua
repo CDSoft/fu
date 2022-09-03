@@ -862,7 +862,7 @@ function shell_configuration()
     dnf_install [[
         zsh
         powerline-fonts
-        bat fzf
+        bat
         PackageKit-command-not-found
         util-linux-user
         inotify-tools
@@ -882,7 +882,7 @@ function shell_configuration()
     apt_install [[
         zsh
         fonts-powerline
-        grc bat fzf
+        grc bat
         inotify-tools
         htop
         pwgen
@@ -2062,7 +2062,6 @@ function neovim_configuration()
 
     dnf_install [[
         neovim
-        fzf
         ccrypt pwgen
         gzip
         jq
@@ -2070,7 +2069,6 @@ function neovim_configuration()
     ]]
     apt_install [[
         neovim
-        fzf
         ccrypt pwgen
         gzip
         jq

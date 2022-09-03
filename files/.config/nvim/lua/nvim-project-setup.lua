@@ -35,4 +35,6 @@ require("project_nvim").setup {
     datapath = vim.fn.stdpath("data"),
 }
 
+%(when(cfg.nvim_telescope) [[
 require('telescope').load_extension('projects')
+]])
