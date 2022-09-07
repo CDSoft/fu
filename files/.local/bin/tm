@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# tmux create or attach a session
+
+tmux new -As ${1:-tm}

@@ -956,6 +956,8 @@ function shell_configuration()
         end
     end
 
+    script "tm" -- tmux helper
+
 end
 
 -- }}}
