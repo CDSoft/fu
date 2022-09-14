@@ -877,6 +877,7 @@ function shell_configuration()
         hexyl
         zoxide
         dialog
+        sqlite
     ]]
 
     apt_install [[
@@ -894,6 +895,7 @@ function shell_configuration()
         hexyl
         zoxide
         dialog
+        sqlite
     ]]
 
     if not os.getenv "SHELL" :match "/bin/zsh" then
