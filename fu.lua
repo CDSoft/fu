@@ -1420,6 +1420,16 @@ function dev_configuration()
         sh "cd %(repo_path)/calculadoira && make install"
     end
 
+    -- tup
+    if force or upgrade or not installed "tup" then
+        dnf_install "fuse3-devel"
+        apt_install "fuse3-dev"
+        gitclone "https://github.com/gittup/tup.git"
+        sh "cd %(repo_path)/tup && ./bootstrap.sh"
+        sh "cp %(repo_path)/tup/tup ~/.local/bin/"
+        sh "cp %(repo_path)/tup/tup.1 ~/.local/man/man1"
+    end
+
 end
 
 function lsp_configuration()
