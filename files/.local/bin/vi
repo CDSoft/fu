@@ -2,7 +2,7 @@
 
 if tty -s
 then
-    nvim -p $*
+    nvim -p "$@"
 else
-    alacritty -e nvim -p $*
+    alacritty -e nvim -p "$@"
 fi
