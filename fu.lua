@@ -95,6 +95,7 @@ function fu_configuration()
         chromium = {"Install Chromium?", "yn"},
 
         haskell = {"Install Haskell?", "yn"},
+        stack_version = {"Stack version:", "str"},
         ocaml = {"Install OCaml?", "yn"},
         racket = {"Install Racket?", "yn"},
         julia = {"Install Julia?", "yn"},
@@ -1534,10 +1535,14 @@ end
 function haskell_configuration()
     title "Haskell configuration"
 
-    if not installed "stack" then
+    if not file_exist "~/.local/bin/stack" then
         log "Stack installation"
-        sh "curl -sSL https://get.haskellstack.org/ | sh"
-    elseif force or upgrade then
+        if cfg.stack_version and cfg.stack_version ~= "" then
+            sh "curl -sSL https://github.com/commercialhaskell/stack/releases/download/v%(cfg.stack_version)/stack-%(cfg.stack_version)-linux-x86_64.tar.gz | tar -xzf - -C ~/.local/bin --wildcards \"*/stack\" --strip-components 1"
+        else
+            sh "curl -sSL https://get.haskellstack.org/ | sh"
+        end
+    elseif (force or upgrade) and (not cfg.stack_version or cfg.stack_version == "") then
         log "Stack upgrade"
         sh "stack upgrade"
     end
