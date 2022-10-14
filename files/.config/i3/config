@@ -104,17 +104,18 @@ bindsym $mod+Shift+b    border pixel 2
 bindsym $mod+Ctrl+b     border toggle
 for_window [window_role="pop-up"]                               floating enable
 for_window [window_role="task_dialog"]                          floating enable
-for_window [title="^🖩 hCalc$"]                                  floating enable
-for_window [title="^🖩 Calculadoira$"]                           floating enable
-for_window [title="^🖩 bc$"]                                     floating enable
+for_window [title="^Alacritty$"]                                border pixel 4
+for_window [title="^🖩 hCalc$"]                                  floating enable, border pixel 4
+for_window [title="^🖩 Calculadoira$"]                           floating enable, border pixel 4
+for_window [title="^🖩 bc$"]                                     floating enable, border pixel 4
 for_window [title="^ssh-agent$"]                                floating enable
 for_window [title="VM VirtualBox$"]                             floating enable, border normal 8
 for_window [title="^QEMU (.*)$"]                                floating enable, border normal 8
-for_window [title="Waiting for low CPU and network activity"]   floating enable
-for_window [title="Network Manager"]                            floating enable
-for_window [title="Configuration Center"]                       floating enable
-for_window [title="^floating fzfmenu$"]                         floating enable
-for_window [title="^Screen Layout Editor"]                      floating enable
+for_window [title="Waiting for low CPU and network activity"]   floating enable, border pixel 4
+for_window [title="Network Manager"]                            floating enable, border pixel 4
+for_window [title="Configuration Center"]                       floating enable, border pixel 4
+for_window [title="^floating fzfmenu$"]                         floating enable, border pixel 4
+for_window [title="^Screen Layout Editor"]                      floating enable, border pixel 4
 for_window [title="^Contrôle du volume"]                        floating enable, border normal
 for_window [title="^Xephyr on :"]                               border normal 8
 for_window [title="^Timeshift$"]                                floating enable, border normal 4
