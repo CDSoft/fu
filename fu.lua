@@ -51,7 +51,8 @@ hooks:
 ]]
 end
 
-local fun = require "fun"
+local L = require "List"
+local M = require "Map"
 local fs = require "fs"
 
 function fu_configuration()
@@ -297,7 +298,7 @@ do -- configuration management
     end
 
     local function write(filename, params)
-        local conf = fun.map(fun.keys(params), function(k)
+        local conf = M.keys(params):map(function(k)
             local v = params[k]
             local fmt = type(v) == "string" and "%q" or "%s"
             return ("_ENV['%%s'] = %s\n"):format(fmt):format(k, v)
@@ -626,7 +627,7 @@ function dnf_install(names)
         names = table.concat(new_packages, " ")
         log("Install packages: "..names, 1)
         sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
-        fun.foreach(new_packages, function(name) installed_packages[name] = true end)
+        L(new_packages):map(function(name) installed_packages[name] = true end)
     end
 end
 
@@ -641,7 +642,7 @@ function apt_install(names)
         names = table.concat(new_packages, " ")
         log("Install packages: "..names, 1)
         sh("sudo apt install "..names)
-        fun.foreach(new_packages, function(name) installed_packages[name] = true end)
+        L(new_packages):map(function(name) installed_packages[name] = true end)
     end
 end
 
@@ -657,7 +658,7 @@ function snap_install(names)
         names = table.concat(new_packages, " ")
         log("Install snap packages: "..names, 1)
         sh("sudo snap install "..names)
-        fun.foreach(new_packages, function(name) installed_snap_packages[name] = true end)
+        L(new_packages):map(function(name) installed_snap_packages[name] = true end)
     end
 end
 
@@ -673,7 +674,7 @@ function luarocks(names)
         for _, name in new_packages.ipairs() do
             sh("luarocks install --local "..name)
         end
-        fun.foreach(new_packages, function(name) installed_lua_packages[name] = true end)
+        L(new_packages):map(function(name) installed_lua_packages[name] = true end)
     end
 end
 
