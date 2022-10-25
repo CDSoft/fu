@@ -2234,6 +2234,7 @@ function i3_configuration()
         xfce4-volumed
         barrier
         redshift
+        kde-connect
     ]]
     apt_install [[
         rxvt-unicode
@@ -2256,6 +2257,7 @@ function i3_configuration()
         xfce4-notifyd
         barrier
         redshift
+        kdeconnect
     ]]
     if UBUNTU then
         apt_install "xfce4-volumed"
