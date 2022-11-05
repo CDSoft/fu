@@ -48,7 +48,7 @@ bindsym $mod+Return exec alacritty --working-directory "`xcwd`"
 bindsym $mod+Shift+Return exec cd "`xcwd`" && st
 
 # Filemanagers
-bindsym $mod+Ctrl+Return exec alacritty -t mc -e sh -c "sleep 0.1s && mc \"`xcwd`\" \"`xcwd`\""
+bindsym $mod+Ctrl+Return exec alacritty -t vifm -e sh -c "sleep 0.1s && vifm \"`xcwd`\" \"`xcwd`\""
 bindsym $mod+$alt+Return exec thunar "`xcwd`"
 
 # scratchpad
