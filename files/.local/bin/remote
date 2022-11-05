@@ -1,0 +1,94 @@
+#!/usr/bin/env luax
+
+--[[ ~/.myconf shall define a table `remote`:
+remote = {
+    filemanager = "vifm %left %right", -- or "mc %left %right" (optional)
+    targets = {
+        target_name_1 = "sshfs USER@HOST:/PATH %s -p PORT",         -- %s is replaced by the mount point
+        target_name_2 = "curlftpfs ftp://USER:PASSWORD@HOST %s",
+        ...
+    }
+}
+]]
+
+filemanager = "vifm %left %right"
+mount_point = "/mnt/%s"
+
+cfg = {}
+assert(loadfile(os.getenv"HOME".."/.myconf", "t", cfg))()
+
+assert(type(cfg.remote) == "table", "~/.myconf: remote configuration not defined")
+filemanager = cfg.remote.filemanager or filemanager
+targets = assert(cfg.remote.targets, "~/.myconf: remote.targets not defined")
+
+function main()
+    if #arg >= 3 then error "usage: remote [target1] [target2]" end
+    local target1 = arg[1]
+    local target2 = arg[2]
+    if not target1 then
+        umount_all()
+    else
+        local selection = {}
+        for t, _ in pairs(targets) do
+            if t:match(target1) then table.insert(selection, t) end
+            if target2 and t:match(target2) then table.insert(selection, t) end
+        end
+        table.sort(selection)
+        if #selection == 0 then error("Unknown target: "..target1..(target2 and " "..target2 or "")) end
+        if #selection > 2 then error("Ambiguous target. Do you mean "..table.concat(selection, ", ").."?") end
+        manage(selection[1], selection[2])
+    end
+end
+
+function umount_all()
+    for target, _ in pairs(targets) do umount(target) end
+end
+
+function umount(target)
+    if not target then return end
+    local mp = mount_point:gsub("%%s", target)
+    print("Unmount "..mp)
+    local ok = os.execute("umount "..mp.." 2>/dev/null")
+    if not ok then print("Can not unmount "..mp) end
+end
+
+function mount(target)
+    if not target then return end
+    local mp = mount_point:gsub("%%s", target)
+    if not os.execute("test -d "..mp) then
+        print("Create "..mp)
+        os.execute("sudo mkdir "..mp)
+        os.execute("sudo chown $USER:$USER "..mp)
+    end
+    if not os.execute("mountpoint -q -- "..mp) then
+        print("Mount "..mp)
+        os.execute(targets[target]:gsub("%%s", mp))
+    end
+    return mp
+end
+
+function manage(target1, target2)
+    local mp1 = mount(target1)
+    local mp2 = mount(target2)
+    local cmd = filemanager:gsub("%%left", mp1):gsub("%%right", mp2 or ".")
+    print("Run "..cmd)
+    fix_panels()
+    os.execute(cmd)
+    umount(target1)
+    umount(target2)
+end
+
+function fix_panels()
+    local panels_ini = os.getenv("HOME").."/.config/mc/panels.ini"
+    local f = io.open(panels_ini)
+    if not f then return end
+    local panels_content = f:read("a")
+    f:close()
+    local panels, n = panels_content:gsub("current_is_left=false", "current_is_left=true")
+    if not n or n <= 0 then return end
+    f = io.open(panels_ini, "w")
+    f:write(panels)
+    f:close()
+end
+
+main()

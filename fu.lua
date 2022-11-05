@@ -2435,6 +2435,8 @@ function i3_configuration()
 
     script ".config/volumeicon/volumeicon"
 
+    script "remote"
+
     -- start VLC in a single instance
     if file_exist "%(HOME)/.config/vlc/vlcrc" then
         log "VLC configuration"
