@@ -1423,7 +1423,7 @@ function dev_configuration()
 
     -- tup
     if force or upgrade or not installed "tup" then
-        dnf_install "fuse3-devel"
+        dnf_install "fuse3-devel pcre-devel"
         apt_install "fuse3-dev"
         gitclone "https://github.com/gittup/tup.git"
         sh "cd %(repo_path)/tup && ./bootstrap.sh"
