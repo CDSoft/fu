@@ -874,9 +874,6 @@ key_bindings:
 # Alacritty configuration
 ####################################################################
 
-env:
-  TERM: xterm-256color # otherwise mc freezes???
-
 # Font configuration
 font:
   # Normal (roman) font face
