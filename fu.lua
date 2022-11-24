@@ -74,6 +74,7 @@ function fu_configuration()
     cfg = interactive(fs.join(config_path, "config.lua")) {
 
         in_docker = {"Installation in a docker?", "yn"},
+        powertop = {"Install powertop?", "yn"},
 
         hostname = {"Hostname:", "str"},
         wiki = {"Wiki directory (e.g.: ~/Nextcloud/Wiki):", "str"},
@@ -851,6 +852,34 @@ function system_configuration()
         sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
 
     end
+
+    if cfg.powertop then
+
+        log "Powertop autotune"
+        dnf_install "powertop"
+        apt_install "powertop"
+        if not FEDORA then
+            with_tmpfile(function(tmp)
+                write(tmp, [[
+[Unit]
+Description=PowerTOP auto tune
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/powertop --auto-tune
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+]])
+                sh("sudo cp "..tmp.." /etc/systemd/system/powertop.service")
+            end)
+        end
+        sh("sudo systemctl start powertop.service")
+        sh("sudo systemctl enable powertop.service")
+
+    end
+
 end
 
 -- }}}
