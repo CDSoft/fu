@@ -114,6 +114,7 @@ function fu_configuration()
         nim = {"Install Nim?", "yn"},
         nim_language_server = {"Install Nim Language Server?", "yn"},
         vscode = {"Install VSCode?", "yn"},
+        tup = {"Install tup?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -1451,7 +1452,7 @@ function dev_configuration()
     end
 
     -- tup
-    if force or upgrade or not installed "tup" then
+    if cfg.tup and (force or upgrade or not installed "tup") then
         dnf_install "fuse3-devel pcre-devel"
         apt_install "fuse3-dev"
         gitclone "https://github.com/gittup/tup.git"
