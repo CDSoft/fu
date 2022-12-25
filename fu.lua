@@ -1926,6 +1926,7 @@ function swipl_configuration()
             unixODBC-devel
             zlib-devel
             uuid-devel
+            libuuid-devel
             libarchive-devel
             libyaml-devel
         ]]
