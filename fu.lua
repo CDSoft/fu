@@ -881,6 +881,16 @@ WantedBy=multi-user.target
 
     end
 
+    -- Higher inotify limits
+    with_tmpfile(function(tmp)
+        write(tmp, [[
+fs.inotify.max_user_instances = 2048
+#fs.inotify.max_user_watches = 121880
+]])
+        sh("sudo cp "..tmp.." /etc/sysctl.d/99-inotify_limits.conf")
+        sh("sudo sysctl -p /etc/sysctl.d/99-inotify_limits.conf")
+    end)
+
 end
 
 -- }}}
