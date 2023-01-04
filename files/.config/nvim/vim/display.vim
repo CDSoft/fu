@@ -53,7 +53,7 @@ set nowrap
 set showmode
 set completeopt=menuone,menu,longest
 set cmdheight=1
-set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+set listchars=tab:›\ ,trail:•,extends:#,nbsp:␣ " Highlight problematic whitespace
 set list
 set colorcolumn=120
 set splitbelow splitright

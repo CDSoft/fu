@@ -59,6 +59,12 @@
     "map <C-Up>    <C-w>k
     "map <C-Right> <C-w>l
 
+" Shortcuts
+"""""""""""
+
+    " Non breakable spaces
+    inoremap <A-space> <C-v>xa0
+
 " Automatic layout
 """"""""""""""""""
 
