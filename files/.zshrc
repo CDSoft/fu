@@ -79,6 +79,12 @@ export FPCTARGETCPU='x86_64'            # Target CPU for cross compiling.
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
 export FZF_DEFAULT_OPTS="-m"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f %(repo_path)/fzf-git.sh/fzf-git.sh ] && source %(repo_path)/fzf-git.sh/fzf-git.sh
+
+gco() {
+  local selected=$(_fzf_git_each_ref --no-multi)
+  [ -n "$selected" ] && git checkout "$selected"
+}
 
 # Starship: https://starship.rs
 hash starship 2>/dev/null && eval "$(starship init zsh)"
