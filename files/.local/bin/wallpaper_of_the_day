@@ -1,8 +1,10 @@
 #!/usr/bin/env lua
 
 local INDEXES = {
-%(when(cfg.wallpaper_nasa) [[    {url="https://apod.nasa.gov/apod/astropix.html", pattern="href=\"([^\"]-%.jpg)\""},]])
-%(when(cfg.wallpaper_bing) [[    {url="https://bing.gifposter.com/",              pattern="https://[^\"]-%.jpg"},]])
+%(when(cfg.wallpaper_nasa)   [[    {url="https://apod.nasa.gov/apod/astropix.html",       pattern="href=\"([^\"]-%.jpg)\""},]])
+%(when(cfg.wallpaper_bing)   [[    {url="https://bing.gifposter.com/",                    pattern="https://[^\"]-%.jpg"},]])
+%(when(cfg.wallpaper_cave)   [[    {url="https://wallpapercave.com/wallpaper-of-the-day", pattern="src=\"([^\"]-%.jpg)"},]])
+%(when(cfg.wallpaper_access) [[    {url="https://wallpaperaccess.com/day",                pattern="content=\"(https://[^\"]-%.jpg)"},]])
 }
 local CACHE = "%(HOME)/.local/var/wallpaper_of_the_day"
 local COUNTER = CACHE.."/.counter"
@@ -54,7 +56,7 @@ os.execute(("mkdir -p %s"):format(CACHE))
 
 local images = {}
 for _, idx in ipairs(INDEXES) do
-    local index = pipe("curl", "-sSL", idx.url)
+    local index = pipe("curl", "-A", "Firefox", "-sSL", idx.url)
     local url = first_image(index, idx.pattern)
     url = add_base(idx.url, url)
     if url then
