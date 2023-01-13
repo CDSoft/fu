@@ -4,7 +4,7 @@
 --[[====================================================================
 Fedora Updater (fu): lightweight Fedora « distribution »
 
-Copyright (C) 2018-2022 Christophe Delord
+Copyright (C) 2018-2023 Christophe Delord
 https://github.com/CDSoft/fu
 
 This file is part of Fedora Updater (FU)
@@ -189,10 +189,10 @@ function os_configuration()
         or FEDORA and "green"
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
-    local yres = tonumber(pipe "xdpyinfo | awk '/dimensions/ {print $2}' | awk -F 'x' '{print $2}'") or 1080
-    FONT_SIZE =    yres <= 1080 and 9
-                or yres <= 1440 and 9+4
-                or                  9+8
+    local xres, yres = (pipe "xdpyinfo | awk '/dimensions/ {print $2}'" or "1920x1080") : split "x" : map(tonumber) : unpack()
+    FONT_SIZE =    (xres <= 1920 or yres <= 1080) and 9
+                or (xres <= 2560 or yres <= 1440) and 9+4
+                or                                    9+8
     I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
 
     BROWSER = "firefox"
