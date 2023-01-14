@@ -97,6 +97,9 @@ function fu_configuration()
         chrome = {"Install Google Chrome?", "yn"},
         chromium = {"Install Chromium?", "yn"},
 
+        alacritty_sources = {"Install Alacritty from sources?", "yn"},
+        starship_sources = {"Install Starship from sources?", "yn"},
+        tokei_sources = {"Install Tokei from sources?", "yn"},
         haskell = {"Install Haskell?", "yn"},
         stack_version = {"Stack version (* = lastest):", "str"},
         ocaml = {"Install OCaml?", "yn"},
@@ -109,7 +112,7 @@ function fu_configuration()
         v = {"Install V?", "yn"},
         vls = {"Install V Language Server?", "yn"},
         R = {"Install R?", "yn"},
-        asymptote_sources = {"Install Asymptote from source?", "yn"},
+        asymptote_sources = {"Install Asymptote from sources?", "yn"},
         geogebra = {"Install GeoGebra?", "yn"},
         freepascal = {"Install Free Pascal?", "yn"},
         freepascal_language_server = {"Install Pascal Language Server?", "yn"},
@@ -960,7 +963,7 @@ function shell_configuration()
     if force or upgrade or not installed "starship" then
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
-        if cfg.rust then
+        if cfg.rust and cfg.starship_sources then
             dnf_install "openssl-devel cmake"
             apt_install "gcc libssl-dev cmake"
             gitclone "https://github.com/starship/starship.git"
@@ -1348,7 +1351,7 @@ function dev_configuration()
     end
 
     if cfg.tokei and (force or update or not installed "tokei") then
-        if cfg.rust then
+        if cfg.rust and cfg.tokei_sources then
             log "Tokei"
             sh "~/.cargo/bin/cargo install tokei --root ~/.local"
         else
@@ -2311,7 +2314,7 @@ function i3_configuration()
     -- alacritty
     if force or upgrade or not installed "alacritty" then
         log "Alacritty"
-        if cfg.rust then
+        if cfg.rust and cfg.alacritty_sources then
             dnf_install [[ cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++ ]]
             apt_install [[ cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 ]]
             sh "~/.cargo/bin/cargo install alacritty --root ~/.local"
