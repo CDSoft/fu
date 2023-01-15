@@ -55,8 +55,12 @@ zstyle ':completion:*:*:make:*' tag-order 'targets'
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
 
-%(when(cfg.haskell) 'eval "$(stack --bash-completion-script stack)"')
 eval "$(pandoc --bash-completion)"
+
+# GHCup
+[ -f ~/.ghcup/env ] && . ~/.ghcup/env
+
+%(when(cfg.haskell) 'eval "$(stack --bash-completion-script stack)"')
 
 # zoxide
 

@@ -101,7 +101,6 @@ function fu_configuration()
         starship_sources = {"Install Starship from sources?", "yn"},
         tokei_sources = {"Install Tokei from sources?", "yn"},
         haskell = {"Install Haskell?", "yn"},
-        stack_version = {"Stack version (* = lastest):", "str"},
         ocaml = {"Install OCaml?", "yn"},
         racket = {"Install Racket?", "yn"},
         julia = {"Install Julia?", "yn"},
@@ -154,7 +153,6 @@ function fu_configuration()
 
         bash_language_server = {"Install bash language server?", "yn"},
         dot_language_server = {"Install dot (Graphviz) language server?", "yn"},
-        haskell_language_server = {"Install Haskell language server?", "yn"},
         python_language_server = {"Install Python language server?", "yn"},
         lua_language_server = {"Install Lua language server?", "yn"},
         zig_language_server = {"Install Zig language server?", "yn"},
@@ -205,8 +203,6 @@ function os_configuration()
 
     WIKI = cfg.wiki
     if WIKI == "" then WIKI = "~" end
-
-    LATEST_LTS = "lts-18.24"
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
@@ -1497,15 +1493,6 @@ function lsp_configuration()
             sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
         end
     end
-    --[[
-    if cfg.haskell and cfg.haskell_language_server then
-        if force or upgrade or not installed "haskell-language-server" then
-            log "Haskell Language Server"
-            gitclone("https://github.com/haskell/haskell-language-server", {"--recurse-submodules"})
-            sh "cd %(repo_path)/haskell-language-server && stack ./install.hs hls"
-        end
-    end
-    --]]
     if cfg.python_language_server then
         if force or upgrade or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
             log "Python Language Server"
@@ -1581,19 +1568,14 @@ end
 function haskell_configuration()
     title "Haskell configuration"
 
-    if not file_exist "~/.local/bin/stack" then
-        log "Stack installation"
-        if cfg.stack_version and cfg.stack_version ~= "*" then
-            sh "curl -sSL https://github.com/commercialhaskell/stack/releases/download/v%(cfg.stack_version)/stack-%(cfg.stack_version)-linux-x86_64.tar.gz | tar -xzf - -C ~/.local/bin --wildcards \"*/stack\" --strip-components 1"
-        else
-            sh "curl -sSL https://get.haskellstack.org/ | sh"
-        end
-    elseif (force or upgrade) and (not cfg.stack_version or cfg.stack_version == "") then
-        log "Stack upgrade"
-        sh "stack upgrade"
+    -- GHCup
+    if force or upgrade or not installed "ghcup" then
+        sh " export BOOTSTRAP_HASKELL_NONINTERACTIVE=1; \
+             export BOOTSTRAP_HASKELL_INSTALL_HLS=1; \
+             curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh \
+        "
     end
 
-    local RESOLVER = LATEST_LTS
     local HASKELL_PACKAGES = {
         "hasktags",
         "hlint",
@@ -1607,7 +1589,7 @@ function haskell_configuration()
     if force or upgrade then
         for _, package in ipairs(HASKELL_PACKAGES) do
             log("Stack install "..package)
-            sh("stack install --resolver="..RESOLVER.." "..package)
+            sh(". ~/.ghcup/env; ghcup run stack install -- "..package)
         end
     end
 
@@ -2035,7 +2017,7 @@ function pandoc_configuration()
     if cfg.haskell and cfg.abp then
         if force or upgrade or not installed "abp" then
             gitclone "http://github.com/cdsoft/abp"
-            sh "cd %(repo_path)/abp && stack install"
+            sh ". ~/.ghcup/env; cd %(repo_path)/abp && ghcup run stack install"
         end
     end
 
@@ -2195,7 +2177,7 @@ function neovim_configuration()
         if cfg.haskell then
             if force or upgrade or not installed "shellcheck" then
                 log "ShellCheck"
-                sh "stack install --resolver=%(LATEST_LTS) ShellCheck"
+                sh ". ~/.ghcup/env; ghcup run stack install -- ShellCheck"
             end
         else
             dnf_install "ShellCheck"
