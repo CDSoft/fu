@@ -13,7 +13,7 @@ require("project_nvim").setup {
 
     -- All the patterns used to detect root dir, when **"pattern"** is in
     -- detection_methods
-    patterns = {".git"},
+    patterns = {".git", "%.*.cabal", "hie.yaml"},
 
     -- Table of lsp clients to ignore by name
     -- eg: { "efm", ... }

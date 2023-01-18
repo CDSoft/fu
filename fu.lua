@@ -1568,6 +1568,10 @@ end
 function haskell_configuration()
     title "Haskell configuration"
 
+    dnf_install [[
+        gcc gcc-c++ gmp gmp-devel make ncurses ncurses-compat-libs xz perl
+    ]]
+
     -- GHCup
     if force or upgrade or not installed "ghcup" then
         sh " export BOOTSTRAP_HASKELL_NONINTERACTIVE=1; \
@@ -1576,7 +1580,7 @@ function haskell_configuration()
         "
     end
 
-    local HASKELL_PACKAGES = {
+    local HASKELL_STACK_PACKAGES = {
         "hasktags",
         "hlint",
         "hoogle",
@@ -1587,9 +1591,19 @@ function haskell_configuration()
         "timeit",
     }
     if force or upgrade then
-        for _, package in ipairs(HASKELL_PACKAGES) do
+        for _, package in ipairs(HASKELL_STACK_PACKAGES) do
             log("Stack install "..package)
             sh(". ~/.ghcup/env; ghcup run stack install -- "..package)
+        end
+    end
+
+    local HASKELL_CABAL_PACKAGES = {
+        "implicit-hie",
+    }
+    if force or upgrade then
+        for _, package in ipairs(HASKELL_CABAL_PACKAGES) do
+            log("Cabal install "..package)
+            sh(". ~/.ghcup/env; ghcup run cabal install -- --overwrite-policy=always "..package)
         end
     end
 
