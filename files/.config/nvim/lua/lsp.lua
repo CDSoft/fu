@@ -28,11 +28,11 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-    buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-    buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-    buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+    buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+    buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+    buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.format()<CR>", opts)
 
 end
 
@@ -72,6 +72,7 @@ table.insert(runtime_path, "lua/?.lua")
 table.insert(runtime_path, "lua/?/init.lua")
 
 require'lspconfig'.sumneko_lua.setup {
+    on_attach = on_attach,
     cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
     flags = {
         debounce_text_changes = 150,
@@ -95,6 +96,7 @@ require'lspconfig'.sumneko_lua.setup {
             workspace = {
                 -- Make the server aware of Neovim runtime files
                 library = vim.api.nvim_get_runtime_file("", true),
+                checkThirdParty = false,
             },
             -- Do not send telemetry data containing a randomized but unique identifier
             telemetry = {
@@ -110,31 +112,38 @@ local vls_root_path = "%(repo_path)/vls"
 local vls_binary = vls_root_path.."/cmd/vls/vls"
 
 require'lspconfig'.vls.setup {
+  on_attach = on_attach,
   cmd = {vls_binary},
 }
 
 -- OCaml Language Server
 require'lspconfig'.ocamllsp.setup {
+  on_attach = on_attach,
 }
 
 -- Pascal Language Server
 require'lspconfig'.pasls.setup {
+  on_attach = on_attach,
 }
 
 -- Typescript Language Server
 require'lspconfig'.tsserver.setup {
+  on_attach = on_attach,
 }
 
 -- Purescript Language Server
 require'lspconfig'.purescriptls.setup {
+  on_attach = on_attach,
 }
 
 -- ELM Language Server
 require'lspconfig'.elmls.setup {
+  on_attach = on_attach,
 }
 
 -- Nim Language Server
 require'lspconfig'.nimls.setup {
+    on_attach = on_attach,
     cmd = { "%(HOME)/.nimble/bin/nimlsp" },
 }
 
