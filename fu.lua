@@ -145,6 +145,7 @@ function fu_configuration()
         dropbox = {"Install Dropbox?", "yn"},
 
         startvlc = {"Autostart VLC in the systray?", "yn"},
+        minidlna = {"Install minidlna?", "yn"},
 
         devel = {"Install extended development packages?", "yn"},
         tokei = {"Install tokei?", "yn"},
@@ -2642,6 +2643,16 @@ function internet_configuration()
     ]]
     log "Remove unecessary language symlinks"
     sh "sudo find /usr/share/myspell -type l -exec rm -v {} \\;"
+
+    -- DLNA server
+    if cfg.minidlna then
+        dnf_install "minidlna"
+        mkdir "%(HOME)/dlna"
+        sh "sudo sed -i 's#^media_dir=.*#media_dir=%(HOME)/dlna#' /etc/minidlna.conf"
+        sh "sudo service minidlna stop"
+        sh "sudo service minidlna start"
+        --sh "sudo update-rc.d minidlna defaults"
+    end
 
 end
 
