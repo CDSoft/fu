@@ -146,6 +146,7 @@ function fu_configuration()
 
         startvlc = {"Autostart VLC in the systray?", "yn"},
         minidlna = {"Install minidlna?", "yn"},
+        kodi = {"Install Kodi?", "yn"},
 
         devel = {"Install extended development packages?", "yn"},
         tokei = {"Install tokei?", "yn"},
@@ -2652,6 +2653,15 @@ function internet_configuration()
         sh "sudo service minidlna stop"
         sh "sudo service minidlna start"
         --sh "sudo update-rc.d minidlna defaults"
+    end
+
+    -- Kodi
+    if cfg.kodi then
+        dnf_install [[
+            kodi
+            kodi-inputstream-adaptive
+            kodi-pvr-iptvsimple
+        ]]
     end
 
 end
