@@ -177,3 +177,10 @@ vim.keymap.set('n', '<leader>rf', function()
 end, def_opts)
 vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
 ]])
+
+%(when(cfg.ocaml) [[
+-- Ocaml Language Server
+require'lspconfig'.ocamllsp.setup {
+    on_attach = on_attach,
+}
+]])

@@ -62,6 +62,8 @@ eval "$(pandoc --bash-completion)"
 
 %(when(cfg.haskell) 'eval "$(stack --bash-completion-script stack)"')
 
+%(when(cfg.ocaml) 'eval $(opam env)')
+
 # zoxide
 
 eval "$(zoxide init zsh)"
