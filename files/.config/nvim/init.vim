@@ -7,6 +7,7 @@ runtime vim/config.vim
 runtime vim/netrw.vim
 runtime vim/tags.vim
 %(when(cfg.nvim_fzf) "runtime vim/fzf.vim")
+%(when(cfg.nvim_fzf and cfg.haskell) "runtime vim/fzf-hoogle.vim")
 %(when(cfg.nvim_telescope) "runtime vim/telescope.vim")
 runtime vim/make.vim
 runtime vim/grep.vim
