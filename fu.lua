@@ -2073,6 +2073,11 @@ function pandoc_configuration()
         end
     end
 
+    if force or upgrade or not installed "lsvg" then
+        gitclone "http://github.com/cdsoft/lsvg"
+        sh "cd %(repo_path)/lsvg && make install"
+    end
+
 end
 
 -- }}}
