@@ -2,4 +2,5 @@
 
 # tmux create or attach a session
 
+export LANG=%(LOCALE)
 tmux new -As ${1:-tm}

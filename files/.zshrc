@@ -9,6 +9,8 @@ export MANPAGER='nvim +Man!'
 
 export QT_QPA_PLATFORMTHEME=qt5ct
 
+export LANG=%(LOCALE)
+
 # Aliases
 
 [ -e /etc/grc.zsh ] && . /etc/grc.zsh
