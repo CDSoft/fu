@@ -25,6 +25,7 @@ mixer               : audio mixer
 
 nm                  : network manager
 bt                  : bluetooth manager
+netmon:             : network monitor (ping)
 
 renws               : rename the active workspace
 newws               : create a new workspace
@@ -107,6 +108,7 @@ case "$1" in
 
     (nm*)           nm-connection-editor ;;
     (bt*)           blueman-manager ;;
+    (netmon*)       netmon ;;
 
     (renws*)        rename_workspace ;;
     (newws*)        new_workspace ;;

@@ -2487,6 +2487,8 @@ function i3_configuration()
 
     script "remote"
 
+    script "netmon"
+
     -- start VLC in a single instance
     if file_exist "%(HOME)/.config/vlc/vlcrc" then
         log "VLC configuration"
