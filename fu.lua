@@ -1505,12 +1505,9 @@ function lsp_configuration()
     if cfg.lua_language_server then
         if force or upgrade or not installed "lua-language-server" then
             log "Lua Language Server"
-            gitclone("https://github.com/sumneko/lua-language-server", {"--recurse-submodules"})
+            gitclone("https://github.com/LuaLS/lua-language-server", {"--recurse-submodules"})
             sh [[ cd %(repo_path)/lua-language-server &&
-                cd 3rd/luamake &&
-                compile/install.sh
-                cd ../..
-                ./3rd/luamake/luamake rebuild
+                ./make.sh
                 ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
         end
     end
