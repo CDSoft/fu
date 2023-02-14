@@ -50,6 +50,12 @@ export XZ_OPT="-9"
 . %(repo_path)/ohmyzsh/lib/history.zsh
 . %(repo_path)/ohmyzsh/lib/key-bindings.zsh
 
+%(when(cfg.haskell or cfg.ocaml) [=[# Haskell and ocaml environment
+
+%(when(cfg.haskell) '[ -f ~/.ghcup/env ] && . ~/.ghcup/env')
+%(when(cfg.ocaml) 'eval $(opam env)')
+]=])
+
 # Completion
 
 zstyle ':completion:*:*:make:*' tag-order 'targets'
@@ -59,12 +65,7 @@ autoload -U +X bashcompinit && bashcompinit
 
 eval "$(pandoc --bash-completion)"
 
-# GHCup
-[ -f ~/.ghcup/env ] && . ~/.ghcup/env
-
 %(when(cfg.haskell) 'eval "$(stack --bash-completion-script stack)"')
-
-%(when(cfg.ocaml) 'eval $(opam env)')
 
 # zoxide
 
