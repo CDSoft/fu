@@ -2006,14 +2006,19 @@ function pandoc_configuration()
     end
 
     if force or upgrade or not installed "pandoc" then
-        local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
-        local version = pipe("curl -sSL https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
-        if version ~= curr_version then
+        if cfg.haskell then
             log "Pandoc"
-            with_tmpdir(function(tmp)
-                sh("wget https://github.com/jgm/pandoc/releases/download/"..version.."/pandoc-"..version.."-linux-amd64.tar.gz -O "..tmp.."/pandoc.tar.gz")
-                sh("tar xvzf "..tmp.."/pandoc.tar.gz --strip-components 1 -C ~/.local")
-            end)
+            sh(". ~/.ghcup/env; cabal install pandoc-cli --install-method=copy --installdir=%(HOME)/.local/bin")
+        else
+            local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
+            local version = pipe("curl -sSL https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
+            if version ~= curr_version then
+                log "Pandoc"
+                with_tmpdir(function(tmp)
+                    sh("wget https://github.com/jgm/pandoc/releases/download/"..version.."/pandoc-"..version.."-linux-amd64.tar.gz -O "..tmp.."/pandoc.tar.gz")
+                    sh("tar xvzf "..tmp.."/pandoc.tar.gz --strip-components 1 -C ~/.local")
+                end)
+            end
         end
     end
 
