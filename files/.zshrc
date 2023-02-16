@@ -6,6 +6,7 @@ export EDITOR=nvim
 export VISUAL=nvim
 export BROWSER=%(BROWSER)
 export MANPAGER='nvim +Man!'
+export TERM=gnome-256color
 
 export QT_QPA_PLATFORMTHEME=qt5ct
 

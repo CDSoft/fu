@@ -205,6 +205,7 @@ function os_configuration()
 
     WIKI = cfg.wiki
     if WIKI == "" then WIKI = "~" end
+    WIKI = WIKI:gsub("^~", os.getenv "HOME" or "~")
 
     DROPBOXINSTALL = 'https://www.dropbox.com/download?plat=lnx.x86_64'
 
@@ -2209,9 +2210,7 @@ function neovim_configuration()
     end
 
     -- Notes, TO-DO lists and password manager
-    if WIKI ~= "~" then
-        mkdir "%(WIKI)"
-    end
+    mkdir "%(WIKI)"
 
 end
 
@@ -2317,6 +2316,7 @@ function i3_configuration()
     end
 
     -- alacritty
+    --[==[
     if force or upgrade or not installed "alacritty" then
         log "Alacritty"
         if cfg.rust and cfg.alacritty_sources then
@@ -2332,6 +2332,7 @@ function i3_configuration()
             error("Rust is required to install alacritty on Debian")
         end
     end
+    --]==]
 
     -- urxvt
     if force or upgrade or not file_exist "%(HOME)/.urxvt/ext/font-size" then

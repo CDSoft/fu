@@ -65,10 +65,9 @@ new_workspace()
 
 idle()
 {
-    alacritty \
-        -t "Waiting for low CPU and network activity" \
-        -o "window.dimensions.lines=10" -o "window.dimensions.columns=41" \
-        -o colors.primary.background='#660000' \
+    xfce4-terminal --disable-server \
+        -T "Waiting for low CPU and network activity" \
+        --geometry=41x10 \
         -e bash -c "idle && $1"
 }
 

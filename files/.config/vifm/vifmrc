@@ -429,7 +429,7 @@ nnoremap w :view<cr>
 vnoremap w :view<cr>gv
 
 " Open file in nvim
-nnoremap o :!alacritty -e nvim %f<cr>
+nnoremap o :!xfce4-terminal --disable-server -e nvim %f<cr>
 
 " Open file in the background using its default program
 nnoremap gb :file &<cr>l
@@ -460,12 +460,12 @@ nnoremap cc cw<c-u>
 nnoremap A cw
 
 " Open console in current directory
-nnoremap ,t :!alacritty &<cr>
+nnoremap ,t :!xfce4-terminal --disable-server &<cr>
 
 " Open editor to edit vifmrc and apply settings after returning to vifm
 nnoremap ,c :write | edit $MYVIFMRC | restart full<cr>
 " Open nvim in a terminal to edit vifmrc
-nnoremap ,C :!alacritty -e nvim $MYVIFMRC &<cr>
+nnoremap ,C :!xfce4-terminal --disable-server -e nvim $MYVIFMRC &<cr>
 
 " Thumbnail of all images in the directory
 nnoremap ,i :!ristretto %d &<cr>

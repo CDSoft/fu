@@ -4,5 +4,5 @@ if tty -s
 then
     nvim -p "$@"
 else
-    alacritty -e nvim -p "$@"
+    xfce4-terminal --disable-server -e nvim -p "$@"
 fi

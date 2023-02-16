@@ -44,11 +44,11 @@ bindsym XF86MonBrightnessUp     exec brightness +5
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty --working-directory "`xcwd`"
+bindsym $mod+Return exec xfce4-terminal --disable-server --working-directory "`xcwd`"
 bindsym $mod+Shift+Return exec cd "`xcwd`" && st
 
 # Filemanagers
-bindsym $mod+Ctrl+Return exec alacritty -t vifm -e sh -c "sleep 0.1s && vifm \"`xcwd`\" \"`xcwd`\""
+bindsym $mod+Ctrl+Return exec xfce4-terminal --disable-server --working-directory "`xcwd`" -T vifm -e vifm
 bindsym $mod+$alt+Return exec thunar "`xcwd`"
 
 # scratchpad
@@ -63,21 +63,21 @@ bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec menu-work
 ]=])
 
-bindsym $mod+t                  exec alacritty --working-directory %(WIKI) -e vi todo.txt
-bindsym $mod+n                  exec alacritty --working-directory %(WIKI) -e vi notes.txt
-bindsym $mod+p                  exec alacritty --working-directory %(WIKI) -e vi secret.pwd
+bindsym $mod+t                  exec xfce4-terminal --disable-server --working-directory %(WIKI) -e 'vi todo.txt'
+bindsym $mod+n                  exec xfce4-terminal --disable-server --working-directory %(WIKI) -e 'vi notes.txt'
+bindsym $mod+p                  exec xfce4-terminal --disable-server --working-directory %(WIKI) -e 'vi secret.pwd'
 
 %(when(cfg.hcalc and cfg.hcalc_shortcut) [=[
-bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
-bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
+bindsym XF86Calculator          exec xfce4-terminal --disable-server --geometry=80x24 -T '🖩 hCalc' -e 'rlwrap -pGreen hcalc'
+bindsym $mod+c                  exec xfce4-terminal --disable-server --geometry=80x24 -T '🖩 hCalc' -e 'rlwrap -pGreen hcalc'
 ]=])
 %(when(cfg.calculadoira and cfg.calculadoira_shortcut) [=[
-bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e calculadoira
-bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 Calculadoira' -e calculadoira
+bindsym XF86Calculator          exec xfce4-terminal --disable-server --geometry=80x24 -T '🖩 Calculadoira' -e 'calculadoira'
+bindsym $mod+c                  exec xfce4-terminal --disable-server --geometry=80x24 -T '🖩 Calculadoira' -e 'calculadoira'
 ]=])
 %(when(not (cfg.hcalc and cfg.hcalc_shortcut) and not (cfg.calculadoira and cfg.calculadoira_shortcut)) [=[
-bindsym XF86Calculator          exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 bc' -e bc -l
-bindsym $mod+c                  exec alacritty -o window.dimensions.lines=24 -o window.dimensions.columns=80 -t '🖩 bc' -e bc -l
+bindsym XF86Calculator          exec xfce4-terminal --disable-server --geometry=80x24 -T '🖩 bc' -e 'bc -l'
+bindsym $mod+c                  exec xfce4-terminal --disable-server --geometry=80x24 -T '🖩 bc' -e 'bc -l'
 ]=])
 
 bindsym Print                   exec screenshot root

@@ -1,5 +1,5 @@
 [Configuration]
-FontName=DejaVu Sans Mono 9
+FontName=%(FONT) %(FONT_VARIANT) %(FONT_SIZE)
 MiscAlwaysShowTabs=FALSE
 MiscBell=FALSE
 MiscBellUrgent=TRUE
@@ -22,8 +22,8 @@ MiscMiddleClickOpensUri=FALSE
 MiscCopyOnSelect=FALSE
 MiscShowRelaunchDialog=TRUE
 MiscRewrapOnResize=TRUE
-MiscUseShiftArrowsToScroll=FALSE
-MiscSlimTabs=FALSE
+MiscUseShiftArrowsToScroll=TRUE
+MiscSlimTabs=TRUE
 MiscNewTabAdjacent=FALSE
 MiscSearchDialogOpacity=100
 MiscShowUnsafePasteDialog=TRUE
