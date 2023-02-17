@@ -2009,7 +2009,7 @@ function pandoc_configuration()
     if force or upgrade or not installed "pandoc" then
         if cfg.haskell then
             log "Pandoc"
-            sh(". ~/.ghcup/env; cabal install pandoc-cli --install-method=copy --installdir=%(HOME)/.local/bin")
+            sh(". ~/.ghcup/env; cabal install pandoc-cli --overwrite-policy=always --install-method=copy --installdir=%(HOME)/.local/bin")
         else
             local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
             local version = pipe("curl -sSL https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
