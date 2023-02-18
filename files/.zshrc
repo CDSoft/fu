@@ -54,7 +54,7 @@ export XZ_OPT="-9"
 %(when(cfg.haskell or cfg.ocaml) [=[# Haskell and ocaml environment
 
 %(when(cfg.haskell) '[ -f ~/.ghcup/env ] && . ~/.ghcup/env')
-%(when(cfg.ocaml) 'eval $(opam env)')
+%(when(cfg.ocaml) 'eval "$(opam env)"')
 ]=])
 
 # Completion
@@ -133,6 +133,9 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 
 # luarocks
 eval "$(luarocks path --bin)"
+
+# LuaX environment
+eval "$(luax env)"
 
 # Lua Language Server
 alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
