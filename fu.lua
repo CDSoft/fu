@@ -480,9 +480,12 @@ function read(path)
 end
 
 function write(path, content)
-    local f = assert(io.open(I(path), "w"))
+    -- atomic file creation to avoid strange interactions with xfce and fonts
+    local filename = I(path)
+    local f = assert(io.open(filename..".tmp", "w"))
     f:write(I(content))
     f:close()
+    os.rename(filename..".tmp", filename)
 end
 
 function modify(path, mod)
