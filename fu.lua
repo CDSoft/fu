@@ -51,9 +51,6 @@ hooks:
 ]]
 end
 
-local F = require "fun"
-local fs = require "fs"
-
 function fu_configuration()
     HOME = os.getenv "HOME"
     USER = os.getenv "USER"
