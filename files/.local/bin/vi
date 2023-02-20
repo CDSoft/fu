@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export TERM=gnome-256color
+
 if tty -s
 then
     nvim -p "$@"
