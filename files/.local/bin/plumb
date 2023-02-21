@@ -1,0 +1,8 @@
+#!/bin/bash
+
+LINK="$2"
+
+case "$LINK" in
+    http*)  firefox "$LINK" ;;
+    *)      xdg-open "$LINK" ;;
+esac

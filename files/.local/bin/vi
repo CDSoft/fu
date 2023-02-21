@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export TERM=gnome-256color
+#export TERM=gnome-256color
 
 if tty -s
 then
     nvim -p "$@"
 else
-    xfce4-terminal --disable-server -e nvim -p "$@"
+    %(ST) -e nvim -p "$@"
 fi

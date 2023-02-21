@@ -65,9 +65,9 @@ new_workspace()
 
 idle()
 {
-    xfce4-terminal --disable-server \
+    %(ST) \
         -T "Waiting for low CPU and network activity" \
-        --geometry=41x10 \
+        -g 41x10 \
         -e bash -c "idle && $1"
 }
 

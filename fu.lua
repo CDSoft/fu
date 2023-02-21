@@ -194,6 +194,7 @@ function os_configuration()
                 or (xres <= 2560 or yres <= 1440) and 9+4
                 or                                    9+8
     I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
+    ST = I"st -f '%(FONT) %(FONT_VARIANT):size=%(FONT_SIZE)'"
 
     BROWSER = "firefox"
     BROWSER2 = cfg.chrome_as_alternative_browser and "google-chrome" or
@@ -2345,11 +2346,10 @@ function i3_configuration()
     -- st
     if force or upgrade or not file_exist "%(HOME)/.local/bin/st" then
         log "st"
-        local version = "0.8.4"
+        local version = "0.9"
         gitclone("https://git.suckless.org/st")
         sh "cd %(repo_path)/st && git reset --hard master && git checkout master && git clean -dfx && git fetch && git rebase"
         sh("cd %(repo_path)/st && git checkout "..version)
-        sh[[cd %(repo_path)/st && sed -i 's/font =.*/font = "%(FONT):size=%(FONT_SIZE):antialias=true:autohint=true";/' config.def.h]]
         local function patch(url)
             local file = repo_path.."/st-patches/"..basename(url)
             if not file_exist(file) then
@@ -2358,13 +2358,18 @@ function i3_configuration()
             end
             sh("cd %(repo_path)/st && patch -p1 < "..file)
         end
-        patch "https://st.suckless.org/patches/dynamic-cursor-color/st-dynamic-cursor-color-0.8.4.diff"
-        patch "https://st.suckless.org/patches/moonfly/st-moonfly-0.8.2.diff"
+        patch "https://st.suckless.org/patches/clipboard/st-clipboard-0.8.3.diff"
+        patch "https://st.suckless.org/patches/fix_keyboard_input/st-fix-keyboard-input-20180605-dc3b5ba.diff"
+        patch "https://st.suckless.org/patches/dynamic-cursor-color/st-dynamic-cursor-color-0.9.diff"
+        patch "https://st.suckless.org/patches/gruvbox/st-gruvbox-dark-0.8.5.diff"
+        patch "https://st.suckless.org/patches/boxdraw/st-boxdraw_v2-0.8.5.diff"
+        patch "https://st.suckless.org/patches/desktopentry/st-desktopentry-0.8.5.diff"
+        --patch "https://st.suckless.org/patches/dracula/st-dracula-0.8.5.diff"
         patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb.diff"
-        patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.8.4.diff"
-        patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-20191024-a2c479c.diff"
+        --patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb-0.8.5.diff"
+        patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.8.5.diff"
+        patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-20220127-2c5edf2.diff"
         --patch "https://st.suckless.org/patches/undercurl/st-undercurl-0.8.4-20210822.diff"
-        --patch "https://st.suckless.org/patches/universcroll/st-universcroll-0.8.4.diff"
 
         -- Same colors than Alacritty
 
@@ -2396,6 +2401,8 @@ function i3_configuration()
             [259]= "#eeeeee",
         }
         with_file("%(repo_path)/st/config.def.h", function(config)
+            config = config:gsub("font = \".-\";", I"font = \"%(FONT) %(FONT_VARIANT):size=%(FONT_SIZE):antialias=true:autohint=true\";")
+            config = config:gsub("worddelimiters = L\".-\";", I"worddelimiters = L\" `'\\\"()[]{}\";")
             for i, c in pairs(colors) do
                 config = config:gsub('(%['..i..'%]) = "(#......)"', '%1 = "'..c..'"')
             end
@@ -2406,6 +2413,7 @@ function i3_configuration()
         sh[[cd %(repo_path)/st && sed -i 's#MANPREFIX =.*#MANPREFIX = %(HOME)/.local/man#' config.mk]]
         sh "cd %(repo_path)/st && make install"
     end
+    script "plumb"
 
     -- Default programs
 

@@ -429,7 +429,7 @@ nnoremap w :view<cr>
 vnoremap w :view<cr>gv
 
 " Open file in nvim
-nnoremap o :!xfce4-terminal --disable-server -e nvim %f<cr>
+nnoremap o :!%(ST) -e nvim %f<cr>
 
 " Open file in the background using its default program
 nnoremap gb :file &<cr>l
