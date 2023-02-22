@@ -194,7 +194,8 @@ function os_configuration()
                 or (xres <= 2560 or yres <= 1440) and 9+4
                 or                                    9+8
     I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
-    ST = I"st -f '%(FONT) %(FONT_VARIANT):size=%(FONT_SIZE)'"
+    ST = I"st"
+    ALACRITTY = I"alacritty"
 
     BROWSER = "firefox"
     BROWSER2 = cfg.chrome_as_alternative_browser and "google-chrome" or
@@ -2317,7 +2318,6 @@ function i3_configuration()
     end
 
     -- alacritty
-    --[==[
     if force or upgrade or not installed "alacritty" then
         log "Alacritty"
         if cfg.rust and cfg.alacritty_sources then
@@ -2333,7 +2333,6 @@ function i3_configuration()
             error("Rust is required to install alacritty on Debian")
         end
     end
-    --]==]
 
     -- urxvt
     if force or upgrade or not file_exist "%(HOME)/.urxvt/ext/font-size" then
@@ -2359,7 +2358,7 @@ function i3_configuration()
             sh("cd %(repo_path)/st && patch -p1 < "..file)
         end
         patch "https://st.suckless.org/patches/clipboard/st-clipboard-0.8.3.diff"
-        patch "https://st.suckless.org/patches/fix_keyboard_input/st-fix-keyboard-input-20180605-dc3b5ba.diff"
+        --patch "https://st.suckless.org/patches/fix_keyboard_input/st-fix-keyboard-input-20180605-dc3b5ba.diff"
         patch "https://st.suckless.org/patches/dynamic-cursor-color/st-dynamic-cursor-color-0.9.diff"
         patch "https://st.suckless.org/patches/gruvbox/st-gruvbox-dark-0.8.5.diff"
         patch "https://st.suckless.org/patches/boxdraw/st-boxdraw_v2-0.8.5.diff"
@@ -2367,8 +2366,8 @@ function i3_configuration()
         --patch "https://st.suckless.org/patches/dracula/st-dracula-0.8.5.diff"
         patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb.diff"
         --patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb-0.8.5.diff"
-        patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.8.5.diff"
-        patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-20220127-2c5edf2.diff"
+        --patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.8.5.diff"
+        --patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-20220127-2c5edf2.diff"
         --patch "https://st.suckless.org/patches/undercurl/st-undercurl-0.8.4-20210822.diff"
 
         -- Same colors than Alacritty

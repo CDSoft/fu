@@ -6,5 +6,5 @@ if tty -s
 then
     nvim -p "$@"
 else
-    %(ST) -e nvim -p "$@"
+    %(ALACRITTY) -e nvim -p "$@"
 fi
