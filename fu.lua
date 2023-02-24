@@ -116,6 +116,7 @@ function fu_configuration()
         nim_language_server = {"Install Nim Language Server?", "yn"},
         vscode = {"Install VSCode?", "yn"},
         tup = {"Install tup?", "yn"},
+        compile_pandoc_with_cabal = {"Compile Pandoc with Cabal?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -2009,7 +2010,7 @@ function pandoc_configuration()
     end
 
     if force or upgrade or not installed "pandoc" then
-        if cfg.haskell then
+        if cfg.haskell and cfg.compile_pandoc_with_cabal then
             log "Pandoc"
             sh(". ~/.ghcup/env; cabal install pandoc-cli --overwrite-policy=always --install-method=copy --installdir=%(HOME)/.local/bin")
         else
