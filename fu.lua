@@ -1727,6 +1727,7 @@ function rust_configuration()
         sh "~/.cargo/bin/rustup update stable"
     elseif force or upgrade then
         title "Rust upgrade"
+        sh "rustup override set stable"
         sh "rustup update stable"
     end
 
@@ -2322,9 +2323,28 @@ function i3_configuration()
     if force or upgrade or not installed "alacritty" then
         log "Alacritty"
         if cfg.rust and cfg.alacritty_sources then
+            -- Prerequisites
             dnf_install [[ cmake freetype-devel fontconfig-devel libxcb-devel libxkbcommon-devel g++ ]]
             apt_install [[ cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 ]]
-            sh "~/.cargo/bin/cargo install alacritty --root ~/.local"
+            -- Get sources
+            gitclone "https://github.com/alacritty/alacritty.git"
+            -- Build
+            --sh "cd %(repo_path)/alacritty && ~/.cargo/bin/cargo build --release"
+            sh "cd %(repo_path)/alacritty && ~/.cargo/bin/cargo build --release --no-default-features --features=x11"
+            -- Terminfo
+            sh "cd %(repo_path)/alacritty && sudo tic -xe alacritty,alacritty-direct extra/alacritty.info"
+            -- Install Alacritty (or replace the existing executable)
+            sh "rm -f %(HOME)/.local/bin/alacritty"
+            sh "cp %(repo_path)/alacritty/target/release/alacritty %(HOME)/.local/bin"
+            sh "strip %(HOME)/.local/bin/alacritty"
+            -- Desktop Entry
+            sh "sudo cp %(repo_path)/alacritty/extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg"
+            sh "cd %(repo_path)/alacritty && sudo desktop-file-install extra/linux/Alacritty.desktop"
+            sh "sudo update-desktop-database"
+            -- Manual Page
+            mkdir "%(HOME)/.local/share/man/man1"
+            sh "cd %(repo_path)/alacritty && gzip -c extra/alacritty.man | sudo tee %(HOME)/.local/share/man/man1/alacritty.1.gz > /dev/null"
+            sh "cd %(repo_path)/alacritty && gzip -c extra/alacritty-msg.man | sudo tee %(HOME)/.local/share/man/man1/alacritty-msg.1.gz > /dev/null"
         elseif FEDORA then
             dnf_install "alacritty"
         elseif UBUNTU then
