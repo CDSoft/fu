@@ -925,7 +925,8 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: %(FONT) %(FONT_VARIANT)
+    family: %(FONT)
+    style: %(FONT_VARIANT)
   size: %(FONT_SIZE)
 
 draw_bold_text_with_bright_colors: true

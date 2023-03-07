@@ -31,8 +31,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
 "Plug 'vim-airline/vim-airline'
-Plug 'hoob3rt/lualine.nvim'
-"Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
 
 "Plug 'https://github.com/frace/vim-bubbles'

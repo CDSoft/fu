@@ -94,6 +94,9 @@ function fu_configuration()
         chrome = {"Install Google Chrome?", "yn"},
         chromium = {"Install Chromium?", "yn"},
 
+        nerd_fonts = {"Install Nerd Fonts?", "yn"},
+        fira_code = {"Use Fira Code font?", "yn"},
+        source_code_pro = {"Use Source Code Pro font?", "yn"},
         alacritty_sources = {"Install Alacritty from sources?", "yn"},
         starship_sources = {"Install Starship from sources?", "yn"},
         tokei_sources = {"Install Tokei from sources?", "yn"},
@@ -190,6 +193,13 @@ function os_configuration()
         or FEDORA and "green"
     FONT = "Fira Code"
     FONT_VARIANT = "Medium"
+    if cfg.fira_code then
+        FONT = cfg.nerd_fonts and "FiraCode Nerd Font" or "Fira Code"
+    elseif cfg.source_code_pro then
+        FONT = cfg.nerd_fonts and "SauceCodePro Nerd Font" or "Source Code Pro"
+    else
+        FONT = cfg.nerd_fonts and "FiraCode Nerd Font" or "Fira Code"
+    end
     local xres, yres = (pipe "xdpyinfo | awk '/dimensions/ {print $2}'" or "1920x1080") : split "x" : map(tonumber) : unpack()
     FONT_SIZE =    (xres <= 1920 or yres <= 1080) and 9
                 or (xres <= 2560 or yres <= 1440) and 9+4
@@ -468,9 +478,9 @@ function basename(s)
     return (I(s):gsub(".*/([^/]*)$", "%1"))
 end
 
-function file_exist(path) return (os.execute("test -f "..I(path))) end
-function dir_exist(path) return (os.execute("test -d "..I(path))) end
-function link_exist(path) return (os.execute("test -L "..I(path))) end
+function file_exist(path) return (os.execute("test -f '"..I(path).."'")) end
+function dir_exist(path) return (os.execute("test -d '"..I(path).."'")) end
+function link_exist(path) return (os.execute("test -L '"..I(path).."'")) end
 
 function read(path)
     local f = assert(io.open(I(path), "r"))
@@ -2319,6 +2329,28 @@ function i3_configuration()
         apt_install "xfce4-volumed"
     end
 
+    -- Nerd Fonts
+    if cfg.nerd_fonts then
+        local release = nil
+        local font_cache_update = false
+        local function install_font(name, file)
+            if force or upgrade or not file_exist("%(HOME)/.local/share/fonts/"..file) then
+                log("Font: "..name)
+                release = release or pipe("curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/"):match("tag/(v[%d%.]+)")
+                sh("wget https://github.com/ryanoasis/nerd-fonts/releases/download/"..release.."/"..name..".zip -c -O %(repo_path)/"..name.."-"..release..".zip")
+                mkdir "%(HOME)/.local/share/fonts"
+                sh("unzip -j -u %(repo_path)/"..name.."-"..release..".zip '*.ttf' -d %(HOME)/.local/share/fonts/")
+                font_cache_update = true
+            end
+        end
+        install_font("SourceCodePro", "Sauce Code Pro Nerd Font Complete.ttf")
+        install_font("FiraCode", "Fira Code Regular Nerd Font Complete.ttf")
+        if font_cache_update then
+            log "Font: update cache"
+            sh "fc-cache -f"
+        end
+    end
+
     -- alacritty
     if force or upgrade or not installed "alacritty" then
         log "Alacritty"
@@ -2421,7 +2453,7 @@ function i3_configuration()
             [259]= "#eeeeee",
         }
         with_file("%(repo_path)/st/config.def.h", function(config)
-            config = config:gsub("font = \".-\";", I"font = \"%(FONT) %(FONT_VARIANT):size=%(FONT_SIZE):antialias=true:autohint=true\";")
+            config = config:gsub("font = \".-\";", I"font = \"%(FONT):style=%(FONT_VARIANT):size=%(FONT_SIZE):antialias=true:autohint=true\";")
             config = config:gsub("worddelimiters = L\".-\";", I"worddelimiters = L\" `'\\\"()[]{}\";")
             for i, c in pairs(colors) do
                 config = config:gsub('(%['..i..'%]) = "(#......)"', '%1 = "'..c..'"')
