@@ -69,16 +69,16 @@ bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(WIKI) -e
 bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi secret.pwd
 
 %(when(cfg.hcalc and cfg.hcalc_shortcut) [=[
-bindsym XF86Calculator          exec %(ALACRITTY) -o window.dimensions.columns=80 -o window.dimensions.lines=24 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
-bindsym $mod+c                  exec %(ALACRITTY) -o window.dimensions.columns=80 -o window.dimensions.lines=24 -t '🖩 hCalc' -e rlwrap -pGreen hcalc
+bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 hCalc' -e tmux new -As Calc hcalc
+bindsym $mod+c                  exec %(ST) -g 80x24 -t '🖩 hCalc' -e tmux new -As Calc hcalc
 ]=])
 %(when(cfg.calculadoira and cfg.calculadoira_shortcut) [=[
-bindsym XF86Calculator          exec %(ALACRITTY) -o window.dimensions.columns=80 -o window.dimensions.lines=24 -t '🖩 Calculadoira' -e calculadoira
-bindsym $mod+c                  exec %(ALACRITTY) -o window.dimensions.columns=80 -o window.dimensions.lines=24 -t '🖩 Calculadoira' -e calculadoira
+bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 Calculadoira' -e tmux new -As Calc calculadoira
+bindsym $mod+c                  exec %(ST) -g 80x24 -t '🖩 Calculadoira' -e tmux new -As Calc calculadoira
 ]=])
 %(when(not (cfg.hcalc and cfg.hcalc_shortcut) and not (cfg.calculadoira and cfg.calculadoira_shortcut)) [=[
-bindsym XF86Calculator          exec %(ALACRITTY) -o window.dimensions.columns=80 -o window.dimensions.lines=24 -t '🖩 bc' -e bc -l
-bindsym $mod+c                  exec %(ALACRITTY) -o window.dimensions.columns=80 -o window.dimensions.lines=24 -t '🖩 bc' -e bc -l
+bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 bc' -e tmux new -As Calc bc
+bindsym $mod+c                  exec %(ST) -g 80x24 -t '🖩 bc' -e tmux new -As Calc bc
 ]=])
 
 bindsym Print                   exec screenshot root
