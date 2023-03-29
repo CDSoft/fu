@@ -2310,6 +2310,7 @@ function i3_configuration()
         barrier
         redshift
         kde-connect
+        keepassxc
     ]]
     apt_install [[
         rxvt-unicode

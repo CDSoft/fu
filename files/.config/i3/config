@@ -67,6 +67,9 @@ bindsym $mod+Shift+w            exec menu-work
 bindsym $mod+t                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi todo.txt
 bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi notes.txt
 bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi secret.pwd
+%(when(myconf.keepass) [=[
+bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
+]=])
 
 %(when(cfg.hcalc and cfg.hcalc_shortcut) [=[
 bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 hCalc' -e tmux new -As Calc hcalc
