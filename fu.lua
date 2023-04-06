@@ -2310,7 +2310,7 @@ function i3_configuration()
         barrier
         redshift
         kde-connect
-        keepassxc
+        keepassxc aspell-fr
     ]]
     apt_install [[
         rxvt-unicode
@@ -2577,6 +2577,15 @@ function i3_configuration()
     for config_file in ls ".config/xfce4/xfconf/xfce-perchannel-xml/*" do
         script(config_file)
     end
+
+    -- Full french and english word lists for keepassxc
+    local wordlist_path = I"%(HOME)/.config/keepassxc/wordlists"
+    mkdir(wordlist_path)
+    F{fr="french", en="english"}:mapk(function(lang, name)
+        if force or not file_exist(fs.join(wordlist_path, name)) then
+            sh(("aspell -d %s dump master | aspell -l %s expand > %s"):format(lang, lang, fs.join(wordlist_path, name)))
+        end
+    end)
 
 end
 
