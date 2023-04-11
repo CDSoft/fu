@@ -72,16 +72,16 @@ bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
 ]=])
 
 %(when(cfg.hcalc and cfg.hcalc_shortcut) [=[
-bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 hCalc' -e tmux new -As Calc hcalc
-bindsym $mod+c                  exec %(ST) -g 80x24 -t '🖩 hCalc' -e tmux new -As Calc hcalc
+bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 hCalc' -e hcalc
+bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 hCalc' -e hcalc
 ]=])
 %(when(cfg.calculadoira and cfg.calculadoira_shortcut) [=[
-bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 Calculadoira' -e tmux new -As Calc calculadoira
-bindsym $mod+c                  exec %(ST) -g 80x24 -t '🖩 Calculadoira' -e tmux new -As Calc calculadoira
+bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
+bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 ]=])
 %(when(not (cfg.hcalc and cfg.hcalc_shortcut) and not (cfg.calculadoira and cfg.calculadoira_shortcut)) [=[
-bindsym XF86Calculator          exec %(ST) -g 80x24 -t '🖩 bc' -e tmux new -As Calc bc
-bindsym $mod+c                  exec %(ST) -g 80x24 -t '🖩 bc' -e tmux new -As Calc bc
+bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 bc' -e bc
+bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 bc' -e bc
 ]=])
 
 bindsym Print                   exec screenshot root
