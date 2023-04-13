@@ -90,9 +90,11 @@ function fu_configuration()
 
         chrome_as_alternative_browser = {"Use Google Chrome as alternative browser?", "yn"},
         chromium_as_alternative_browser = {"Use Chromium as alternative browser?", "yn"},
+        brave_as_alternative_browser = {"Use Brave as alternative browser?", "yn"},
         thunderbird_mailer = {"Use Thunderbird as the default mailer?", "yn"},
         chrome = {"Install Google Chrome?", "yn"},
         chromium = {"Install Chromium?", "yn"},
+        brave = {"Install Brave?", "yn"},
 
         nerd_fonts = {"Install Nerd Fonts?", "yn"},
         fira_code = {"Use Fira Code font?", "yn"},
@@ -211,6 +213,7 @@ function os_configuration()
     BROWSER = "firefox"
     BROWSER2 = cfg.chrome_as_alternative_browser and "google-chrome" or
                cfg.chromium_as_alternative_browser and "chromium-browser" or
+               cfg.brave_as_alternative_browser and "brave-browser" or
                BROWSER
 
     WIKI = cfg.wiki
@@ -2678,12 +2681,14 @@ function internet_configuration()
         surf
         thunderbird
         transmission
+        dnf-plugins-core
     ]]
     apt_install [[
         firefox
         surf
         thunderbird
         transmission
+        curl
     ]]
 
     if cfg.chrome then
@@ -2698,6 +2703,18 @@ function internet_configuration()
     if cfg.chromium then
         dnf_install "chromium"
         apt_install "chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg-extra"
+    end
+    if cfg.brave then
+        if FEDORA then
+            sh "sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo"
+            sh "sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc"
+        end
+        if UBUNTU or DEBIAN then
+            sh "sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
+            sh 'echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list'
+        end
+        dnf_install "brave-browser"
+        apt_install "brave-browser"
     end
 
     -- Default browser
