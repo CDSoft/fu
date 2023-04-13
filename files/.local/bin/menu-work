@@ -15,7 +15,7 @@ EndOfMenu
 case "$1" in
     ("%(basename(BROWSER))"*) %(BROWSER) -P work ;;
     ("%(basename(BROWSER2))"*) %(BROWSER2) ;;
-    ("meet on %(basename(BROWSER))"*) %(BROWSER) meet.google.com ;;
+    ("meet on %(basename(BROWSER))"*) %(BROWSER) -P work --new-window meet.google.com ;;
     ("meet on %(basename(BROWSER2))"*) %(BROWSER2) meet.google.com ;;
     ("") _menu ;;
 esac
