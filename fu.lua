@@ -1300,6 +1300,7 @@ function dev_configuration()
             graphviz
             musl-clang musl-devel musl-gcc musl-libc-static musl-libc
             pax-utils
+            sassc
         ]]
 
         apt_install [[
