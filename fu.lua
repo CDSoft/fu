@@ -2583,6 +2583,7 @@ function i3_configuration()
     end
 
     -- Full french and english word lists for keepassxc
+    --[[
     local wordlist_path = I"%(HOME)/.config/keepassxc/wordlists"
     mkdir(wordlist_path)
     F{fr="french", en="english"}:mapk(function(lang, name)
@@ -2590,6 +2591,11 @@ function i3_configuration()
             sh(("aspell -d %s dump master | aspell -l %s expand > %s"):format(lang, lang, fs.join(wordlist_path, name)))
         end
     end)
+    --]]
+    -- Some word lists from https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases
+    script ".config/keepassxc/wordlists/eff_large_wordlist.txt"
+    script ".config/keepassxc/wordlists/eff_short_wordlist_1.txt"
+    script ".config/keepassxc/wordlists/eff_short_wordlist_2_0.txt"
 
 end
 
