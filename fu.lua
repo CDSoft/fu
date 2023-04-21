@@ -211,9 +211,9 @@ function os_configuration()
     ALACRITTY = I"alacritty"
 
     BROWSER = "firefox"
-    BROWSER2 = cfg.chrome_as_alternative_browser and "google-chrome" or
-               cfg.chromium_as_alternative_browser and "chromium-browser" or
+    BROWSER2 = cfg.chromium_as_alternative_browser and "chromium-browser" or
                cfg.brave_as_alternative_browser and "brave-browser" or
+               cfg.chrome_as_alternative_browser and "google-chrome" or
                BROWSER
 
     WIKI = cfg.wiki
