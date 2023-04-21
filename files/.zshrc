@@ -153,19 +153,16 @@ alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
 alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-run-if-empty docker rmi"
 alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
 
-%(when(FEDORA and cfg.ros)
+%(when(cfg.ros)
     ". /usr/lib64/ros/setup.zsh")
 ]==])
 
 # no warnings in Wine
 export WINEDEBUG=-all
 
-# Other user configuration
+# Other user configuration from ~/.myconf
 
-if [ -f ~/.zuser ]
-then
-    . ~/.zuser
-fi
+%(myconf.zsh or "")
 
 # User specific environment and startup programs
 [ -n "$SSH_AGENT_PID" ] || eval "$(ssh-agent -s)"

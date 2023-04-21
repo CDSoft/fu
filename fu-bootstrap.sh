@@ -42,6 +42,7 @@ mkdir -p ~/.local/bin
     cd ~/.config/fu/repos
     git clone $LUAX_URL
     cd luax
+    sudo dnf install make
     make install
 )
 
