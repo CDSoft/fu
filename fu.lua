@@ -87,10 +87,8 @@ function fu_configuration()
         wallpaper_bing = {"Use BING wallpaper?", "yn"},
 
         chromium_as_alternative_browser = {"Use Chromium as alternative browser?", "yn"},
-        brave_as_alternative_browser = {"Use Brave as alternative browser?", "yn"},
         thunderbird_mailer = {"Use Thunderbird as the default mailer?", "yn"},
         chromium = {"Install Chromium?", "yn"},
-        brave = {"Install Brave?", "yn"},
 
         nerd_fonts = {"Install Nerd Fonts?", "yn"},
         fira_code = {"Use Fira Code font?", "yn"},
@@ -205,7 +203,6 @@ function os_configuration()
 
     BROWSER = "firefox"
     BROWSER2 = cfg.chromium_as_alternative_browser and "chromium-browser" or
-               cfg.brave_as_alternative_browser and "brave-browser" or
                BROWSER
 
     WIKI = cfg.wiki
@@ -2253,11 +2250,6 @@ function internet_configuration()
 
    if cfg.chromium then
         dnf_install "chromium"
-    end
-    if cfg.brave then
-        sh "sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo"
-        sh "sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc"
-        dnf_install "brave-browser"
     end
 
     -- Default browser
