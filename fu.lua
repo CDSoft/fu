@@ -153,6 +153,7 @@ function fu_configuration()
         dot_language_server = {"Install dot (Graphviz) language server?", "yn"},
         python_language_server = {"Install Python language server?", "yn"},
         lua_language_server = {"Install Lua language server?", "yn"},
+        teal_language_server = {"Install Teal language server?", "yn"},
         zig_language_server = {"Install Zig language server?", "yn"},
         typescript_language_server = {"Install Typescript language server?", "yn"},
         purescript_language_server = {"Install Purescript language server?", "yn"},
@@ -1231,6 +1232,12 @@ function lsp_configuration()
             sh [[ cd %(repo_path)/lua-language-server &&
                 ./make.sh
                 ln -s -f $PWD/bin/lua-language-server ~/.local/bin/ ]]
+        end
+    end
+    if cfg.teal_language_server then
+        if force or upgrade or not installed "teal-language-server" then
+            log "Teal Language Server"
+            sh "luarocks install --local --dev teal-language-server"
         end
     end
     if cfg.freepascal and cfg.freepascal_language_server then

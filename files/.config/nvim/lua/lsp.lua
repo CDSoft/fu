@@ -106,6 +106,9 @@ require'lspconfig'.lua_ls.setup {
     },
 }
 
+-- Teal Language Server
+require'lspconfig'.teal_ls.setup{}
+
 -- V Language Server
 -- set the path to the vls installation;
 local vls_root_path = "%(repo_path)/vls"

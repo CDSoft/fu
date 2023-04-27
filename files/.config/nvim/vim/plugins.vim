@@ -57,6 +57,13 @@ Plug 'alaviss/nim.nvim'
 
 Plug 'vifm/vifm.vim'
 
+" Teal language support
+Plug 'teal-language/vim-teal'
+
+" Optional dependencies; will be loaded on-demand when editing Teal files
+Plug 'dense-analysis/ale', { 'for': 'teal' }
+Plug 'tpope/vim-endwise', { 'for': 'teal' }
+
 %(when(cfg.work) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
 
 call plug#end()
