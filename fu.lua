@@ -607,17 +607,17 @@ function dnf_install(names)
     end
 end
 
-function luarocks(names)
+function luarocks(names, opts)
     names = I(names):words()
     local new_packages = {}
     for _, name in ipairs(names) do
         if not installed_lua_packages[name] then table.insert(new_packages, name) end
     end
     if #new_packages > 0 then
-        names = table.concat(new_packages, " ")
+        names = F(new_packages):unwords()
         log("Install luarocks: "..names, 1)
-        for _, name in new_packages.ipairs() do
-            sh("luarocks install --local "..name)
+        for _, name in ipairs(new_packages) do
+            sh("luarocks install --local "..(opts or "").." "..name)
         end
         F(new_packages):map(function(name) installed_lua_packages[name] = true end)
     end
@@ -1048,7 +1048,7 @@ function dev_configuration()
             glfw
             flex bison
             perl-ExtUtils-MakeMaker
-            SDL2-devel SDL2_ttf-devel SDL2_gfx-devel SDL2_mixer-devel SDL2_image-devel
+            SDL2-devel SDL2_ttf-devel SDL2_gfx-devel SDL2_mixer-devel SDL2_image-devel SDL2_net-devel
             libpcap-devel
             libyaml libyaml-devel
             libubsan libubsan-static libasan libasan-static libtsan libtsan-static
@@ -1138,6 +1138,8 @@ function dev_configuration()
         tcc
     ]]
     --]=]
+
+    luarocks "lua-sdl2"
 
     script ".gitconfig"
 
@@ -1237,7 +1239,7 @@ function lsp_configuration()
     if cfg.teal_language_server then
         if force or upgrade or not installed "teal-language-server" then
             log "Teal Language Server"
-            sh "luarocks install --local --dev teal-language-server"
+            luarocks("teal-language-server", "--dev")
         end
     end
     if cfg.freepascal and cfg.freepascal_language_server then
