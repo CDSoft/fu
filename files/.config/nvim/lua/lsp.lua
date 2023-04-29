@@ -187,3 +187,6 @@ require'lspconfig'.ocamllsp.setup {
     on_attach = on_attach,
 }
 ]])
+
+require'lspconfig'.typst_lsp.setup {
+}

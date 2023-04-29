@@ -116,6 +116,7 @@ function fu_configuration()
         vscode = {"Install VSCode?", "yn"},
         tup = {"Install tup?", "yn"},
         compile_pandoc_with_cabal = {"Compile Pandoc with Cabal?", "yn"},
+        compile_typst_with_rust = {"Compile Typst with Rust?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -158,6 +159,7 @@ function fu_configuration()
         typescript_language_server = {"Install Typescript language server?", "yn"},
         purescript_language_server = {"Install Purescript language server?", "yn"},
         elm_language_server = {"Install ELM language server?", "yn"},
+        typst_language_server = {"Install Typst language server?", "yn"},
 
         hcalc = {"Install hCalc?", "yn"},
         calculadoira = {"Install Calculadoira?", "yn"},
@@ -1288,6 +1290,13 @@ function lsp_configuration()
             ]]
         end
     end
+    if cfg.rust and cfg.typst_language_server then
+        if force or upgrade or not installed "typst-lsp" then
+            log "Typst Language Server"
+            gitclone "https://github.com/nvarner/typst-lsp.git"
+            sh "cd %(repo_path)/typst-lsp && ~/.cargo/bin/cargo install --path . --root ~/.local"
+        end
+    end
 
 end
 
@@ -1701,13 +1710,30 @@ function pandoc_configuration()
             log "Pandoc"
             sh(". ~/.ghcup/env; cabal install pandoc-cli --overwrite-policy=always --install-method=copy --installdir=%(HOME)/.local/bin")
         else
-            local curr_version = pipe("pandoc --version | head -1"):match("[%d%.]+")
+            local curr_version = (pipe("pandoc --version") or ""):lines()[1]:words()[2]
             local version = pipe("curl -sSL https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
             if version ~= curr_version then
                 log "Pandoc"
                 with_tmpdir(function(tmp)
                     sh("wget https://github.com/jgm/pandoc/releases/download/"..version.."/pandoc-"..version.."-linux-amd64.tar.gz -O "..tmp.."/pandoc.tar.gz")
                     sh("tar xvzf "..tmp.."/pandoc.tar.gz --strip-components 1 -C ~/.local")
+                end)
+            end
+        end
+    end
+
+    if force or upgrade or not installed "typst" then
+        if cfg.rust and cfg.compile_typst_with_rust then
+            log "Typst"
+            sh "~/.cargo/bin/cargo install --git https://github.com/typst/typst --root ~/.local"
+        else
+            local curr_version = (pipe("typst --version") or ""):words()[2]
+            local version = pipe("curl -sSL https://github.com/typst/typst/releases/latest/"):match("tag/v([%d%.]+)")
+            if version ~= curr_version then
+                log "Typst"
+                with_tmpdir(function(tmp)
+                    sh("wget https://github.com/typst/typst/releases/download/v"..version.."/typst-x86_64-unknown-linux-musl.tar.xz -O "..tmp.."/typst.tar.xz")
+                    sh("tar xvJf "..tmp.."/typst.tar.xz --strip-components 1 --exclude=LICENSE --exclude=NOTICE --exclude=README.md -C ~/.local/bin")
                 end)
             end
         end

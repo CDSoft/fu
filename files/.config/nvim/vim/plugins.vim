@@ -64,6 +64,8 @@ Plug 'teal-language/vim-teal'
 Plug 'dense-analysis/ale', { 'for': 'teal' }
 Plug 'tpope/vim-endwise', { 'for': 'teal' }
 
+Plug 'kaarmu/typst.vim'
+
 %(when(cfg.work) "Plug 'https://github.com/CDSoft/trace32-practice.vim.git'")
 
 call plug#end()
