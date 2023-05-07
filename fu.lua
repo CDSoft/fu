@@ -1739,6 +1739,11 @@ function pandoc_configuration()
         end
     end
 
+    if force or upgrade or not installed "ypp" then
+        gitclone "http://github.com/cdsoft/ypp"
+        sh "cd %(repo_path)/ypp && make install"
+    end
+
     if force or upgrade or not installed "panda" then
         gitclone "http://github.com/cdsoft/panda"
         sh "cd %(repo_path)/panda && make install"
