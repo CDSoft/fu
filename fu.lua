@@ -1793,7 +1793,7 @@ function pandoc_configuration()
         if force or upgrade or not installed "mmdc" then
             log "Mermaid"
             mkdir "%(HOME)/.local/opt/mermaid"
-            sh "cd ~/.local/opt/mermaid && npm install mermaid.cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
+            sh "cd ~/.local/opt/mermaid && npm install @mermaid-js/mermaid-cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
         end
     end
 
