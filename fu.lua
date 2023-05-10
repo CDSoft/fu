@@ -1512,6 +1512,19 @@ function julia_configuration()
         --]=]
     end
 
+    local project = "~/.julia/environments/nvim-lspconfig"
+    if force or not file_exist(project) then
+
+        log "Julia Language Server Protocol"
+        if not file_exist(project) then
+            sh(([[julia --project=%s -e 'using Pkg; Pkg.add("LanguageServer")']]):format(project))
+        else
+            sh(([[julia --project=%s -e 'using Pkg; Pkg.update()']]):format(project))
+        end
+        sh(([[julia --project=%s -e 'using Pkg; Pkg.instantiate()']]):format(project))
+
+    end
+
 end
 
 -- }}}

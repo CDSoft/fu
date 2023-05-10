@@ -190,3 +190,7 @@ require'lspconfig'.ocamllsp.setup {
 
 require'lspconfig'.typst_lsp.setup {
 }
+
+require'lspconfig'.julials.setup{
+    on_attach = on_attach,
+}
