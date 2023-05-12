@@ -1,0 +1,9 @@
+#!/bin/bash
+
+TITLE="$1"
+
+TMP=$(mktemp)
+trap "rm $TMP" EXIT
+
+st -c xprompt -g 60x1 -t ">> $TITLE" -e bash -c "read -e -p '>> ' X && echo \$X > $TMP"
+cat $TMP

@@ -124,6 +124,7 @@ for_window [title="^Contrôle du volume"]                        floating enable
 for_window [title="^Xephyr on :"]                               border normal 8
 for_window [title="^Timeshift$"]                                floating enable, border normal 4
 for_window [title="^netmon$"]                                   floating enable, border normal 4
+for_window [class="^xprompt$"]                                  floating enable, border normal %(FONT_SIZE)
 
 # kill focused window
 bindsym $mod+q          kill

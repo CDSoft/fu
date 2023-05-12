@@ -2178,6 +2178,8 @@ function i3_configuration()
     script ".config/qt5ct/qt5ct.conf"
     script ".gtkrc-2.0"
 
+    script "xprompt"
+
     -- script ".config/kwalletrc"
 
     if force or upgrade or not installed "xcwd" then
