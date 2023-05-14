@@ -44,13 +44,13 @@ bindsym XF86MonBrightnessUp     exec brightness +5
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec %(ALACRITTY) --working-directory "`xpwd`"
-bindsym $mod+Shift+Return exec cd "`xpwd`" && %(ST) -e tmux
-#bindsym $mod+Shift+Return exec xfce4-terminal --disable-server --working-directory "`xpwd`" -e tmux
+bindsym $mod+Return exec %(ALACRITTY) --working-directory "`xpwd.lua`"
+bindsym $mod+Shift+Return exec cd "`xpwd.lua`" && %(ST) -e tmux
+#bindsym $mod+Shift+Return exec xfce4-terminal --disable-server --working-directory "`xpwd.lua`" -e tmux
 
 # Filemanagers
-bindsym $mod+Ctrl+Return exec %(ALACRITTY) -t vifm -e vifm "`xpwd`"
-bindsym $mod+$alt+Return exec thunar "`xpwd`"
+bindsym $mod+Ctrl+Return exec %(ALACRITTY) -t vifm -e vifm "`xpwd.lua`"
+bindsym $mod+$alt+Return exec thunar "`xpwd.lua`"
 
 # scratchpad
 bindsym $mod+Shift+o    move scratchpad
@@ -87,8 +87,8 @@ bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
 
-bindsym $win+Ctrl+i             exec ristretto "`xpwd`" &
-bindsym $win+Ctrl+m             exec vlc "`xpwd`" &
+bindsym $win+Ctrl+i             exec ristretto "`xpwd.lua`" &
+bindsym $win+Ctrl+m             exec vlc "`xpwd.lua`" &
 
 bindsym $mod+x                  exec menu
 %(when(cfg.external_monitor) [=[

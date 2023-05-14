@@ -475,18 +475,26 @@ function file_exist(path) return (os.execute("test -f '"..I(path).."'")) end
 function dir_exist(path) return (os.execute("test -d '"..I(path).."'")) end
 function link_exist(path) return (os.execute("test -L '"..I(path).."'")) end
 
-function read(path)
+function read(path, opt)
+    opt = opt or {}
     local f = assert(io.open(I(path), "r"))
     local content = f:read "a"
     f:close()
-    return I(content)
+    if not opt.raw then
+        content = I(content)
+    end
+    return content
 end
 
-function write(path, content)
+function write(path, content, opt)
+    opt = opt or {}
     -- atomic file creation to avoid strange interactions with xfce and fonts
     local filename = I(path)
     local f = assert(io.open(filename..".tmp", "w"))
-    f:write(I(content))
+    if not opt.raw then
+        content = I(content)
+    end
+    f:write(content)
     f:close()
     os.rename(filename..".tmp", filename)
 end
@@ -638,12 +646,13 @@ function installed(cmd)
     return found
 end
 
-function script(name)
+function script(name, opt)
+    opt = opt or {}
     local function template(file_name, dest_name, exe)
         if file_exist(file_name) then
             log("Create "..dest_name, 2)
             mkdir(dirname(dest_name))
-            write(dest_name, read(file_name))
+            write(dest_name, read(file_name, opt), opt)
             if exe then sh("chmod +x "..dest_name) end
             return true
         end
@@ -2182,6 +2191,7 @@ function i3_configuration()
 
     -- script ".config/kwalletrc"
 
+    --[[
     if force or upgrade or not installed "xcwd" then
         log "xcwd"
         gitclone "https://github.com/CDSoft/xcwd.git"
@@ -2192,6 +2202,8 @@ function i3_configuration()
         gitclone "https://github.com/CDSoft/xpwd.git"
         sh "cd %(repo_path)/xpwd && make && make install"
     end
+    --]]
+    script("xpwd.lua", {raw=true})
 
     if force or upgrade or not installed "hsetroot" then
         dnf_install "imlib2-devel libXinerama-devel"
