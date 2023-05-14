@@ -2187,6 +2187,11 @@ function i3_configuration()
         gitclone "https://github.com/CDSoft/xcwd.git"
         sh "cd %(repo_path)/xcwd && make && make install"
     end
+    if force or upgrade or not installed "xpwd" then
+        log "xpwd"
+        gitclone "https://github.com/CDSoft/xpwd.git"
+        sh "cd %(repo_path)/xpwd && make && make install"
+    end
 
     if force or upgrade or not installed "hsetroot" then
         dnf_install "imlib2-devel libXinerama-devel"
