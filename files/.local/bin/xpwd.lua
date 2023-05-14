@@ -1,23 +1,29 @@
 #!/usr/bin/env luax
 
+-- e.g. with i3wm and alacritty
+-- in .config/i3/config:
+-- bindsym $mod+Return exec alacritty --working-directory "`xpwd.lua`"
+--
+-- It requires http://cdelord.fr/luax
+
 local DEBUG = true
 
-local process_blacklist = {
-    ["alacritty"] = true,
-    ["st"] = true,
-    ["bash-language-server"] = true,
-    ["clangd.main"] = true,
-    ["clangd"] = true,
-    ["dot-language-server"] = true,
-    ["elm-language-server"] = true,
-    ["lua-language-server"] = true,
-    ["nimlsp"] = true,
-    ["pasls"] = true,
-    ["pyright-langserver"] = true,
-    ["xclip"] = true,
-    ["xsel"] = true,
-    ["zls"] = true,
-}
+local process_blacklist = F[[
+    alacritty
+    st
+    bash-language-server
+    clangd.main
+    clangd
+    dot-language-server
+    elm-language-server
+    lua-language-server
+    nimlsp
+    pasls
+    pyright-langserver
+    xclip
+    xsel
+    zls
+]] : words() : from_set(F.const(true))
 
 local HOME = os.getenv "HOME"
 
@@ -69,9 +75,9 @@ local function read_process(i, pid)
     local cwd = fs.readlink(fs.join("/proc", pid, "cwd"))
     if not cwd then return {} end
     return {
-        exe = exe and fs.basename(exe),
+        exe = fs.basename(exe),
         cwd = cwd,
-        group = cwd and group(cwd),
+        group = group(cwd),
         order = i,
     }
 end
