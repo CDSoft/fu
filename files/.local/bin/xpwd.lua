@@ -23,6 +23,9 @@ local process_blacklist = F[[
     xclip
     xsel
     zls
+    firefox
+    chromium-browser
+    keepassxc-proxy
 ]] : words() : from_set(F.const(true))
 
 local HOME = os.getenv "HOME"
@@ -71,11 +74,13 @@ end
 
 local function read_process(i, pid)
     local exe = fs.readlink(fs.join("/proc", pid, "exe"))
-    if not exe then return {} end
+    if not exe then return F.Nil end
+    exe = fs.basename(exe)
+    if process_blacklist[exe]then return F.Nil end
     local cwd = fs.readlink(fs.join("/proc", pid, "cwd"))
-    if not cwd then return {} end
+    if not cwd then return F.Nil end
     return {
-        exe = fs.basename(exe),
+        exe = exe,
         cwd = cwd,
         group = group(cwd),
         order = i,
@@ -83,16 +88,15 @@ local function read_process(i, pid)
 end
 
 local function compare_processes(p1, p2)
-    local r1 = p1.group
-    local r2 = p2.group
-    if r1 ~= r2 then return r1 < r2 end
+    local g1 = p1.group
+    local g2 = p2.group
+    if g1 ~= g2 then return g1 < g2 end
     return p1.order < p2.order
 end
 
 local processes = pids
     : mapi(read_process)
-    : filter(F.compose{F.op.lnot, F.null})
-    : filter(function(proc) return not process_blacklist[proc.exe] end)
+    : filter(F.curry(F.op.ne)(F.Nil))
     : sort(compare_processes)
 
 log("processes:\n", F.show(processes, {indent=4}))
