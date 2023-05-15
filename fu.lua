@@ -179,7 +179,7 @@ end
 
 function os_configuration()
 
-    LUA_VERSION = "5.4.4"
+    LUA_VERSION = "5.4.6"
 
     TIMEZONE = "Europe/Paris"
     KEYMAP = "fr"
