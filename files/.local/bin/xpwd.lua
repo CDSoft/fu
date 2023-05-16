@@ -75,7 +75,7 @@ end
 local function read_process(i, pid)
     local exe = fs.readlink(fs.join("/proc", pid, "exe"))
     if not exe then return F.Nil end
-    exe = fs.basename(exe)
+    exe = fs.basename(exe) : gsub(" %(deleted%)$", "")
     if process_blacklist[exe]then return F.Nil end
     local cwd = fs.readlink(fs.join("/proc", pid, "cwd"))
     if not cwd then return F.Nil end
