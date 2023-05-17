@@ -44,8 +44,9 @@ else
 end
 
 log(F"#":rep(80))
+log("date: ", os.date())
 
-local window_id = sh.read "xprop -root" : lines()
+local window_id = sh.read("xprop", "-root") : lines()
     : filter(function(line) return line:find("_NET_ACTIVE_WINDOW(WINDOW)", 1, true) end)
     : head() : words() : last()
 log("window_id: ", window_id)
@@ -65,10 +66,10 @@ sh.read("pstree", "-lp", window_pid) : gsub("%((%d+)%)", function(pid) pids[#pid
 local HOME_HIDDEN = fs.join(HOME, ".")
 
 local function group(path)
-    if path == "/" then return -1 end
-    if path == HOME then return 1 end
-    if path:has_prefix(HOME_HIDDEN) then return 2 end
-    if path:has_prefix(HOME) then return 3 end
+    -- if the process blacklist, priority groups are useless
+    --if path == HOME then return 1 end
+    --if path:has_prefix(HOME_HIDDEN) then return 2 end
+    --if path:has_prefix(HOME) then return 3 end
     return 0
 end
 
@@ -99,6 +100,11 @@ local processes = pids
     : filter(F.curry(F.op.ne)(F.Nil))
     : sort(compare_processes)
 
-log("processes:\n", F.show(processes, {indent=4}))
+log("processes:\n", processes
+    : map(function(p)
+        return ("[group %d, order %d] %-32s -> %s"):format(p.group, p.order, p.exe, p.cwd)
+    end )
+    : unlines()
+)
 
 exit(not processes:null() and processes:last().cwd)
