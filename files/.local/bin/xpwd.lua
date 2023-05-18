@@ -26,6 +26,7 @@ local process_blacklist = F[[
     firefox
     chromium-browser
     keepassxc-proxy
+    plugin-container
 ]] : words() : from_set(F.const(true))
 
 local HOME = os.getenv "HOME"
@@ -79,7 +80,7 @@ local function read_process(i, pid)
     exe = fs.basename(exe) : gsub(" %(deleted%)$", "")
     if process_blacklist[exe]then return F.Nil end
     local cwd = fs.readlink(fs.join("/proc", pid, "cwd"))
-    if not cwd then return F.Nil end
+    if not cwd or not fs.is_dir(cwd) then return F.Nil end
     return {
         exe = exe,
         cwd = cwd,
