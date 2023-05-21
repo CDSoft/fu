@@ -1092,6 +1092,12 @@ function dev_configuration()
         ]]
     end
 
+    if force or upgrade then
+        log "LuaX"
+        gitclone "https://github.com/CDSoft/luax"
+        sh "cd %(repo_path)/luax && make install-all"
+    end
+
     if cfg.freepascal then
         dnf_install [[
             fpc lazarus
