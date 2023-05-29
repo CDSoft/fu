@@ -1879,7 +1879,7 @@ function neovim_configuration()
     title "neovim configuration"
 
     -- copr to be removed when Neovim 0.7 is in the Fedora repository
-    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:agriffis:neovim-nightly.repo", "agriffis/neovim-nightly")
+    --copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:agriffis:neovim-nightly.repo", "agriffis/neovim-nightly")
 
     dnf_install [[
         neovim
