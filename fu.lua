@@ -117,6 +117,8 @@ function fu_configuration()
         tup = {"Install tup?", "yn"},
         compile_pandoc_with_cabal = {"Compile Pandoc with Cabal?", "yn"},
         compile_typst_with_rust = {"Compile Typst with Rust?", "yn"},
+        helix = {"Install Helix?", "yn"},
+        helix_sources = {"Install Helix from sources?", "yn"},
 
         latex = {"Install LaTeX?", "yn"},
         povray = {"Install Povray?", "yn"},
@@ -258,6 +260,7 @@ function main()
     if cfg.asymptote then asymptote_configuration() end
     pandoc_configuration()
     neovim_configuration()
+    if cfg.helix then helix_configuration() end
     if cfg.vscode then vscode_configuration() end
     i3_configuration()
     graphic_application_configuration()
@@ -1951,6 +1954,37 @@ function neovim_configuration()
 
     -- Notes, TO-DO lists and password manager
     mkdir "%(WIKI)"
+
+end
+
+-- }}}
+
+-- helix configuration {{{
+
+function helix_configuration()
+    title "helix configuration"
+
+    if force or upgrade or not installed "hx" then
+        if cfg.rust and cfg.helix_sources then
+            log "Helix"
+            gitclone "https://github.com/helix-editor/helix"
+            sh "cd %(repo_path)/helix && ~/.cargo/bin/cargo install --path helix-term --locked --root ~/.local"
+            sh "ln -sf %(repo_path)/helix/runtime ~/.config/helix/runtime"
+        else
+            local curr_version = ((pipe("hx --version") or ""):lines()[1] or F""):words()[2]
+            local version = pipe("curl -sSL https://github.com/helix-editor/helix/releases/latest/"):match("tag/([%d%.]+)")
+            if version ~= curr_version then
+                log "Helix"
+                with_tmpdir(function(tmp)
+                    sh("wget https://github.com/helix-editor/helix/releases/download/"..version.."/helix-"..version.."-x86_64-linux.tar.xz -O "..tmp.."/helix.tar.xz")
+                    sh("cd "..tmp.." && tar xvJf helix.tar.xz --strip-components 1")
+                    mkdir "%(HOME)/.config/helix"
+                    sh("install "..tmp.."/hx ~/.local/bin")
+                    sh("cp -af "..tmp.."/runtime ~/.config/helix/runtime")
+                end)
+            end
+        end
+    end
 
 end
 
