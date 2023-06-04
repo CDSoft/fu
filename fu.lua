@@ -1744,7 +1744,7 @@ function pandoc_configuration()
             log "Pandoc"
             sh(". ~/.ghcup/env; cabal install pandoc-cli --overwrite-policy=always --install-method=copy --installdir=%(HOME)/.local/bin")
         else
-            local curr_version = (pipe("pandoc --version") or ""):lines()[1]:words()[2]
+            local curr_version = ((pipe("pandoc --version") or ""):lines()[1] or F""):words()[2]
             local version = pipe("curl -sSL https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
             if version ~= curr_version then
                 log "Pandoc"
