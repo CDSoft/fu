@@ -11,7 +11,7 @@ local function counter()
     local f = io.open(COUNTER, "r")
     local n = 0
     if f then
-        n = tonumber(f:read("a") or 0)
+        n = tonumber(f:read("a")) or 0
         f:close()
     end
     f = io.open(COUNTER, "w")
