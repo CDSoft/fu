@@ -176,6 +176,9 @@ function fu_configuration()
         asymptote = {"Install Asymptote?", "yn"},
         shellcheck = {"Install ShellCheck?", "yn"},
 
+        compile_shellcheck_with_stack = {"Compile ShellCheck with stack?", "yn"},
+        compile_typst_lsp_with_cargo = {"Compile Typst LSP with cargo?", "yn"},
+
     }
 end
 
@@ -1317,8 +1320,16 @@ function lsp_configuration()
     if cfg.rust and cfg.typst_language_server then
         if force or upgrade or not installed "typst-lsp" then
             log "Typst Language Server"
-            gitclone "https://github.com/nvarner/typst-lsp.git"
-            sh "cd %(repo_path)/typst-lsp && ~/.cargo/bin/cargo install --path . --root ~/.local"
+            if cfg.compile_typst_lsp_with_cargo then
+                gitclone "https://github.com/nvarner/typst-lsp.git"
+                sh "cd %(repo_path)/typst-lsp && ~/.cargo/bin/cargo install --path . --root ~/.local"
+            else
+                local version = pipe("curl -sSL https://github.com/nvarner/typst-lsp/releases/latest"):match("tag/(v[%d%.]+)")
+                with_tmpdir(function(tmp)
+                    sh("wget https://github.com/nvarner/typst-lsp/releases/download/"..version.."/typst-lsp-alpine-x64 -O "..tmp.."/typst-lsp")
+                    sh("install "..tmp.."/typst-lsp ~/.local/bin/")
+                end)
+            end
         end
     end
 
@@ -1942,7 +1953,7 @@ function neovim_configuration()
     end
 
     if cfg.shellcheck then
-        if cfg.haskell then
+        if cfg.haskell and cfg.compile_shellcheck_with_stack then
             if force or upgrade or not installed "shellcheck" then
                 log "ShellCheck"
                 sh ". ~/.ghcup/env; ghcup run stack install -- ShellCheck"
