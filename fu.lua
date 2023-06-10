@@ -179,6 +179,8 @@ function fu_configuration()
         compile_shellcheck_with_stack = {"Compile ShellCheck with stack?", "yn"},
         compile_typst_lsp_with_cargo = {"Compile Typst LSP with cargo?", "yn"},
 
+        logitech_tools = {"Install Logitech tools?", "yn"},
+
     }
 end
 
@@ -2305,6 +2307,11 @@ function i3_configuration()
     script ".config/keepassxc/wordlists/eff_large_wordlist.txt"
     script ".config/keepassxc/wordlists/eff_short_wordlist_1.txt"
     script ".config/keepassxc/wordlists/eff_short_wordlist_2_0.txt"
+
+    -- Logitech tools to fix mousewheel speed issues
+    if cfg.logitech_tools then
+        dnf_install "solaar"
+    end
 
 end
 

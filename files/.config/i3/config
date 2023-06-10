@@ -125,6 +125,7 @@ for_window [title="^Xephyr on :"]                               border normal 8
 for_window [title="^Timeshift$"]                                floating enable, border normal 4
 for_window [title="^netmon$"]                                   floating enable, border normal 4
 for_window [class="^xprompt$"]                                  floating enable, border normal %(FONT_SIZE)
+for_window [title="^solaar$"]                                   floating enable, border pixel 4
 
 # kill focused window
 bindsym $mod+q          kill
@@ -365,6 +366,7 @@ exec --no-startup-id vlc --qt-start-minimized &
 
 %(when(cfg.dropbox) "exec --no-startup-id ~/.dropbox-dist/dropboxd &")
 %(when(cfg.nextcloud_client and cfg.nextcloud_client_start) "exec --no-startup-id Nextcloud")
+%(when(cfg.logitech_tools) "exec --no-startup-id solaar --window hide")
 
 # custom configuration from ~/.myconf
 
