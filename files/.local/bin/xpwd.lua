@@ -29,6 +29,10 @@ local process_blacklist = F[[
     plugin-container
 ]] : words() : from_set(F.const(true))
 
+local path_blacklist = F[[
+    /opt/1Password
+]] : words() : from_set(F.const(true))
+
 local HOME = os.getenv "HOME"
 
 local function exit(cwd)
@@ -81,6 +85,7 @@ local function read_process(i, pid)
     if process_blacklist[exe]then return F.Nil end
     local cwd = fs.readlink(fs.join("/proc", pid, "cwd"))
     if not cwd or not fs.is_dir(cwd) then return F.Nil end
+    if path_blacklist[cwd]then return F.Nil end
     return {
         exe = exe,
         cwd = cwd,
@@ -104,7 +109,7 @@ local processes = pids
 log("processes:\n", processes
     : map(function(p)
         return ("[group %d, order %d] %-32s -> %s"):format(p.group, p.order, p.exe, p.cwd)
-    end )
+    end)
     : unlines()
 )
 
