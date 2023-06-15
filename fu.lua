@@ -971,7 +971,7 @@ function nextcloud_client_configuration()
             version = pipe("%(HOME)/.local/bin/Nextcloud -v"):match("version%s+([%d%.]+)")
         end
         new_version = pipe("curl -sSL https://github.com/nextcloud/desktop/releases/latest/"):match("tag/v([%d%.]+)")
-        new_version = new_version == "3.4.3" and "3.4.2"
+        new_version = new_version == "3.9.0" and "3.8.2"
                    or new_version
         if new_version ~= version then
             if version then sh("%(HOME)/.local/bin/Nextcloud -q") end
