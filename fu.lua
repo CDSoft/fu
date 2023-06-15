@@ -1327,6 +1327,8 @@ function lsp_configuration()
                 sh "cd %(repo_path)/typst-lsp && ~/.cargo/bin/cargo install --path . --root ~/.local"
             else
                 local version = pipe("curl -sSL https://github.com/nvarner/typst-lsp/releases/latest"):match("tag/(v[%d%.]+)")
+                version = version == "v0.6.0" and "v0.5.1"
+                       or version
                 with_tmpdir(function(tmp)
                     sh("wget https://github.com/nvarner/typst-lsp/releases/download/"..version.."/typst-lsp-alpine-x64 -O "..tmp.."/typst-lsp")
                     sh("install "..tmp.."/typst-lsp ~/.local/bin/")
