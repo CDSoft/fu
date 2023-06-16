@@ -75,6 +75,7 @@ idle()
 
 rf()
 {
+    %(when(not cfg.rfkill_on_suspend) "return # no rfkill on suspend")
     case "$1" in
         on)     rfkill unblock all ;;
         off)    rfkill block all ;;

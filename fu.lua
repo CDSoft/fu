@@ -85,6 +85,7 @@ function fu_configuration()
         wallpaper = {"Use daily wallpaper?", "yn"},
         wallpaper_nasa = {"Use NASA wallpaper?", "yn"},
         wallpaper_bing = {"Use BING wallpaper?", "yn"},
+        rfkill_on_suspend = {"kill RF on suspend?", "yn"},
 
         chromium_as_alternative_browser = {"Use Chromium as alternative browser?", "yn"},
         thunderbird_mailer = {"Use Thunderbird as the default mailer?", "yn"},
