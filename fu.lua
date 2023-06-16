@@ -2598,7 +2598,16 @@ function work_configuration()
         sh "systemctl restart NetworkManager"
     end
     -- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening
-    sh "sudo update-crypto-policies --set LEGACY"
+    --sh "sudo update-crypto-policies --set LEGACY"
+    fs.with_tmpdir(function(tmp)
+        local pmod = "RSA1024.pmod"
+        fs.write(fs.join(tmp, pmod), F.unlines {
+            "# The Aviatrix VPN uses certificates with 1024-bits RSA keys",
+            "min_rsa_size = 1024",
+        })
+        sh("sudo cp "..fs.join(tmp, pmod).." /etc/crypto-policies/policies/modules/")
+    end)
+    sh "sudo update-crypto-policies --set DEFAULT:RSA1024"
 
 end
 
