@@ -971,13 +971,15 @@ function nextcloud_client_configuration()
         if installed then
             version = pipe("%(HOME)/.local/bin/Nextcloud -v"):match("version%s+([%d%.]+)")
         end
-        new_version = pipe("curl -sSL https://github.com/nextcloud/desktop/releases/latest/"):match("tag/v([%d%.]+)")
+        new_version = pipe("curl -sSL https://github.com/nextcloud-releases/desktop/releases/latest/"):match("tag/v([%d%.]+)")
+        --[[
         new_version = new_version == "3.9.0" and "3.8.2"
                    or new_version
+        --]]
         if new_version ~= version then
             if version then sh("%(HOME)/.local/bin/Nextcloud -q") end
             with_tmpdir(function(tmp)
-                sh("wget https://github.com/nextcloud/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage -O "..tmp.."/Nextcloud")
+                sh("wget https://github.com/nextcloud-releases/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage -O "..tmp.."/Nextcloud")
                 sh("mv -f "..tmp.."/Nextcloud %(HOME)/.local/bin/Nextcloud")
                 sh("chmod +x %(HOME)/.local/bin/Nextcloud")
             end)
