@@ -858,7 +858,7 @@ function shell_configuration()
     gitclone "https://github.com/zsh-users/zsh-autosuggestions"
 
     log "Starship prompt"
-    if force or upgrade or not installed "starship" then
+    if force or not installed "starship" then
         -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
         -- If Rust is installed, building from sources is better.
         if cfg.rust and cfg.starship_sources then
@@ -881,7 +881,7 @@ function shell_configuration()
 
     script "fzfmenu"
 
-    if force or upgrade or not installed "grc" then
+    if force or not installed "grc" then
         gitclone "https://github.com/garabik/grc"
         sh "cd %(repo_path)/grc && sudo ./install.sh"
     end
@@ -1106,7 +1106,7 @@ function dev_configuration()
     if force or upgrade then
         log "LuaX"
         gitclone "https://github.com/CDSoft/luax"
-        sh "cd %(repo_path)/luax && make install-all"
+        sh "cd %(repo_path)/luax && make install-all -j"
     end
 
     if cfg.freepascal then
@@ -1185,7 +1185,7 @@ function dev_configuration()
     sh "git config --global core.excludesfile ~/.gitignore"
 
     -- PMcCabe
-    if cfg.pmccabe and (force or upgrade or not installed "pmccabe") then
+    if cfg.pmccabe and (force or not installed "pmccabe") then
         gitclone "https://github.com/datacom-teracom/pmccabe"
         sh "cd %(repo_path)/pmccabe && make && cp pmccabe ~/.local/bin"
     end
@@ -1194,7 +1194,7 @@ function dev_configuration()
     script "codi"
 
     if cfg.v and cfg.vls then
-        if force or upgrade or not installed "vls" then
+        if force or not installed "vls" then
             gitclone "https://github.com/nedpals/tree-sitter-v"
             sh "mkdir -p ~/.vmodules/; ln -sf %(repo_path)/tree-sitter-v ~/.vmodules/tree_sitter_v"
             gitclone("https://github.com/vlang/vls.git")
@@ -1205,7 +1205,7 @@ function dev_configuration()
     end
 
     if cfg.lazygit then
-        if force or upgrade or not installed "lazygit" then
+        if force or not installed "lazygit" then
             sh "go install github.com/jesseduffield/lazygit@latest && ln -sf %(HOME)/go/bin/lazygit %(HOME)/.local/bin/lazygit"
         end
     end
@@ -1216,11 +1216,11 @@ function dev_configuration()
     -- Calculadoira
     if cfg.calculadoira and (force or upgrade or not installed "calculadoira") then
         gitclone "http://github.com/cdsoft/calculadoira"
-        sh "cd %(repo_path)/calculadoira && make install"
+        sh "cd %(repo_path)/calculadoira && make install -B"
     end
 
     -- tup
-    if cfg.tup and (force or upgrade or not installed "tup") then
+    if cfg.tup and (force or not installed "tup") then
         dnf_install "fuse3-devel pcre-devel"
         gitclone "https://github.com/gittup/tup.git"
         sh "cd %(repo_path)/tup && ./bootstrap.sh"
@@ -1228,7 +1228,7 @@ function dev_configuration()
         sh "cp %(repo_path)/tup/tup.1 ~/.local/man/man1"
     end
 
-    if force or upgrade or not installed "jupyter-lab" or not installed "jupyter" or not installed "voila" then
+    if force or not installed "jupyter-lab" or not installed "jupyter" or not installed "voila" then
         sh "pip install jupyterlab"
         sh "pip install notebook"
         sh "pip install voila"
@@ -1241,28 +1241,28 @@ function lsp_configuration()
     title "Language servers configuration"
 
     if cfg.bash_language_server then
-        if force or upgrade or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
+        if force or not file_exist "%(HOME)/.local/opt/bash-language-server/node_modules/.bin/bash-language-server" then
             log "Bash Language Server"
             mkdir "%(HOME)/.local/opt/bash-language-server"
             sh "cd ~/.local/opt/bash-language-server && npm install bash-language-server && ln -s -f $PWD/node_modules/.bin/bash-language-server ~/.local/bin/"
         end
     end
     if cfg.dot_language_server then
-        if force or upgrade or not file_exist "%(HOME)/.local/opt/dot-language-server/node_modules/.bin/dot-language-server" then
+        if force or not file_exist "%(HOME)/.local/opt/dot-language-server/node_modules/.bin/dot-language-server" then
             log "Dot Language Server"
             mkdir "%(HOME)/.local/opt/dot-language-server"
             sh "cd ~/.local/opt/dot-language-server && npm install dot-language-server && ln -s -f $PWD/node_modules/.bin/dot-language-server ~/.local/bin/"
         end
     end
     if cfg.python_language_server then
-        if force or upgrade or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
+        if force or not file_exist "%(HOME)/.local/opt/pyright-langserver/node_modules/.bin/pyright-langserver" then
             log "Python Language Server"
             mkdir "%(HOME)/.local/opt/pyright-langserver"
             sh "cd ~/.local/opt/pyright-langserver && npm install pyright && ln -s -f $PWD/node_modules/.bin/pyright-langserver ~/.local/bin/"
         end
     end
     if cfg.lua_language_server then
-        if force or upgrade or not installed "lua-language-server" then
+        if force or not installed "lua-language-server" then
             log "Lua Language Server"
             gitclone("https://github.com/LuaLS/lua-language-server", {"--recurse-submodules"})
             sh [[ cd %(repo_path)/lua-language-server &&
@@ -1271,13 +1271,13 @@ function lsp_configuration()
         end
     end
     if cfg.teal_language_server then
-        if force or upgrade or not installed "teal-language-server" then
+        if force or not installed "teal-language-server" then
             log "Teal Language Server"
             luarocks("teal-language-server", "--dev")
         end
     end
     if cfg.freepascal and cfg.freepascal_language_server then
-        if force or upgrade or not installed "pasls" then
+        if force or not installed "pasls" then
             log "Pascal Language Server"
             dnf_install [[
                 lazarus
@@ -1289,7 +1289,7 @@ function lsp_configuration()
         end
     end
     if cfg.typescript_language_server then
-        if force or upgrade or not installed "typescript-language-server" then
+        if force or not installed "typescript-language-server" then
             log "Typescript Language Server"
             mkdir "%(HOME)/.local/opt/typescript-language-server"
             sh [[ cd ~/.local/opt/typescript-language-server &&
@@ -1300,7 +1300,7 @@ function lsp_configuration()
         end
     end
     if cfg.purescript_language_server then
-        if force or upgrade or not installed "purescript-language-server" then
+        if force or not installed "purescript-language-server" then
             log "Purescript Language Server"
             mkdir "%(HOME)/.local/opt/purescript-language-server"
             sh [[ cd ~/.local/opt/purescript-language-server &&
@@ -1312,7 +1312,7 @@ function lsp_configuration()
         end
     end
     if cfg.elm_language_server then
-        if force or upgrade or not installed "elm-language-server" then
+        if force or not installed "elm-language-server" then
             log "ELM Language Server"
             mkdir "%(HOME)/.local/opt/elm-language-server"
             sh [[ cd ~/.local/opt/elm-language-server &&
@@ -1323,7 +1323,7 @@ function lsp_configuration()
         end
     end
     if cfg.rust and cfg.typst_language_server then
-        if force or upgrade or not installed "typst-lsp" then
+        if force or not installed "typst-lsp" then
             log "Typst Language Server"
             if cfg.compile_typst_lsp_with_cargo then
                 gitclone "https://github.com/nvarner/typst-lsp.git"
@@ -1435,7 +1435,7 @@ function framac_configuration()
         cvc4
     ]]
 
-    if force or upgrade or not installed "frama-c" then
+    if force or not installed "frama-c" then
         log "Frama-C installation"
         sh "opam install alt-ergo"
         sh "opam install frama-c"
@@ -1496,7 +1496,7 @@ function rust_configuration()
     end
 
     -- Rust Language Server
-    if force or upgrade or not installed "rust-analyzer" then
+    if force or not installed "rust-analyzer" then
         sh "curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer"
         sh "chmod +x ~/.local/bin/rust-analyzer"
         sh "~/.cargo/bin/rustup component add rust-src"
@@ -1514,7 +1514,7 @@ function rust_configuration()
         else
             exe = package
         end
-        if force or upgrade or not installed(exe) then
+        if force or not installed(exe) then
             log("Rust package: "..package)
             sh("~/.cargo/bin/cargo install %(force and '--force' or '') "..package.." --root ~/.local")
         end
@@ -1555,10 +1555,10 @@ function julia_configuration()
     end
 
     local project = "~/.julia/environments/nvim-lspconfig"
-    if force or not file_exist(project) then
+    if force or not dir_exist(project) then
 
         log "Julia Language Server Protocol"
-        if not file_exist(project) then
+        if not dir_exist(project) then
             sh(([[julia --project=%s -e 'using Pkg; Pkg.add("LanguageServer")']]):format(project))
         else
             sh(([[julia --project=%s -e 'using Pkg; Pkg.update()']]):format(project))
@@ -1593,7 +1593,7 @@ end
 
 function zig_configuration()
 
-    if force or upgrade or not installed "zig" then
+    if force or not installed "zig" then
 
         title "Zig configuration"
 
@@ -1619,7 +1619,7 @@ function zig_configuration()
         end
     end
 
-    if cfg.zig_language_server and (force or upgrade or not installed "zls") then
+    if cfg.zig_language_server and (force or not installed "zls") then
         title "Zig Language Server installation"
         local curr_version = installed_packages.zls_version
         local version = pipe("curl -sSL https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
@@ -1641,7 +1641,7 @@ end
 
 function nim_configuration()
 
-    if force or upgrade or not installed "nim" then
+    if force or not installed "nim" then
 
         title "Nim configuration"
 
@@ -1670,7 +1670,7 @@ function nim_configuration()
 
     end
 
-    if cfg.nim_language_server and (force or upgrade or not file_exist "%(HOME)/.nimble/bin/nimlsp") then
+    if cfg.nim_language_server and (force or not file_exist "%(HOME)/.nimble/bin/nimlsp") then
         title "Nim Language Server installation"
         NIM_VERSION = pipe("nim --version"):match("Version ([%d%.]+)")
         sh "~/.local/opt/nim-%(NIM_VERSION)/bin/nimble install nimlsp"
@@ -1684,7 +1684,7 @@ end
 
 function swipl_configuration()
 
-    if force or upgrade or not file_exist "%(HOME)/.local/bin/swipl" then
+    if force or not file_exist "%(HOME)/.local/bin/swipl" then
         title "SWI Prolog configuration"
 
         -- https://www.swi-prolog.org/build/unix.html
@@ -1796,17 +1796,17 @@ function pandoc_configuration()
 
     if force or upgrade or not installed "ypp" then
         gitclone "http://github.com/cdsoft/ypp"
-        sh "cd %(repo_path)/ypp && make install"
+        sh "cd %(repo_path)/ypp && make install -B"
     end
 
     if force or upgrade or not installed "panda" then
         gitclone "http://github.com/cdsoft/panda"
-        sh "cd %(repo_path)/panda && make install"
+        sh "cd %(repo_path)/panda && make install -B"
     end
 
     if force or upgrade or not installed "upp" then
         gitclone "http://github.com/cdsoft/upp"
-        sh "cd %(repo_path)/upp && make install"
+        sh "cd %(repo_path)/upp && make install -B"
     end
 
     if cfg.haskell and cfg.abp then
@@ -1854,7 +1854,7 @@ function pandoc_configuration()
 
     if force or upgrade or not installed "lsvg" then
         gitclone "http://github.com/cdsoft/lsvg"
-        sh "cd %(repo_path)/lsvg && make install"
+        sh "cd %(repo_path)/lsvg && make install -B"
     end
 
 end
@@ -2013,7 +2013,7 @@ end
 function vscode_configuration()
     title "VSCode configuration"
 
-    if force or upgrade or not installed "code" then
+    if force or not installed "code" then
         with_tmpdir(function(tmp)
             sh("cd "..tmp.." && "
                .."sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &&"
@@ -2075,7 +2075,7 @@ function i3_configuration()
         local release = nil
         local font_cache_update = false
         local function install_font(name, file)
-            if force or upgrade or not file_exist("%(HOME)/.local/share/fonts/"..file) then
+            if force or not file_exist("%(HOME)/.local/share/fonts/"..file) then
                 log("Font: "..name)
                 release = release or pipe("curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/"):match("tag/(v[%d%.]+)")
                 sh("wget https://github.com/ryanoasis/nerd-fonts/releases/download/"..release.."/"..name..".zip -c -O %(repo_path)/"..name.."-"..release..".zip")
@@ -2093,7 +2093,7 @@ function i3_configuration()
     end
 
     -- alacritty
-    if force or upgrade or not installed "alacritty" then
+    if force or not installed "alacritty" then
         log "Alacritty"
         if cfg.rust and cfg.alacritty_sources then
             -- Prerequisites
@@ -2131,7 +2131,7 @@ function i3_configuration()
     end
 
     -- st
-    if force or upgrade or not file_exist "%(HOME)/.local/bin/st" then
+    if force or not file_exist "%(HOME)/.local/bin/st" then
         log "st"
         local version = "0.9"
         gitclone("https://git.suckless.org/st")
@@ -2250,12 +2250,12 @@ function i3_configuration()
     -- script ".config/kwalletrc"
 
     --[[
-    if force or upgrade or not installed "xcwd" then
+    if force or not installed "xcwd" then
         log "xcwd"
         gitclone "https://github.com/CDSoft/xcwd.git"
         sh "cd %(repo_path)/xcwd && make && make install"
     end
-    if force or upgrade or not installed "xpwd" then
+    if force or not installed "xpwd" then
         log "xpwd"
         gitclone "https://github.com/CDSoft/xpwd.git"
         sh "cd %(repo_path)/xpwd && make && make install"
@@ -2263,7 +2263,7 @@ function i3_configuration()
     --]]
     script("xpwd.lua", {raw=true})
 
-    if force or upgrade or not installed "hsetroot" then
+    if force or not installed "hsetroot" then
         dnf_install "imlib2-devel libXinerama-devel"
         gitclone "https://github.com/himdel/hsetroot"
         sh "cd %(repo_path)/hsetroot && make && DESTDIR=%(HOME) PREFIX=/.local make install"
@@ -2585,7 +2585,7 @@ function work_configuration()
     end
 
     if cfg.lazydocker then
-        if force or upgrade or not installed "lazydocker" then
+        if force or not installed "lazydocker" then
             sh "go install github.com/jesseduffield/lazydocker@latest && ln -sf %(HOME)/go/bin/lazydocker %(HOME)/.local/bin/lazydocker"
         end
     end
