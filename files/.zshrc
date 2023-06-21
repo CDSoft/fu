@@ -29,6 +29,8 @@ alias df='df -h'
 alias du='du -h'
 alias ncdu='ncdu --color dark'
 
+alias luax='rlwrap luax'
+alias calculadoira='rlwrap calculadoira'
 alias ocaml='rlwrap ocaml'
 alias luajit='rlwrap luajit'
 
