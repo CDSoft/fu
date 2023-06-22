@@ -29,10 +29,10 @@ alias df='df -h'
 alias du='du -h'
 alias ncdu='ncdu --color dark'
 
-alias luax='rlwrap luax'
-alias calculadoira='rlwrap calculadoira'
-alias ocaml='rlwrap ocaml'
-alias luajit='rlwrap luajit'
+alias luax='rlwrap -m -s 10000 luax'
+alias calculadoira='rlwrap -m -s 10000 calculadoira'
+alias ocaml='rlwrap -m -s 10000 ocaml'
+alias luajit='rlwrap -m -s 10000 luajit'
 
 function gd()
 {
