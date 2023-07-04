@@ -2383,6 +2383,7 @@ function internet_configuration()
 
     dnf_install [[
         firefox
+        torbrowser-launcher
         surf
         thunderbird
         transmission
