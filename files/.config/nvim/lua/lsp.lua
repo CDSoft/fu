@@ -191,6 +191,13 @@ require'lspconfig'.ocamllsp.setup {
 require'lspconfig'.typst_lsp.setup {
 }
 
-require'lspconfig'.julials.setup{
+require'lspconfig'.julials.setup {
     on_attach = on_attach,
 }
+
+-- TODO : prolog_ls seems not to work...
+--[[
+require'lspconfig'.prolog_ls.setup {
+    on_attach = on_attach,
+}
+--]]

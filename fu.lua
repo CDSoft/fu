@@ -163,6 +163,7 @@ function fu_configuration()
         purescript_language_server = {"Install Purescript language server?", "yn"},
         elm_language_server = {"Install ELM language server?", "yn"},
         typst_language_server = {"Install Typst language server?", "yn"},
+        swipl_language_server = {"Install Prolog language server?", "yn"},
 
         hcalc = {"Install hCalc?", "yn"},
         calculadoira = {"Install Calculadoira?", "yn"},
@@ -1337,6 +1338,12 @@ function lsp_configuration()
                     sh("install "..tmp.."/typst-lsp ~/.local/bin/")
                 end)
             end
+        end
+    end
+    if cfg.swipl_language_server then
+        if force or not file_exist "%(HOME)/.local/share/swi-prolog/pack/lsp_server/prolog/lsp_server.pl" then
+            log "Prolog Language Server"
+            sh "swipl -g 'pack_install(lsp_server)' -t 'halt'"
         end
     end
 
