@@ -264,6 +264,9 @@ bindsym $mod+$alt+$ctrl+Down    move workspace to output down
 # move a window to the "Meetings" workspace
 bindsym $mod+Shift+m    move container to workspace "Meetings"; workspace "Meetings"
 
+# move a window to the "Video" workspace
+bindsym $mod+Shift+v    move container to workspace "Video"; workspace "Video"
+
 # rename the active workspace
 bindsym $mod+Ctrl+n     exec menu renws
 
