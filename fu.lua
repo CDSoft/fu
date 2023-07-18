@@ -2075,6 +2075,7 @@ function i3_configuration()
         redshift
         kde-connect
         keepassxc aspell-fr
+        xdotool
     ]]
 
     -- Nerd Fonts
