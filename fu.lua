@@ -23,6 +23,10 @@ You should have received a copy of the GNU General Public License
 along with FU.  If not, see <http://www.gnu.org/licenses/>.
 ====================================================================--]]
 
+F = require "F"
+fs = require "fs"
+sh = require "sh"
+
 function help()
     printI [[
 usage: %(basename(arg[0])) options

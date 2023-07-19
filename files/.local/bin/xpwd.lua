@@ -6,6 +6,10 @@
 --
 -- It requires http://cdelord.fr/luax
 
+local F = require "F"
+local sh = require "sh"
+local fs = require "fs"
+
 local DEBUG = true
 
 local process_blacklist = F[[
