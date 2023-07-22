@@ -1289,7 +1289,7 @@ function lsp_configuration()
                 libsqlite3x sqlite-devel
             ]]
             gitclone("https://github.com/genericptr/pascal-language-server", {"--recurse-submodules"})
-            sh [[ cd %(repo_path)/pascal-language-server && lazbuild pasls.lpi
+            sh [[ cd %(repo_path)/pascal-language-server && lazbuild src/standard/pasls.lpi &&
                   ln -s -f %(repo_path)/pascal-language-server/lib/x86_64-linux/pasls ~/.local/bin/ ]]
         end
     end
