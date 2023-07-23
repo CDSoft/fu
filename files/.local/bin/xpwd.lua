@@ -31,6 +31,7 @@ local process_blacklist = F[[
     chromium-browser
     keepassxc-proxy
     plugin-container
+    thunderbird
 ]] : words() : from_set(F.const(true))
 
 local path_blacklist = F[[
