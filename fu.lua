@@ -2070,6 +2070,7 @@ function i3_configuration()
         gnome-tweak-tool
         qt-config
         qt5ct
+        qqc2-desktop-style
         xfce4-settings
         xfce4-screenshooter
         xsetroot
