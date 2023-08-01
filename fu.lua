@@ -179,6 +179,7 @@ function fu_configuration()
         ditaa = {"Install ditaa?", "yn"},
         blockdiag = {"Install blockdiag?", "yn"},
         mermaid = {"Install mermaid?", "yn"},
+        penrose = {"Install penrose?", "yn"},
         asymptote = {"Install Asymptote?", "yn"},
         shellcheck = {"Install ShellCheck?", "yn"},
 
@@ -1860,6 +1861,14 @@ function pandoc_configuration()
             log "Mermaid"
             mkdir "%(HOME)/.local/opt/mermaid"
             sh "cd ~/.local/opt/mermaid && npm install @mermaid-js/mermaid-cli && ln -s -f $PWD/node_modules/.bin/mmdc ~/.local/bin/"
+        end
+    end
+
+    if cfg.penrose then
+        if force or upgrade or not installed "roger" then
+            log "Penrose"
+            mkdir "%(HOME)/.local/opt/penrose"
+            sh "cd ~/.local/opt/penrose && npm install @penrose/roger && ln -s -f $PWD/node_modules/.bin/roger ~/.local/bin/"
         end
     end
 
