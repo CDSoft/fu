@@ -1990,6 +1990,13 @@ function neovim_configuration()
         end
     end
 
+    if cfg.penrose then
+        if force or update or not file_exist "(repo_path)/penrose/util/vim/syntax/dsl.vim" then
+            gitclone "https://github.com/penrose/penrose"
+            sh "cp %(repo_path)/penrose/util/vim/syntax/* ~/.config/nvim/syntax"
+        end
+    end
+
     -- Notes, TO-DO lists and password manager
     mkdir "%(WIKI)"
 
