@@ -73,16 +73,6 @@ if not window_pid or tonumber(window_pid) == 0 then exit() end
 local pids = F{}
 sh.read("pstree", "-lp", window_pid) : gsub("%((%d+)%)", function(pid) pids[#pids+1] = pid end)
 
-local HOME_HIDDEN = fs.join(HOME, ".")
-
-local function group(path)
-    -- if the process blacklist, priority groups are useless
-    --if path == HOME then return 1 end
-    --if path:has_prefix(HOME_HIDDEN) then return 2 end
-    --if path:has_prefix(HOME) then return 3 end
-    return 0
-end
-
 local function read_process(i, pid)
     local exe = fs.readlink(fs.join("/proc", pid, "exe"))
     if not exe then return F.Nil end
@@ -94,15 +84,11 @@ local function read_process(i, pid)
     return {
         exe = exe,
         cwd = cwd,
-        group = group(cwd),
         order = i,
     }
 end
 
 local function compare_processes(p1, p2)
-    local g1 = p1.group
-    local g2 = p2.group
-    if g1 ~= g2 then return g1 < g2 end
     return p1.order < p2.order
 end
 
@@ -113,7 +99,7 @@ local processes = pids
 
 log("processes:\n", processes
     : map(function(p)
-        return ("[group %d, order %d] %-32s -> %s"):format(p.group, p.order, p.exe, p.cwd)
+        return ("%d: %-32s -> %s"):format(p.order, p.exe, p.cwd)
     end)
     : unlines()
 )
