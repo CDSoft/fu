@@ -50,7 +50,8 @@ Plug 'hrsh7th/cmp-nvim-lua'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'L3MON4D3/LuaSnip'
-Plug 'mrcjkb/haskell-tools.nvim'
+Plug 'mfussenegger/nvim-dap'
+Plug 'mrcjkb/haskell-tools.nvim', { 'branch': '2.x.x' }
 
 Plug 'ollykel/v-vim'
 Plug 'alaviss/nim.nvim'
