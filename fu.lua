@@ -1030,6 +1030,13 @@ function filesystem_configuration()
     ]]
 
     script ".config/vifm/vifmrc"
+    script ".config/vifm/colors/christophe.vifm"
+
+    gitclone "https://github.com/vifm/vifm-colors"
+    sh "cp -f %(repo_path)/vifm-colors/*.vifm %(HOME)/.config/vifm/colors/"
+
+    gitclone "https://github.com/thimc/vifm_devicons"
+    sh "cp -f %(repo_path)/vifm_devicons/favicons.vifm %(HOME)/.config/vifm/"
 
 end
 
