@@ -116,16 +116,20 @@ preexec_functions+=(preexec_set_win_title)
 
 # https://github.com/zsh-users/zsh-syntax-highlighting
 
-. %(repo_path)/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
 # https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+
+# Only highlight small lines
+ZSH_HIGHLIGHT_MAXLENGTH=512
 
 # Enable highlighters
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
 
 # Override highlighter colors
+typeset -gA ZSH_HIGHLIGHT_STYLES
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=red,bold'
 ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=red,bold'
+
+. %(repo_path)/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # https://github.com/zsh-users/zsh-autosuggestions
 
@@ -137,7 +141,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 eval "$(luarocks path --bin)"
 
 # LuaX environment
-eval "$(luax env)"
+hash luax 2>/dev/null || eval "$(luax env)"
 
 # Lua Language Server
 alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
