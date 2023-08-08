@@ -91,7 +91,7 @@ if !has('win')
 endif
 
 " Set custom status line look
-set statusline="  %T %= %A %10u:%-7g %15s %20d  "
+set statusline="  %T %= %A %10u:%-7g %15s %6E %20d  "
 
 " List of color schemes to try (picks the first one supported by the terminal)
 colorscheme christophe Default-256 Default
