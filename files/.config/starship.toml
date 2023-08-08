@@ -83,7 +83,7 @@ error_symbol = "[>](bold red)"
 # Command duration
 [cmd_duration]
 min_time = 1_000
-show_milliseconds = true
+show_milliseconds = false
 
 # Complete directory name
 [directory]
