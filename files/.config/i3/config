@@ -61,9 +61,7 @@ bindsym $mod+o          scratchpad show
 #
 bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
-%(when(cfg.work) [=[
-bindsym $mod+Shift+w            exec menu-work
-]=])
+bindsym $mod+Shift+w            exec menu-web
 
 bindsym $mod+t                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi todo.txt
 bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi notes.txt

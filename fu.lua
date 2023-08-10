@@ -140,6 +140,7 @@ function fu_configuration()
         work = {"Install work configuration?", "yn"},
         ros = {"Install ROS?", "yn"},
         move_docker_to_home = {"Move /var/lib/docker to /home/docker?", "yn"},
+        work_vpn = {"Install work VPN configuration?", "yn"},
 
         nvim_telescope = {"Use Telescope with Neovim?", "yn"},
         nvim_fzf = {"Use FZF with Neovim?", "yn"},
@@ -281,6 +282,7 @@ function main()
     if cfg.zoom then zoom_configuration() end
     if cfg.virtualization then virtualization_configuration() end
     if cfg.work then work_configuration() end
+    if cfg.work_vpn then work_vpn_configuration() end
 
     upgrade_packages()
 
@@ -2480,6 +2482,9 @@ function internet_configuration()
         ]]
     end
 
+    -- Quick web browser launch menu
+    script "menu-web"
+
 end
 
 -- }}}
@@ -2526,8 +2531,6 @@ end
 
 function work_configuration()
     title "Work configuration"
-
-    script "menu-work"
 
     dnf_install [[
         moby-engine grubby
@@ -2627,6 +2630,11 @@ function work_configuration()
             sh "go install github.com/jesseduffield/lazydocker@latest && ln -sf %(HOME)/go/bin/lazydocker %(HOME)/.local/bin/lazydocker"
         end
     end
+
+end
+
+function work_vpn_configuration()
+    title "Work VPN configuration"
 
     -- VPN
     if not file_exist "/etc/resolv.conf.orig" then
