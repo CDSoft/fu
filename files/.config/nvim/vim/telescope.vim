@@ -17,6 +17,14 @@ lua <<EOF
 
 require('telescope').setup{
   defaults = {
+    mappings = {
+      i = {
+          ["<Esc>"] = "close", -- single Esc to close telescope
+          ["<C-c>"] = false,
+      },
+      n = {
+      },
+    },
     vimgrep_arguments = {
       'rg',
       '--color=auto',
