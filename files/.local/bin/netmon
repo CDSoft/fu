@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tty -s || exec st -t netmon -g 120x25 -e $0
+tty -s || exec st -t netmon -g 120x25 -e "$0"
 tmux new -As netmon 'exec grc ping -c 64 192.168.1.1' \; \
     split-window -h 'exec grc ping -c 64 8.8.8.8' \; \
     rename-window ping \;
