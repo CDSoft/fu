@@ -25,7 +25,7 @@ along with FU.  If not, see <http://www.gnu.org/licenses/>.
 
 F = require "F"
 fs = require "fs"
-sh = require "sh"
+term = require "term"
 
 function help()
     printI [[
@@ -298,9 +298,7 @@ end
 function ask_yesno(question)
     local answer = nil
     repeat
-        io.write(question.." [y/n] ")
-        io.flush()
-        answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
+        answer = term.prompt(question.." [y/n] "):lower():trim():head()
     until answer:match "[yn]"
     return answer:match "y" == "y"
 end
@@ -342,27 +340,21 @@ do -- configuration management
                 ["yn"] = function(question)
                     local answer = nil
                     repeat
-                        io.write(question.." [y/n] ")
-                        io.flush()
-                        answer = io.read "l":lower():gsub("^%s*(%S).*$", "%1")
+                        answer = term.prompt(question.." [y/n] "):lower():trim():head()
                     until answer:match "[yn]"
                     return answer:match "y" == "y"
                 end,
                 ["str"] = function(question)
                     local answer = nil
                     repeat
-                        io.write(question.." ")
-                        io.flush()
-                        answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
+                        answer = term.prompt(question.." "):trim()
                     until #answer > 0
                     return answer
                 end,
                 ["num"] = function(question)
                     local answer = nil
                     repeat
-                        io.write(question.." ")
-                        io.flush()
-                        answer = io.read "l":gsub("^%s+", ""):gsub("%s+$", "")
+                        answer = term.prompt(question.." "):trim()
                     until #answer > 0 and tonumber(answer)
                     return tonumber(answer)
                 end,
@@ -411,11 +403,7 @@ end
 
 -- Utilities {{{
 
-function I(s)
-    return (s:gsub("%%(%b())", function(x)
-        return (assert(load("return "..x)))()
-    end))
-end
+I = F.I(_G) % "%%()"
 
 function dedent(s)
     local n = #s
@@ -480,23 +468,15 @@ function log(s, level)
     io.write(color.."### "..s.." "..normal.."\n")
 end
 
-function dirname(s)
-    return (I(s):gsub("[^/]*$", ""))
-end
+dirname = F.compose{fs.dirname, I}
+basename = F.compose{fs.basename, I}
 
-function basename(s)
-    return (I(s):gsub(".*/([^/]*)$", "%1"))
-end
-
-function file_exist(path) return (os.execute("test -f '"..I(path).."'")) end
-function dir_exist(path) return (os.execute("test -d '"..I(path).."'")) end
-function link_exist(path) return (os.execute("test -L '"..I(path).."'")) end
+file_exist = F.compose{fs.is_file, I}
+dir_exist = F.compose{fs.is_dir, I}
 
 function read(path, opt)
     opt = opt or {}
-    local f = assert(io.open(I(path), "r"))
-    local content = f:read "a"
-    f:close()
+    local content = fs.read(I(path))
     if not opt.raw then
         content = I(content)
     end
@@ -507,12 +487,10 @@ function write(path, content, opt)
     opt = opt or {}
     -- atomic file creation to avoid strange interactions with xfce and fonts
     local filename = I(path)
-    local f = assert(io.open(filename..".tmp", "w"))
     if not opt.raw then
         content = I(content)
     end
-    f:write(content)
-    f:close()
+    fs.write(filename..".tmp", content)
     os.rename(filename..".tmp", filename)
 end
 
@@ -531,50 +509,33 @@ function rootfile(path, content)
 end
 
 function readlines(path)
-    local f = assert(io.open(I(path), "r"))
-    return function()
-        local line = f:read "l"
-        if line then return line end
-        f:close()
-    end
+    return fs.read(I(path)):lines()
 end
 
 function pipe(cmd, stdin)
-    local mode = stdin and "w" or "r"
-    local f = assert(io.popen(I(cmd), mode))
+    local sh = require "sh"
+    cmd = I(cmd)
     if stdin then
-        f:write(I(stdin))
-        f:close()
+        sh.write(cmd)
     else
-        local result = f:read "a":gsub("^%s+", ""):gsub("%s+$", "")
-        f:close()
+        local result = sh.read(cmd):trim()
         return I(result)
     end
 end
 
 function ls(pattern)
-    local files = dirname(pipe "realpath %(arg[0])").."/files/"
-    local p = assert(io.popen("ls "..files..I(pattern)))
+    local files = fs.join(fs.dirname(fs.realpath(arg[0])), "files")
+    local names = fs.glob(fs.join(files, I(pattern)))
+        : map(function(name) return name:sub(#files+2) end)
+    local i = 0
     return function()
-        local name = p:read "l"
-        if name then return name:sub(#files+1) end
-        p:close()
+        i = i+1
+        return names[i]
     end
 end
 
-function with_tmpfile(f)
-    local tmp = os.tmpname()
-    f(tmp)
-    os.remove(tmp)
-end
-
-function with_tmpdir(f)
-    local tmp = os.tmpname()
-    os.remove(tmp)
-    sh("mkdir "..tmp)
-    f(tmp)
-    sh("rm -rf "..tmp)
-end
+with_tmpfile = fs.with_tmpfile
+with_tmpdir = fs.with_tmpdir
 
 function with_file(name, f)
     local content = read(name)
@@ -582,11 +543,14 @@ function with_file(name, f)
     write(name, content)
 end
 
-function sh(cmd) assert(os.execute(I(cmd))) end
+function sh(cmd)
+    local sh = require "sh"
+    assert(sh.run(I(cmd)))
+end
 
-function mkdir(path) sh("mkdir -p "..path) end
+mkdir = F.compose{fs.mkdirs, I}
 
-function rm(path) os.remove(I(path)) end
+rm = F.compose{os.remove, I}
 
 function identification()
     local function os_release(param) return pipe(". /etc/os-release; echo $"..param) end
@@ -2446,11 +2410,11 @@ function internet_configuration()
     -- https://askubuntu.com/questions/239543/get-the-default-firefox-profile-directory-from-bash
     if file_exist("%(HOME)/.mozilla/firefox/profiles.ini") then
         log "Firefox configuration"
-        for line in readlines("%(HOME)/.mozilla/firefox/profiles.ini") do
+        readlines("%(HOME)/.mozilla/firefox/profiles.ini"):foreach(function(line)
             for profile in line:gmatch("Path=(.*)") do
                 write("%(HOME)/.mozilla/firefox/"..profile.."/user.js", read "%(src_files)/user.js")
             end
-        end
+        end)
     end
 
     -- Thunderbird extensions
