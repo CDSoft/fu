@@ -1312,7 +1312,7 @@ function lsp_configuration()
                 version = version == "v0.6.0" and "v0.5.1"
                        or version
                 with_tmpdir(function(tmp)
-                    sh("wget https://github.com/nvarner/typst-lsp/releases/download/"..version.."/typst-lsp-alpine-x64 -O "..tmp.."/typst-lsp")
+                    sh("wget https://github.com/nvarner/typst-lsp/releases/download/"..version.."/typst-lsp-x86_64-unknown-linux-gnu -O "..tmp.."/typst-lsp")
                     sh("install "..tmp.."/typst-lsp ~/.local/bin/")
                 end)
             end
