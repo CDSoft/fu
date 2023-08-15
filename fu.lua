@@ -2067,7 +2067,6 @@ function i3_configuration()
         xfce4-volumed
         barrier
         redshift
-        kde-connect
         keepassxc aspell-fr
         xdotool
     ]]
