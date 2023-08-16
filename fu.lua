@@ -2265,6 +2265,8 @@ function i3_configuration()
     --]]
     script("xpwd.lua", {raw=true})
 
+    script("transient_clipboard.lua", {raw=true})
+
     if force or not installed "hsetroot" then
         dnf_install "imlib2-devel libXinerama-devel"
         gitclone "https://github.com/himdel/hsetroot"
