@@ -1088,6 +1088,12 @@ function dev_configuration()
         sh "cd %(repo_path)/luax && make install-all -j"
     end
 
+    if force or upgrade or not installed "bang" then
+        log "Bang"
+        gitclone "https://github.com/CDSoft/bang"
+        sh "cd %(repo_path)/bang && ninja install"
+    end
+
     if cfg.freepascal then
         dnf_install [[
             fpc lazarus

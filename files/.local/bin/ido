@@ -26,10 +26,10 @@ do
     M=$((S/60));   S=$((S%60))
     T=""
     [ $H -gt 0 ] && T="${T}${H}h"
-    ( [ $M -gt 0 ] || [ $H -gt 0 ] ) && T="${T}${M}m"
+    { [ $M -gt 0 ] || [ $H -gt 0 ]; } && T="${T}${M}m"
     T="${T}${S}s"
     say $BLUE "[$T] waiting for changes..." "\r"
 
-    while ! inotifywait -q -r --exclude "\.git|\.sw." -e modify . > /dev/null; do :; done
+    while ! inotifywait -q -r --exclude "\.git|\.sw.|\.ninja_log" -e modify . > /dev/null; do :; done
     sleep 0.5s
 done
