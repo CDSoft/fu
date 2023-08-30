@@ -1085,7 +1085,7 @@ function dev_configuration()
     if force or upgrade then
         log "LuaX"
         gitclone "https://github.com/CDSoft/luax"
-        sh "cd %(repo_path)/luax && make install-all -j"
+        sh "cd %(repo_path)/luax && ninja install"
     end
 
     if force or upgrade or not installed "bang" then

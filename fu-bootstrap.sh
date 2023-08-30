@@ -42,8 +42,8 @@ mkdir -p ~/.local/bin
     cd ~/.config/fu/repos
     git clone $LUAX_URL
     cd luax
-    sudo dnf install make
-    make install
+    sudo dnf install make ninja-build lz4
+    ninja install
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
