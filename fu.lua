@@ -1201,7 +1201,7 @@ function dev_configuration()
     -- Calculadoira
     if cfg.calculadoira and (force or upgrade or not installed "calculadoira") then
         gitclone "http://github.com/cdsoft/calculadoira"
-        sh "cd %(repo_path)/calculadoira && make install -B"
+        sh "cd %(repo_path)/calculadoira && ninja install"
     end
 
     -- tup
@@ -1787,12 +1787,12 @@ function pandoc_configuration()
 
     if force or upgrade or not installed "ypp" then
         gitclone "http://github.com/cdsoft/ypp"
-        sh "cd %(repo_path)/ypp && make install -B"
+        sh "cd %(repo_path)/ypp && ninja install"
     end
 
     if force or upgrade or not installed "panda" then
         gitclone "http://github.com/cdsoft/panda"
-        sh "cd %(repo_path)/panda && make install -B"
+        sh "cd %(repo_path)/panda && ninja install"
     end
 
     if force or upgrade or not installed "upp" then
@@ -1853,7 +1853,7 @@ function pandoc_configuration()
 
     if force or upgrade or not installed "lsvg" then
         gitclone "http://github.com/cdsoft/lsvg"
-        sh "cd %(repo_path)/lsvg && make install -B"
+        sh "cd %(repo_path)/lsvg && ninja install"
     end
 
 end
