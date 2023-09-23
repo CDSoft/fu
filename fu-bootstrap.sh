@@ -34,16 +34,16 @@ then
     exec "$@"
 fi
 
-mkdir -p ~/.local/bin
-
 [ -x ~/.local/bin/luax ] || (
-    LUAX_URL=https://github.com/CDSoft/luax
+    HEY_URL=https://github.com/CDSoft/hey
     mkdir -p ~/.config/fu/repos
-    cd ~/.config/fu/repos
-    git clone $LUAX_URL
-    cd luax
-    sudo dnf install make ninja-build lz4
-    ninja install
+    if [ -d ~/.config/fu/repos/hey ]
+    then
+        ( cd ~/.config/fu/repos/hey && git fetch && git rebase )
+    else
+        git clone $HEY_URL ~/.config/fu/repos/hey
+    fi
+    ~/.config/fu/repos/hey/hey install luax
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu

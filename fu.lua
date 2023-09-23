@@ -120,8 +120,8 @@ function fu_configuration()
         nim_language_server = {"Install Nim Language Server?", "yn"},
         vscode = {"Install VSCode?", "yn"},
         tup = {"Install tup?", "yn"},
-        compile_pandoc_with_cabal = {"Compile Pandoc with Cabal?", "yn"},
-        compile_typst_with_rust = {"Compile Typst with Rust?", "yn"},
+        --compile_pandoc_with_cabal = {"Compile Pandoc with Cabal?", "yn"},
+        --compile_typst_with_rust = {"Compile Typst with Rust?", "yn"},
         helix = {"Install Helix?", "yn"},
         helix_sources = {"Install Helix from sources?", "yn"},
 
@@ -170,14 +170,7 @@ function fu_configuration()
         typst_language_server = {"Install Typst language server?", "yn"},
         swipl_language_server = {"Install Prolog language server?", "yn"},
 
-        hcalc = {"Install hCalc?", "yn"},
-        calculadoira = {"Install Calculadoira?", "yn"},
-        hcalc_shortcut = {"Bind hCalc to Win-C?", "yn"},
-        calculadoira_shortcut = {"Bind Calculadoira to Win-C?", "yn"},
-
         patat = {"Install patat?", "yn"},
-        plantuml = {"Install PlantUML?", "yn"},
-        ditaa = {"Install ditaa?", "yn"},
         blockdiag = {"Install blockdiag?", "yn"},
         mermaid = {"Install mermaid?", "yn"},
         penrose = {"Install penrose?", "yn"},
@@ -251,6 +244,7 @@ function main()
     check_last_upgrade()
 
     system_configuration()
+    hey_configuration()
     if cfg.rust then rust_configuration() end
     shell_configuration()
     network_configuration()
@@ -786,6 +780,21 @@ end
 
 -- }}}
 
+-- Hey packages {{{
+
+function hey_configuration()
+    title "Hey configuration"
+
+    gitclone "https://github.com/CDSoft/hey"
+
+    if force or upgrade or not installed "bang" or not installed "ypp" or not install "panda" then
+        sh "%(repo_path)/hey/hey install all"
+    end
+
+end
+
+-- }}}
+
 -- Shell configuration {{{
 
 function shell_configuration()
@@ -1082,18 +1091,6 @@ function dev_configuration()
         ]]
     end
 
-    if force or upgrade then
-        log "LuaX"
-        gitclone "https://github.com/CDSoft/luax"
-        sh "cd %(repo_path)/luax && ninja install"
-    end
-
-    if force or upgrade or not installed "bang" then
-        log "Bang"
-        gitclone "https://github.com/CDSoft/bang"
-        sh "cd %(repo_path)/bang && ninja install"
-    end
-
     if cfg.freepascal then
         dnf_install [[
             fpc lazarus
@@ -1197,12 +1194,6 @@ function dev_configuration()
 
     script "ido"
     script "retry"
-
-    -- Calculadoira
-    if cfg.calculadoira and (force or upgrade or not installed "calculadoira") then
-        gitclone "http://github.com/cdsoft/calculadoira"
-        sh "cd %(repo_path)/calculadoira && ninja install"
-    end
 
     -- tup
     if cfg.tup and (force or not installed "tup") then
@@ -1377,12 +1368,6 @@ function haskell_configuration()
             log("Cabal install "..package)
             sh(". ~/.ghcup/env; ghcup run cabal install -- --overwrite-policy=always "..package)
         end
-    end
-
-    -- hCalc
-    if cfg.hcalc and (force or upgrade or not installed "hcalc") then
-        gitclone "http://github.com/cdsoft/hcalc"
-        sh "cd %(repo_path)/hcalc && make install"
     end
 
 end
@@ -1751,6 +1736,7 @@ function pandoc_configuration()
         ]]
     end
 
+    --[[ Pandoc is installed by hey, this section is kept for future reference in case the dynamic executable is needed
     if force or upgrade or not installed "pandoc" then
         if cfg.haskell and cfg.compile_pandoc_with_cabal then
             log "Pandoc"
@@ -1767,7 +1753,9 @@ function pandoc_configuration()
             end
         end
     end
+    --]]
 
+    --[[ Typst is installed by hey
     if force or upgrade or not installed "typst" then
         if cfg.rust and cfg.compile_typst_with_rust then
             log "Typst"
@@ -1784,49 +1772,7 @@ function pandoc_configuration()
             end
         end
     end
-
-    if force or upgrade or not installed "ypp" then
-        gitclone "http://github.com/cdsoft/ypp"
-        sh "cd %(repo_path)/ypp && ninja install"
-    end
-
-    if force or upgrade or not installed "panda" then
-        gitclone "http://github.com/cdsoft/panda"
-        sh "cd %(repo_path)/panda && ninja install"
-    end
-
-    if force or upgrade or not installed "upp" then
-        gitclone "http://github.com/cdsoft/upp"
-        sh "cd %(repo_path)/upp && make install -B"
-    end
-
-    if cfg.haskell and cfg.abp then
-        if force or upgrade or not installed "abp" then
-            gitclone "http://github.com/cdsoft/abp"
-            sh ". ~/.ghcup/env; cd %(repo_path)/abp && ghcup run stack install"
-        end
-    end
-
-    if cfg.haskell and cfg.pp then
-        if force or upgrade or not installed "pp" then
-            gitclone "http://github.com/cdsoft/pp"
-            sh "cd %(repo_path)/pp && make install"
-        end
-    end
-
-    if cfg.plantuml then
-        if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
-            log "plantuml.jar"
-            sh "wget http://sourceforge.net/projects/plantuml/files/plantuml.jar -O ~/.local/bin/plantuml.jar"
-        end
-    end
-
-    if cfg.ditaa then
-        if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
-            log "ditaa.jar"
-            sh "wget https://github.com/stathissideris/ditaa/releases/download/v0.11.0/ditaa-0.11.0-standalone.jar -O ~/.local/bin/ditaa.jar"
-        end
-    end
+    --]]
 
     if cfg.blockdiag then
         if force or upgrade or not installed "blockdiag" then
@@ -1849,11 +1795,6 @@ function pandoc_configuration()
             mkdir "%(HOME)/.local/opt/penrose"
             sh "cd ~/.local/opt/penrose && npm install @penrose/roger && ln -s -f $PWD/node_modules/.bin/roger ~/.local/bin/"
         end
-    end
-
-    if force or upgrade or not installed "lsvg" then
-        gitclone "http://github.com/cdsoft/lsvg"
-        sh "cd %(repo_path)/lsvg && ninja install"
     end
 
 end
