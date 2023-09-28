@@ -787,7 +787,7 @@ function hey_configuration()
 
     gitclone "https://github.com/CDSoft/hey"
 
-    if force or upgrade or not installed "bang" or not installed "ypp" or not install "panda" then
+    if force or upgrade or not installed "bang" or not installed "ypp" or not installed "panda" then
         sh "%(repo_path)/hey/hey install all"
     end
 
