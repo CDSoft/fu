@@ -141,7 +141,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 eval "$(luarocks path --bin)"
 
 # LuaX environment
-hash luax 2>/dev/null || eval "$(luax env)"
+hash luax 2>/dev/null && eval "$(luax env)"
 
 # Lua Language Server
 alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
