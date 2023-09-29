@@ -141,7 +141,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 eval "$(luarocks path --bin)"
 
 # LuaX environment
-eval "$(luax env </dev/null)"       # for some obscure reasons, redirecting stdin makes zshrc faster, especially with mc ???
+eval "$(\luax env)"       # \luax to skip the luax alias and let mc start faster
 
 # Lua Language Server
 alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
