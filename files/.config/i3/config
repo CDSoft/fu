@@ -70,8 +70,8 @@ bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(WIKI) -e
 bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
 ]=])
 
-bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e rlwrap -m -s 10000 calculadoira
-bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e rlwrap -m -s 10000 calculadoira
+bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
+bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
