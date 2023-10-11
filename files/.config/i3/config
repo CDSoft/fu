@@ -349,7 +349,7 @@ exec --no-startup-id batmon -d &
 
 exec --no-startup-id st -t ssh-agent -e ~/.local/bin/ssha &
 
-exec --no-startup-id %(HOME)/.local/bin/transient_clipboard.lua &
+#exec --no-startup-id %(HOME)/.local/bin/transient_clipboard.lua &
 
 %(when(cfg.startvlc) [=[
 # VLC minimized
