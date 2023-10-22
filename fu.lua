@@ -61,7 +61,9 @@ function fu_configuration()
     USER = os.getenv "USER"
 
     myconf = {}
-    assert(loadfile(fs.join(HOME, ".myconf"), "t", myconf))()
+    if fs.is_file(HOME/".myconf") then
+        assert(loadfile(HOME/".myconf", "t", myconf))()
+    end
 
     fu_path = I"%(HOME)/.config/fu"
     config_path = I"%(fu_path)/config"
