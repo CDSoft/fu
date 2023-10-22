@@ -70,12 +70,12 @@ function fu_configuration()
     repo_path = I"%(fu_path)/repos"
     src_files = dirname(pipe "realpath %(arg[0])").."/files"
 
-    configured = db(fs.join(config_path, "configured.lua"))
-    installed_packages = db(fs.join(config_path, "packages.lua"))
-    installed_snap_packages = db(fs.join(config_path, "snap_packages.lua"))
-    installed_lua_packages = db(fs.join(config_path, "lua_packages.lua"))
+    configured              = db(config_path/"configured.lua")
+    installed_packages      = db(config_path/"packages.lua")
+    installed_snap_packages = db(config_path/"snap_packages.lua")
+    installed_lua_packages  = db(config_path/"lua_packages.lua")
 
-    cfg = interactive(fs.join(config_path, "config.lua")) {
+    cfg = interactive(config_path/"config.lua") {
 
         powertop = {"Install powertop?", "yn"},
 
@@ -322,7 +322,7 @@ do -- configuration management
             local fmt = type(v) == "string" and "%q" or "%s"
             return ("_ENV['%%s'] = %s\n"):format(fmt):format(k, v)
         end)
-        mkdir(fs.dirname(filename))
+        mkdir(filename:dirname())
         local f = io.open(filename, "w")
         if not f then return end
         f:write(table.concat(conf))
@@ -520,8 +520,8 @@ function pipe(cmd, stdin)
 end
 
 function ls(pattern)
-    local files = fs.join(fs.dirname(fs.realpath(arg[0])), "files")
-    local names = fs.glob(fs.join(files, I(pattern)))
+    local files = arg[0]:realpath():dirname()/"files"
+    local names = fs.glob(files/ I(pattern))
         : map(function(name) return name:sub(#files+2) end)
     local i = 0
     return function()
@@ -2306,10 +2306,10 @@ function graphic_application_configuration()
             pipe("curl -i "..GEOGEBRA_URL.."/package/linux-port6"):gsub("Location:%s*(.*)", function(redir)
                 GEOGEBRA_REDIR = GEOGEBRA_URL..redir:trim()
             end)
-            if not file_exist("~/.local/opt/"..fs.basename(GEOGEBRA_REDIR)) then
+            if not file_exist("~/.local/opt/"..GEOGEBRA_REDIR:basename()) then
                 sh("curl --output-dir ~/.local/opt/ -O "..GEOGEBRA_REDIR)
             end
-            sh("cd ~/.local/opt/ && rm -rf GeoGebra-linux-x64 && unzip "..fs.basename(GEOGEBRA_REDIR))
+            sh("cd ~/.local/opt/ && rm -rf GeoGebra-linux-x64 && unzip "..GEOGEBRA_REDIR:basename())
             sh("ln -f -s ~/.local/opt/GeoGebra-linux-x64/GeoGebra ~/.local/bin/geogebra")
         end
     end
@@ -2563,11 +2563,11 @@ function work_vpn_configuration()
     --sh "sudo update-crypto-policies --set LEGACY"
     fs.with_tmpdir(function(tmp)
         local pmod = "RSA1024.pmod"
-        fs.write(fs.join(tmp, pmod), F.unlines {
+        fs.write(tmp/pmod, F.unlines {
             "# The Aviatrix VPN uses certificates with 1024-bits RSA keys",
             "min_rsa_size = 1024",
         })
-        sh("sudo cp "..fs.join(tmp, pmod).." /etc/crypto-policies/policies/modules/")
+        sh("sudo cp "..tmp/pmod.." /etc/crypto-policies/policies/modules/")
     end)
     sh "sudo update-crypto-policies --set DEFAULT:RSA1024"
 
