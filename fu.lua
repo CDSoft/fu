@@ -1119,7 +1119,7 @@ function dev_configuration()
             tar zxf lua-%(LUA_VERSION).tar.gz &&
             cd lua-%(LUA_VERSION) &&
             sed -i 's#^INSTALL_TOP=.*#INSTALL_TOP=%(HOME)/.local#' Makefile &&
-            make linux-readline test install
+            make -j linux-readline && make install
         ]]
     end
 
