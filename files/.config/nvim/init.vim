@@ -28,6 +28,8 @@ runtime vim/completion.vim
 runtime vim/vim-zig.vim
 runtime vim/penrose.vim
 
+runtime vim/codi.vim
+
 lua require'nvim-colorizer'
 lua require 'luasnip'
 lua require'lsp'

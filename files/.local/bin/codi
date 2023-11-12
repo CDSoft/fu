@@ -2,9 +2,9 @@
 
 # Codi
 # Usage: codi [filetype] [filename]
-# filetype: haskell, julia, lua (default), ocaml, python
+# filetype: haskell, julia, lua, luax (default), ocaml, python
 
-syntax="${1:-lua}"
+syntax="${1:-luax}"
 shift
 nvim -c \
     "let g:startify_disable_at_vimenter = 1 |\
