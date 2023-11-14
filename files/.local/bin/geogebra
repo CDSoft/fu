@@ -1,0 +1,3 @@
+#!/bin/bash
+
+%(basename(BROWSER)) --new-window https://www.geogebra.org/classic

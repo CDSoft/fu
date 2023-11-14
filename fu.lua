@@ -2298,21 +2298,24 @@ function graphic_application_configuration()
     ]]
 
     -- GeoGebra
+    -- [[
     if cfg.geogebra then
         if force or update or not installed "geogebra" then
             title "GeoGebra installation"
-            local GEOGEBRA_URL = "https://download.geogebra.org"
-            local GEOGEBRA_REDIR
-            pipe("curl -i "..GEOGEBRA_URL.."/package/linux-port6"):gsub("Location:%s*(.*)", function(redir)
-                GEOGEBRA_REDIR = GEOGEBRA_URL..redir:trim()
+            local GEOGEBRA_URL = "https://download.geogebra.org/installers/6.0/"
+            local GEOGEBRA_ARCHIVE
+            pipe("curl -i "..GEOGEBRA_URL):gsub('href="(GeoGebra%-Linux64%-Portable%-(.-)%.zip)"', function(archive)
+                GEOGEBRA_ARCHIVE = GEOGEBRA_URL/archive:trim()
             end)
-            if not file_exist("~/.local/opt/"..GEOGEBRA_REDIR:basename()) then
-                sh("curl --output-dir ~/.local/opt/ -O "..GEOGEBRA_REDIR)
+            if not file_exist("~/.local/opt/"..GEOGEBRA_ARCHIVE:basename()) then
+                sh("curl --output-dir ~/.local/opt/ -O "..GEOGEBRA_ARCHIVE)
             end
-            sh("cd ~/.local/opt/ && rm -rf GeoGebra-linux-x64 && unzip "..GEOGEBRA_REDIR:basename())
+            sh("cd ~/.local/opt/ && rm -rf GeoGebra-linux-x64 && unzip "..GEOGEBRA_ARCHIVE:basename())
             sh("ln -f -s ~/.local/opt/GeoGebra-linux-x64/GeoGebra ~/.local/bin/geogebra")
         end
     end
+    --]]
+    --script "geogebra" -- to use GeoGebra online
 
 end
 
