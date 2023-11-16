@@ -2449,9 +2449,13 @@ end
 function work_configuration()
     title "Work configuration"
 
+    dnf_install "dnf-plugins-core"
+
+    --[==[
     dnf_install [[
         moby-engine grubby
     ]]
+    ]==]
 
     dnf_install [[
         astyle
@@ -2469,11 +2473,20 @@ function work_configuration()
 
     -- Docker
     if force or upgrade then
+        --[[
         log "Docker configuration"
         -- https://github.com/docker/cli/issues/2104
         sh "sudo grubby --update-kernel=ALL --args=\"systemd.unified_cgroup_hierarchy=0\""
         sh "sudo systemctl start docker || true"
         sh "sudo usermod -a -G docker %(USER)"
+        --]]
+
+        -- https://docs.docker.com/engine/install/fedora/
+        sh "sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo"
+        dnf_install [[
+            docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            sh "sudo systemctl start docker || true"
+        ]]
     end
 
     if cfg.move_docker_to_home then
