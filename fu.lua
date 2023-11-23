@@ -1597,7 +1597,7 @@ function zig_configuration()
             end
         end)
         assert(ZIG_ARCHIVE and ZIG_DIR, "Can not determine Zig version")
-        local curr_version = pipe("zig version")
+        local curr_version = installed "zig" and pipe("zig version")
         local version = ZIG_ARCHIVE:match("/([%d%.]+)/")
 
         if version ~= curr_version then
