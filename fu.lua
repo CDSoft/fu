@@ -77,6 +77,8 @@ function fu_configuration()
 
     cfg = interactive(config_path/"config.lua") {
 
+        hey_install_from_sources = {"Install hey from sources?", "yn"},
+
         powertop = {"Install powertop?", "yn"},
 
         hostname = {"Hostname:", "str"},
@@ -787,10 +789,19 @@ end
 function hey_configuration()
     title "Hey configuration"
 
-    gitclone "https://github.com/CDSoft/hey"
-
     if force or upgrade or not installed "bang" or not installed "ypp" or not installed "panda" then
-        sh "%(repo_path)/hey/hey install all"
+        if cfg.hey_install_from_sources then
+            gitclone "https://github.com/CDSoft/hey"
+            sh "%(repo_path)/hey/hey install all"
+        else
+            local http = require "socket.http"
+            local hey = "hey-x86_64-linux-gnu"
+            local installer = http.request("http://cdelord.fr/hey"/hey)
+            fs.write(repo_path/hey, installer)
+            fs.chmod(repo_path/hey, fs.aX+fs.uR+fs.uW)
+            local packages = http.request("http://cdelord.fr/hey/x86_64-linux-gnu/packages.lst"):words():unwords()
+            sh(repo_path/hey.." "..packages)
+        end
     end
 
 end

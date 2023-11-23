@@ -35,15 +35,12 @@ then
 fi
 
 [ -x ~/.local/bin/luax ] || (
-    HEY_URL=https://github.com/CDSoft/hey
-    mkdir -p ~/.config/fu/repos
-    if [ -d ~/.config/fu/repos/hey ]
-    then
-        ( cd ~/.config/fu/repos/hey && git fetch && git rebase )
-    else
-        git clone $HEY_URL ~/.config/fu/repos/hey
-    fi
-    ~/.config/fu/repos/hey/hey install luax
+    HEY_URL=http://cdelord.fr/hey/hey-x86_64-linux-gnu
+    HEY=~/.config/fu/repos/"$(basename $HEY_URL)"
+    mkdir -p "$(dirname "$HEY")"
+    wget $HEY_URL -O "$HEY"
+    chmod +x "$HEY"
+    "$HEY" luax
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
