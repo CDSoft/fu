@@ -73,5 +73,9 @@ $SUDO qemu-system-x86_64 $OPTS \
     -name "$TITLE" \
     -enable-kvm \
     -rtc base=localtime \
-    -vga std
+    -vga std \
+    -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 \
     #-drive file=fat:rw:/tmp/vmshare,media=disk \
+
+# https://unix.stackexchange.com/questions/124681/how-to-ssh-from-host-to-guest-using-qemu
+# ssh -p 5555 localhost
