@@ -541,9 +541,9 @@ function with_file(name, f)
     write(name, content)
 end
 
-function sh(cmd)
+function sh(...)
     local sh = require "sh"
-    assert(sh.run(I(cmd)))
+    assert(sh.run(F{...}:flatten():map(I)))
 end
 
 mkdir = F.compose{fs.mkdirs, I}
@@ -799,8 +799,7 @@ function hey_configuration()
             local installer = http.request("http://cdelord.fr/hey"/hey)
             fs.write(repo_path/hey, installer)
             fs.chmod(repo_path/hey, fs.aX+fs.uR+fs.uW)
-            local packages = http.request("http://cdelord.fr/hey/x86_64-linux-gnu/packages.lst"):words():unwords()
-            sh(repo_path/hey.." "..packages)
+            sh(repo_path/hey, "all")
         end
     end
 
