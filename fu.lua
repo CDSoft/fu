@@ -186,6 +186,9 @@ function fu_configuration()
 
         logitech_tools = {"Install Logitech tools?", "yn"},
 
+        screenshot_with_gimp = {"Take screenshots with ImageMagick and Gimp?", "yn"},
+        screenshot_with_ksnip = {"Take screenshots with ksnip?", "yn"},
+
     }
 end
 
@@ -2028,6 +2031,7 @@ function i3_configuration()
         redshift
         keepassxc aspell-fr
         xdotool
+        ksnip
     ]]
 
     -- Nerd Fonts
@@ -2240,6 +2244,8 @@ function i3_configuration()
     script "lock"
 
     script "screenshot"
+    sh "mkdir -p ~/Images/ksnip"
+    script ".config/ksnip/ksnip.conf"
 
     script "lrandr"
 

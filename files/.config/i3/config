@@ -73,8 +73,15 @@ bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
 bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 
+%(when(cfg.screenshot_with_ksnip) [=[
+bindsym Print                   exec ksnip -m
+bindsym $win+Print              exec ksnip -a
+bindsym Shift+Print             exec ksnip -r
+]=])
+%(when(not cfg.screenshot_with_ksnip and cfg.screenshot_with_gimp) [=[
 bindsym Print                   exec screenshot root
 bindsym $win+Print              exec screenshot active
+]=])
 
 bindsym $win+Ctrl+i             exec ristretto "`xpwd.lua`" &
 bindsym $win+Ctrl+m             exec vlc "`xpwd.lua`" &
