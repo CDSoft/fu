@@ -35,12 +35,9 @@ then
 fi
 
 [ -x ~/.local/bin/luax ] || (
-    HEY_URL=http://cdelord.fr/hey/hey-x86_64-linux-gnu
-    HEY=~/.config/fu/repos/"$(basename $HEY_URL)"
-    mkdir -p "$(dirname "$HEY")"
-    wget $HEY_URL -O "$HEY"
-    chmod +x "$HEY"
-    "$HEY" luax
+    HEY_URL=https://cdelord.fr/hey/luax-x86_64-linux-gnu.sh
+    hash curl 2>/dev/null || sudo dnf install curl
+    curl -sSL $HEY_URL | sh
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu

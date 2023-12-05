@@ -797,12 +797,7 @@ function hey_configuration()
             gitclone "https://github.com/CDSoft/hey"
             sh "%(repo_path)/hey/hey install all"
         else
-            local http = require "socket.http"
-            local hey = "hey-x86_64-linux-gnu"
-            local installer = http.request("http://cdelord.fr/hey"/hey)
-            fs.write(repo_path/hey, installer)
-            fs.chmod(repo_path/hey, fs.aX+fs.uR+fs.uW)
-            sh(repo_path/hey, "all")
+            sh "curl -sSL https://cdelord.fr/hey/cdsoft-x86_64-linux-gnu.sh | sh"
         end
     end
 
