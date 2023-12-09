@@ -34,11 +34,13 @@ then
     exec "$@"
 fi
 
-[ -x ~/.local/bin/luax ] || (
-    HEY_URL=https://cdelord.fr/hey/luax-x86_64-linux-gnu.sh
+export PREFIX=~/.local
+
+[ -x $PREFIX/bin/luax ] || (
+    HEY_URL=https://cdelord.fr/hey/luax-x86_64-linux-gnu
     hash curl 2>/dev/null || sudo dnf install curl
     curl -sSL $HEY_URL | sh
 )
 
-ln -sf "$(dirname "$(realpath "$0")")"/fu.lua ~/.local/bin/fu
-~/.local/bin/luax ~/.local/bin/fu -u
+ln -sf "$(dirname "$(realpath "$0")")"/fu.lua $PREFIX/bin/fu
+$PREFIX/bin/luax $PREFIX/bin/fu -u
