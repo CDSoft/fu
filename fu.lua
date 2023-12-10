@@ -1404,7 +1404,7 @@ function ocaml_configuration()
         sh "opam update && opam upgrade"
     end
 
-    local packages = "dune ocaml-lsp-server merlin utop"
+    local packages = "dune ocaml-lsp-server odoc ocamlformat utop"
 
     sh("opam install "..packages)
 
