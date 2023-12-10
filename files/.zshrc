@@ -85,6 +85,7 @@ export LAZARUSDIR='/usr/lib64/lazarus'  # Path to the Lazarus sources.
 export FPCTARGET=''                     # Target operating system for cross compiling.
 export FPCTARGETCPU='x86_64'            # Target CPU for cross compiling.
 ]=])
+%(when(cfg.wasmer) ". ~/.wasmer/wasmer.sh")
 
 # Plugins
 

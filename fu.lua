@@ -111,6 +111,7 @@ function fu_configuration()
         julia = {"Install Julia?", "yn"},
         swipl = {"Install SWI Prolog (from sources)?", "yn"},
         zig = {"Install Zig?", "yn"},
+        wasmer = {"Install Wasmer?", "yn"},
         frama_c = {"Install Frama-C?", "yn"},
         rust = {"Install Rust?", "yn"},
         v = {"Install V?", "yn"},
@@ -266,6 +267,7 @@ function main()
     if cfg.racket then racket_configuration() end
     if cfg.julia then julia_configuration() end
     if cfg.zig then zig_configuration() end
+    if cfg.wasmer then wasmer_configuration() end
     if cfg.nim then nim_configuration() end
     if cfg.swipl then swipl_configuration() end
     lsp_configuration()
@@ -1619,6 +1621,18 @@ function zig_configuration()
         end
     end
 
+end
+
+-- }}}
+
+-- Wasmer configuration {{{
+
+function wasmer_configuration()
+    if force or not installed "wasmer" then
+        title "Wasmer configuration"
+        sh "rm -rf ~/.wasmer"
+        sh "curl https://get.wasmer.io -sSfL | sh"
+    end
 end
 
 -- }}}
