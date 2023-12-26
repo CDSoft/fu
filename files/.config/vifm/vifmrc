@@ -96,6 +96,9 @@ set statusline="  %T %= %A %10u:%-7g %15s %6E %20d  "
 " List of color schemes to try (picks the first one supported by the terminal)
 colorscheme christophe Default-256 Default
 
+" Mouse mode
+set mouse=a
+
 " ------------------------------------------------------------------------------
 " Bookmarks
 " ------------------------------------------------------------------------------
