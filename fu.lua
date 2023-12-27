@@ -1124,7 +1124,7 @@ function dev_configuration()
         log "Lua"
         sh [[
             cd %(repo_path) &&
-            curl -R -O http://www.lua.org/ftp/lua-%(LUA_VERSION).tar.gz &&
+            curl -R -O https://www.lua.org/ftp/lua-%(LUA_VERSION).tar.gz &&
             rm -rf lua-%(LUA_VERSION) &&
             tar zxf lua-%(LUA_VERSION).tar.gz &&
             cd lua-%(LUA_VERSION) &&
