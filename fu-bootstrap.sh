@@ -37,7 +37,7 @@ fi
 export PREFIX=~/.local
 
 [ -x $PREFIX/bin/luax ] || (
-    HEY_URL=https://cdelord.fr/hey/luax-x86_64-linux-gnu
+    HEY_URL=https://cdelord.fr/hey/luax-linux-x86_64
     hash curl 2>/dev/null || sudo dnf install curl
     curl -sSL $HEY_URL | sh
 )

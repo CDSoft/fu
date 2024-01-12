@@ -799,7 +799,7 @@ function hey_configuration()
             gitclone "https://github.com/CDSoft/hey"
             sh "%(repo_path)/hey/hey install all"
         else
-            sh "curl -sSL https://cdelord.fr/hey/cdsoft-x86_64-linux-gnu | sh"
+            sh "curl -sSL https://cdelord.fr/hey/cdsoft-linux-x86_64 | sh"
         end
     end
 
