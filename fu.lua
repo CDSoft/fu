@@ -2199,6 +2199,7 @@ function i3_configuration()
     mime_default "nvim.desktop"
 
     script ".config/alacritty/alacritty.yml"
+    script ".config/alacritty/alacritty.toml"
     script ".Xdefaults"
 
     script ".config/i3/config"

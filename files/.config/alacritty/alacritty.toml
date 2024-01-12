@@ -1,0 +1,78 @@
+####################################################################
+# Colors: https://github.com/alacritty/alacritty/wiki/Color-schemes
+# VSCode's integrated terminal default colors
+# Primary and dimmed colors needed
+####################################################################
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+black   = "#666666"
+blue    = "#3b8eea"
+cyan    = "#29b8db"
+green   = "#23d18b"
+magenta = "#d670d6"
+red     = "#f14c4c"
+white   = "#e5e5e5"
+yellow  = "#f5f543"
+
+[colors.normal]
+black   = "#000000"
+blue    = "#2472c8"
+cyan    = "#11a8cd"
+green   = "#0dbc79"
+magenta = "#bc3fbc"
+red     = "#cd3131"
+white   = "#e5e5e5"
+yellow  = "#e5e510"
+
+[colors.primary]
+background = "#000000"
+
+####################################################################
+# Font
+####################################################################
+
+[font]
+size = %(FONT_SIZE)
+
+[font.normal]
+family = "%(FONT)"
+style = "%(FONT_VARIANT)"
+
+####################################################################
+# Keyboard
+####################################################################
+
+# let NumpadEnter and Return behave identically (see https://unix.stackexchange.com/questions/703899/two-enter-keys-are-behaving-differently)
+[[keyboard.bindings]]
+chars = "\r"
+key = "NumpadEnter"
+
+[[keyboard.bindings]]
+action = "ScrollToTop"
+key = "Home"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollToBottom"
+key = "End"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "PageUp"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ScrollPageDown"
+key = "PageDown"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "N"
+mods = "Command"
