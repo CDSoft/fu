@@ -822,7 +822,7 @@ function shell_configuration()
         htop
         pwgen
         ripgrep
-        exa
+        eza
         fd-find
         tmux
         tldr

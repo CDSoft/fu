@@ -16,7 +16,7 @@ export LANG=%(LOCALE)
 
 [ -e /etc/grc.zsh ] && . /etc/grc.zsh
 
-alias ls="exa --classify"
+alias ls="eza --classify"
 alias ll='ls -lh'
 alias la='ll -a'
 #alias lt='ll -rt'
