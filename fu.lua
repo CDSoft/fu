@@ -1187,6 +1187,8 @@ function dev_configuration()
     -- interactive scratchpad: https://github.com/metakirby5/codi.vim
     script "codi"
 
+    script "note"
+
     if cfg.v and cfg.vls then
         if force or not installed "vls" then
             gitclone "https://github.com/nedpals/tree-sitter-v"
