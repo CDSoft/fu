@@ -66,8 +66,8 @@ $HAS_HD && BOOT="dc"
 
 mkdir -p /tmp/vmshare
 $SUDO qemu-system-x86_64 $OPTS \
-    -smp 2 \
-    -m 4G \
+    -smp 4 \
+    -m 8G \
     -k fr \
     -device AC97 \
     -name "$TITLE" \
