@@ -2045,6 +2045,7 @@ function i3_configuration()
         keepassxc aspell-fr
         xdotool
         ksnip
+        xinput
     ]]
 
     -- Nerd Fonts
