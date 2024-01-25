@@ -521,8 +521,10 @@ function pipe(cmd, stdin)
     if stdin then
         sh.write(cmd)
     else
-        local result = sh.read(cmd):trim()
-        return I(result)
+        local result = sh.read(cmd)
+        if result then
+            return I(result:trim())
+        end
     end
 end
 
