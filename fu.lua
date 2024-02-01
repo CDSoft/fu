@@ -1102,6 +1102,7 @@ function dev_configuration()
             musl-clang musl-devel musl-gcc musl-libc-static musl-libc
             pax-utils
             sassc
+            glfw-devel glm-devel glew-devel
         ]]
     end
 
