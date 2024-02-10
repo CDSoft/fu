@@ -1027,6 +1027,20 @@ function filesystem_configuration()
     gitclone "https://github.com/thimc/vifm_devicons"
     sh "cp -f %(repo_path)/vifm_devicons/favicons.vifm %(HOME)/.config/vifm/"
 
+    -- 7Z
+    do
+        local curr_version = (pipe("7zzs") or ""):words()[3]
+        local version = pipe("curl -sSL https://github.com/ip7z/7zip/releases/latest/"):match("tag/([%d%.]+)")
+        if version ~= curr_version then
+            log "7z"
+            with_tmpdir(function(tmp)
+                sh("wget https://github.com/ip7z/7zip/releases/download/"..version.."/7z"..(version:gsub("%.", "")).."-linux-x64.tar.xz -O "..tmp.."/7z.tar.xz")
+                sh("cd "..tmp.." && tar -xvJf 7z.tar.xz --exclude=MANUAL --exclude='*.txt'")
+                sh("cp -af "..tmp.."/7zz* ~/.local/bin")
+            end)
+        end
+    end
+
 end
 
 -- }}}
