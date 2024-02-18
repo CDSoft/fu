@@ -658,7 +658,7 @@ function gitclone(url, options)
     if dir_exist(path) then
         if force or upgrade then
             log("Upgrade "..url.." to "..path.." "..options, 1)
-            sh("cd "..path.." && ( git stash && git checkout master && git reset --hard master || true ) && git pull")
+            sh("cd "..path.." && ( git stash && ( (git checkout master && git reset --hard master) || (git checkout main && git reset --hard main) || true ) ) && git pull")
         end
     else
         log("Clone "..url.." to "..path, 1)
