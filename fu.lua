@@ -1510,16 +1510,17 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
-        --{"bottom", "btm"},
+        {"bottom", "btm"},
         --"hyperfine",
         --"procs",
     }
-    for _, package in ipairs(RUST_PACKAGES) do
+    for _, package_desc in ipairs(RUST_PACKAGES) do
         local exe = nil
-        if type(package) == "table" then
-            package, exe = table.unpack(package)
+        if type(package_desc) == "table" then
+            package, exe = table.unpack(package_desc)
         else
-            exe = package
+            package = package_desc
+            exe = package_desc
         end
         if force or not installed(exe) then
             log("Rust package: "..package)
