@@ -16,18 +16,29 @@ end
 
 if cwd:has_prefix(root) then
 
-    local ids = fs.ls(root/"**.md")
-    : filter(fs.is_file)
-    : filter(function(name) return name:basename():match "^%d+%s*%-" end)
-    : map(function(name)
-        return tonumber(name:basename():match("^(%d+)"))
-    end)
+    if #arg == 1 and arg[1] == "init" then
 
-    local next_id = 1 + (ids:maximum() or 0)
-    local new_note = F{ next_id, "-", (#arg>0 and F.unwords(arg) or "New note")..".md" } : unwords()
+        fs.mkdir "0 - Idées"
+        fs.mkdir "1 - En cours"
+        fs.mkdir "2 - Terminé"
+        fs.mkdir "3 - Abandonné"
 
-    sh.run { os.getenv"EDITOR", F.show(new_note) }
-    vifm(cwd)
+    else
+
+        local ids = fs.ls(root/"**.md")
+        : filter(fs.is_file)
+        : filter(function(name) return name:basename():match "^%d+%s*%-" end)
+        : map(function(name)
+            return tonumber(name:basename():match("^(%d+)"))
+        end)
+
+        local next_id = 1 + (ids:maximum() or 0)
+        local new_note = F{ next_id, "-", (#arg>0 and F.unwords(arg) or "New note")..".md" } : unwords()
+
+        sh.run { os.getenv"EDITOR", F.show(new_note) }
+        vifm(cwd)
+
+    end
 
 else
 
