@@ -173,3 +173,6 @@ export WINEDEBUG=-all
 
 # User specific environment and startup programs
 [ -n "$SSH_AGENT_PID" ] || eval "$(ssh-agent -s)"
+
+# Clean PATH (fix fzf PATH order)
+eval "$(clean_path)"

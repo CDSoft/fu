@@ -876,6 +876,8 @@ function shell_configuration()
 
     script "fzfmenu"
 
+    script "clean_path"
+
     if force or not installed "grc" then
         gitclone "https://github.com/garabik/grc"
         sh "cd %(repo_path)/grc && sudo ./install.sh"

@@ -1,0 +1,15 @@
+#!/usr/bin/env luax
+
+-- Clean $PATH
+--  - no duplicate entry
+--  - directories in $HOME before other directories (to fix fzf PATH order)
+
+local F = require "F"
+
+local HOME = os.getenv "HOME"
+
+local function is_my_path(path) return path:has_prefix(HOME) end
+
+local my_path, os_path = os.getenv "PATH" : split ":" : partition(is_my_path)
+
+print("export PATH="..F{my_path, os_path} : flatten() : nub() : str ":")
