@@ -25,6 +25,7 @@ mixer               : audio mixer
 
 nm                  : network manager
 bt                  : bluetooth manager
+restartbt           : restart bluetooth
 netmon:             : network monitor (ping)
 
 renws               : rename the active workspace
@@ -110,6 +111,7 @@ case "$1" in
 
     (nm*)           nm-connection-editor ;;
     (bt*)           blueman-manager ;;
+    (restartbt*)    xsudo systemctl restart bluetooth ;;
     (netmon*)       netmon ;;
 
     (renws*)        rename_workspace ;;

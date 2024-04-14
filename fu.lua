@@ -2244,6 +2244,7 @@ function i3_configuration()
     script ".gtkrc-2.0"
 
     script "xprompt"
+    script "xsudo"
 
     -- script ".config/kwalletrc"
 
