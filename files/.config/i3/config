@@ -30,11 +30,11 @@ client.background       #ffffff
 # xbindkeys --key => get keycodes
 
 # Volume control
-#bindsym XF86AudioRaiseVolume    exec amixer -c 0 set Master 2dB+ && amixer set Master unmute && notify_volume
-#bindsym XF86AudioLowerVolume    exec amixer -c 0 set Master 2dB- && amixer set Master unmute && notify_volume
-#bindsym XF86AudioMute           exec amixer set Master toggle && notify_volume
-#bindsym XF86AudioMicMute        exec amixer set Capture toggle && notify_volume
-bindsym $mod+Ctrl+s             exec pavucontrol
+# Use pactl to adjust volume in PulseAudio.
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+#bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 # Brightness
 bindsym XF86MonBrightnessDown   exec brightness -5
@@ -42,6 +42,10 @@ bindsym XF86MonBrightnessUp     exec brightness +5
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
+
+# move tiling windows via drag & drop by left-clicking into the title bar,
+# or left-clicking anywhere into the window while holding the floating modifier.
+tiling_drag modifier titlebar
 
 # start a terminal
 bindsym $mod+Return exec %(ALACRITTY) --working-directory "`xpwd.lua`"
@@ -54,7 +58,10 @@ bindsym $mod+Ctrl+Return exec %(ALACRITTY) -t vifm -e vifm "`xpwd.lua`"
 bindsym $mod+$alt+Return exec pcmanfm --new-win "`xpwd.lua`"
 
 # scratchpad
+# move the currently focused window to the scratchpad
 bindsym $mod+Shift+o    move scratchpad
+# Show the next scratchpad window or hide the focused scratchpad window.
+# If there are multiple scratchpad windows, this command cycles through them.
 bindsym $mod+o          scratchpad show
 
 # some useful shortcuts
@@ -134,24 +141,12 @@ bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "run" -
 bindsym $mod+Ctrl+x     exec arandr
 
 # change focus
-#bindsym $mod+j focus left
-#bindsym $mod+k focus down
-#bindsym $mod+l focus up
-#bindsym $mod+m focus right
-
-# alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-#bindsym $mod+Shift+j move left
-#bindsym $mod+Shift+k move down
-#bindsym $mod+Shift+l move up
-#bindsym $mod+Shift+m move right
-
-# alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
@@ -164,18 +159,19 @@ bindsym $mod+h split h
 bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
 bindsym $mod+m fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+s layout stacking
+bindsym $mod+s layout stacking
 bindsym $mod+z layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
-bindsym $mod+f floating toggle
+bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+less focus mode_toggle
+bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -286,12 +282,6 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        #bindsym j resize shrink width 10 px or 10 ppt
-        #bindsym k resize grow height 10 px or 10 ppt
-        #bindsym l resize shrink height 10 px or 10 ppt
-        #bindsym m resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
         bindsym Up resize shrink height 10 px or 10 ppt
@@ -351,7 +341,7 @@ exec --no-startup-id blueman-applet
 exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'
 
 exec --no-startup-id xset dpms 600
-exec --no-startup-id xautolock -time 15 -locker '~/.local/bin/lock' &
+exec --no-startup-id xss-lock --transfer-sleep-lock -- '~/.local/bin/lock' --nofork
 exec --no-startup-id batmon -d &
 
 exec --no-startup-id st -t ssh-agent -e ~/.local/bin/ssha &
