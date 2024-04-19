@@ -1,4 +1,21 @@
 ####################################################################
+# Window
+####################################################################
+
+[window]
+decorations = "Full"
+opacity = 1.0
+resize_increments = false
+
+####################################################################
+# Scrolling
+####################################################################
+
+[scrolling]
+history = 20000
+multiplier = 3
+
+####################################################################
 # Colors: https://github.com/alacritty/alacritty/wiki/Color-schemes
 # VSCode's integrated terminal default colors
 # Primary and dimmed colors needed
@@ -6,6 +23,7 @@
 
 [colors]
 draw_bold_text_with_bright_colors = true
+transparent_background_colors = true
 
 [colors.bright]
 black   = "#666666"
@@ -40,6 +58,37 @@ size = %(FONT_SIZE)
 [font.normal]
 family = "%(FONT)"
 style = "%(FONT_VARIANT)"
+
+####################################################################
+# Selection
+####################################################################
+
+[selection]
+# word separators
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+# When set to true, selected text will be copied to the primary clipboard.
+save_to_clipboard = true
+
+####################################################################
+# Cursor
+####################################################################
+
+[cursor.style]
+shape = "Block"
+blinking = "On"
+
+[cursor]
+blink_interval = 250
+blink_timeout = 10
+unfocused_hollow = true
+thickness = 0.15
+
+####################################################################
+# Mouse
+####################################################################
+
+[mouse]
+hide_when_typing = false
 
 ####################################################################
 # Keyboard
