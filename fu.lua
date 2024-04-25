@@ -822,6 +822,7 @@ function shell_configuration()
         util-linux-user
         inotify-tools
         htop
+        bpytop
         pwgen
         ripgrep
         eza
