@@ -1638,9 +1638,9 @@ function zig_configuration()
         local version = pipe("curl -sSL https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
         if version ~= curr_version then
             with_tmpdir(function(tmp)
-                sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/zls-x86_64-linux.tar.gz -O "..tmp.."/zls-x86_64-linux.tar.gz")
+                sh("wget https://github.com/zigtools/zls/releases/download/"..version.."/zls-x86_64-linux.tar.xz -O "..tmp.."/zls-x86_64-linux.tar.xz")
                 --sh("cd "..tmp.."; tar -l zstd xf x86_64-linux.tar.xz && mv bin/zls %(HOME)/.local/bin/zls && chmod +x %(HOME)/.local/bin/zls")
-                sh("cd "..tmp.."; tar xzf zls-x86_64-linux.tar.gz && mv bin/zls %(HOME)/.local/bin/zls && chmod +x %(HOME)/.local/bin/zls")
+                sh("cd "..tmp.."; tar xJf zls-x86_64-linux.tar.xz && mv zls %(HOME)/.local/bin/zls && chmod +x %(HOME)/.local/bin/zls")
                 installed_packages.zls_version = version
             end)
         end
