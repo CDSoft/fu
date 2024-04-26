@@ -766,7 +766,9 @@ function system_configuration()
 
     -- No more poweroff
     log "Disable power key"
-    sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
+    if file_exist "/etc/systemd/logind.conf" then
+        sh "sudo sed -i 's/.*HandlePowerKey.*/HandlePowerKey=ignore/' /etc/systemd/logind.conf"
+    end
 
     if cfg.powertop then
 
@@ -1201,7 +1203,7 @@ function dev_configuration()
     -- PMcCabe
     if cfg.pmccabe and (force or not installed "pmccabe") then
         gitclone "https://github.com/datacom-teracom/pmccabe"
-        sh "cd %(repo_path)/pmccabe && make && cp pmccabe ~/.local/bin"
+        sh "cd %(repo_path)/pmccabe && CC='gcc -Wno-implicit-function-declaration' make && cp pmccabe ~/.local/bin"
     end
 
     -- interactive scratchpad: https://github.com/metakirby5/codi.vim
