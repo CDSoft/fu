@@ -1515,7 +1515,7 @@ function rust_configuration()
     end
 
     local RUST_PACKAGES = {
-        {"bottom", "btm"},
+        --{"bottom", "btm"},
         --"hyperfine",
         --"procs",
     }
