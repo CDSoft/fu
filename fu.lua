@@ -2405,7 +2405,7 @@ function internet_configuration()
 
     -- Default browser
     log "Default browser"
-    sh "BROWSER= xdg-settings set default-web-browser %(BROWSER).desktop"
+    sh "BROWSER= xdg-settings set default-web-browser %(BROWSER).desktop || true"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop text/html"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/http"
     sh "BROWSER= xdg-mime default %(BROWSER).desktop x-scheme-handler/https"
