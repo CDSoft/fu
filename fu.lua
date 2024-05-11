@@ -1623,12 +1623,15 @@ function zig_configuration()
         assert(ZIG_ARCHIVE and ZIG_DIR, "Can not determine Zig version")
         local curr_version = installed "zig" and pipe("zig version")
         local version = ZIG_ARCHIVE:match("/([%d%.]+)/")
+        ZIG_VERSION = version
 
         if version ~= curr_version then
             sh "wget %(ZIG_ARCHIVE) -c -O ~/.local/opt/%(basename(ZIG_ARCHIVE))"
-            sh "rm -rf ~/.local/opt/%(ZIG_DIR)"
-            sh "tar xJf ~/.local/opt/%(basename(ZIG_ARCHIVE)) -C ~/.local/opt"
-            sh "ln -f -s ~/.local/opt/%(ZIG_DIR)/zig ~/.local/bin/zig"
+            sh "rm -rf ~/.local/opt/zig/%(ZIG_VERSION)"
+            sh "mkdir -p ~/.local/opt/zig/%(ZIG_VERSION)"
+            sh "tar xJf ~/.local/opt/%(basename(ZIG_ARCHIVE)) -C ~/.local/opt/zig/%(ZIG_VERSION) --strip-components 1"
+            sh "ln -f -s ~/.local/opt/zig/%(ZIG_VERSION)/zig ~/.local/bin/zig"
+            sh "rm -f ~/.local/opt/%(basename(ZIG_ARCHIVE))"
         end
     end
 
