@@ -105,6 +105,7 @@ function fu_configuration()
         alacritty_sources = {"Install Alacritty from sources?", "yn"},
         starship_sources = {"Install Starship from sources?", "yn"},
         tokei_sources = {"Install Tokei from sources?", "yn"},
+        ninja_sources = {"Install Ninja from sources?", "yn"},
         haskell = {"Install Haskell?", "yn"},
         ocaml = {"Install OCaml?", "yn"},
         racket = {"Install Racket?", "yn"},
@@ -1140,6 +1141,17 @@ function dev_configuration()
                 tokei
             ]]
         end
+    end
+
+    if cfg.ninja_sources and (force or not file_exist "%(HOME)/.local/bin/ninja") then
+        log "Ninja"
+        gitclone "https://github.com/ninja-build/ninja"
+        sh [[
+            cd %(repo_path)/ninja &&
+            ./configure.py --bootstrap &&
+            strip ninja &&
+            install ninja %(HOME)/.local/bin/
+        ]]
     end
 
     if force or not file_exist "%(HOME)/.local/bin/lua" or not pipe"ldd %(HOME)/.local/bin/lua":match"readline" then
