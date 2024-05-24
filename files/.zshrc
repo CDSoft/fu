@@ -34,6 +34,8 @@ alias ncdu='ncdu --color dark'
 alias ocaml='rlwrap -m -s 10000 ocaml'
 alias luajit='rlwrap -m -s 10000 luajit'
 
+alias subup='git submodule sync && git submodule update --init --recursive'
+
 function gd()
 {
     local filepath="$(fd "$1" | fzf)"
@@ -152,8 +154,6 @@ alias luamake=%(repo_path)/lua-language-server/3rd/luamake/luamake
 
 #alias docker='docker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -v /dev/bus/usb:/dev/bus/usb --privileged -p host_port:container_port/tcp'
 xhost +local:root >/dev/null 2>/dev/null
-
-alias subup='git submodule sync && git submodule update --init --recursive'
 
 alias stop_containers="docker ps -q | xargs --no-run-if-empty docker stop"
 alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
