@@ -37,6 +37,7 @@ lua require'lualine-setup'
 lua require'nvim-cmp'
 lua require'nvim-project-setup'
 lua require'nvim-tree-setup'
+lua require'nvim-oil'
 
 " nvim startup may be too long to catch the initial SIGWINCH and resize the window
 autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"

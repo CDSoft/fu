@@ -58,6 +58,8 @@ Plug 'alaviss/nim.nvim'
 
 Plug 'vifm/vifm.vim'
 
+Plug 'stevearc/oil.nvim'
+
 " Teal language support
 Plug 'teal-language/vim-teal'
 
