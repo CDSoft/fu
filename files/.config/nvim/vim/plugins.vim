@@ -38,7 +38,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 "Plug 'https://github.com/frace/vim-bubbles'
 Plug 'https://github.com/sbdchd/neoformat'
 Plug 'monkoose/fzf-hoogle.vim'
-"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "Plug 'vimwiki/vimwiki'
 Plug 'neovim/nvim-lspconfig'
 "Plug 'nvim-lua/completion-nvim'
