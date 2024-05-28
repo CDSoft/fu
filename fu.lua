@@ -148,9 +148,6 @@ function fu_configuration()
         move_docker_to_home = {"Move /var/lib/docker to /home/docker?", "yn"},
         work_vpn = {"Install work VPN configuration?", "yn"},
 
-        nvim_telescope = {"Use Telescope with Neovim?", "yn"},
-        nvim_fzf = {"Use FZF with Neovim?", "yn"},
-
         nextcloud_client = {"Install Nextcloud client?", "yn"},
         nextcloud_client_start = {"Start Nextcloud client after boot?", "yn"},
         dropbox = {"Install Dropbox?", "yn"},
@@ -1920,17 +1917,15 @@ function neovim_configuration()
     for config_file in ls ".config/nvim/*.vim" do
         script(config_file)
     end
+    for config_file in ls ".config/nvim/*.lua" do
+        script(config_file)
+    end
     for config_file in ls ".config/nvim/vim/*.vim" do
         script(config_file)
     end
     for config_file in ls ".config/nvim/lua/*.lua" do
         script(config_file)
     end
-
-    -- vim-plug
-    gitclone "https://github.com/junegunn/vim-plug.git"
-    mkdir "%(HOME)/.config/nvim/autoload"
-    sh "cp %(repo_path)/vim-plug/plug.vim %(HOME)/.config/nvim/autoload/"
 
     -- Asymptote syntax
     local function nvim_cp(msg, candidates, dest)
@@ -1958,12 +1953,6 @@ function neovim_configuration()
         "%(HOME)/.config/nvim/ftdetect/asy_filetype.vim"
     )
 
-    -- update all plugins
-    if force or upgrade then
-        log "Pluggin update"
-        sh "nvim -c PlugUpgrade -c PlugInstall -c PlugUpdate -c qa"
-    end
-
     if cfg.shellcheck then
         if cfg.haskell and cfg.compile_shellcheck_with_stack then
             if force or upgrade or not installed "shellcheck" then
@@ -1975,15 +1964,11 @@ function neovim_configuration()
         end
     end
 
-    if cfg.penrose then
-        if force or update or not file_exist "(repo_path)/penrose/util/vim/syntax/dsl.vim" then
-            gitclone "https://github.com/penrose/penrose"
-            sh "cp %(repo_path)/penrose/util/vim/syntax/* ~/.config/nvim/syntax"
-        end
-    end
-
     -- Notes, TO-DO lists and password manager
     mkdir "%(WIKI)"
+
+    -- spell directory containing word lists
+    mkdir "%(HOME)/.local/share/nvim/site/spell"
 
 end
 
