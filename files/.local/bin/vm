@@ -3,14 +3,14 @@
 usage()
 {
     cat <<EOF
-$(basename $0) [file.iso] [file.img]
+$(basename "$0") [file.iso] [file.img]
 EOF
 }
 
 OPTS=""
 TITLE="vm"
 SUDO=""
-HAS_HS=false
+HAS_HD=false
 HAS_CD=false
 
 ISO_PATH=$HOME/iso
@@ -25,18 +25,18 @@ do
         *.iso)      ISO=$1
                     test -f "$ISO" || ISO=$ISO_PATH/$ISO
                     OPTS+=" -drive file=$ISO,media=cdrom"
-                    TITLE+=" $(basename $ISO)"
+                    TITLE+=" $(basename "$ISO")"
                     HAS_CD=true
                     ;;
         *.img)      IMG=$1
                     test -f "$IMG" || IMG=$IMG_PATH/$IMG
                     if ! [ -e "$IMG" ]
                     then
-                        read -p "$IMG not found. Enter the image size: " SIZE
+                        read -r -p "$IMG not found. Enter the image size: " SIZE
                         qemu-img create -f qcow2 "$IMG" "${SIZE}G" || exit 1
                     fi
                     OPTS+=" -drive file=$IMG,format=qcow2,media=disk"
-                    TITLE+=" $(basename $IMG)"
+                    TITLE+=" $(basename "$IMG")"
                     HAS_HD=true
                     ;;
         /dev/sd*)   DEV=$1
@@ -65,7 +65,7 @@ $HAS_HD && BOOT="dc"
 [ -n "$BOOT" ] && OPTS+=" -boot order=$BOOT"
 
 mkdir -p /tmp/vmshare
-$SUDO qemu-system-x86_64 $OPTS \
+$SUDO qemu-system-x86_64 "$OPTS" \
     -smp 4 \
     -m 8G \
     -k fr \
