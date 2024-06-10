@@ -1123,6 +1123,7 @@ function dev_configuration()
             pax-utils
             sassc
             glfw-devel glm-devel glew-devel
+            libtool
         ]]
     end
 
