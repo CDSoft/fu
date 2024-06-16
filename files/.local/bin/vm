@@ -65,7 +65,7 @@ $HAS_HD && BOOT="dc"
 [ -n "$BOOT" ] && OPTS+=" -boot order=$BOOT"
 
 mkdir -p /tmp/vmshare
-$SUDO qemu-system-x86_64 "$OPTS" \
+$SUDO qemu-system-x86_64 $OPTS \
     -smp 4 \
     -m 8G \
     -k fr \
