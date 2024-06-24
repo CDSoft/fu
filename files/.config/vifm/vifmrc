@@ -45,6 +45,9 @@ set nofollowlinks
 " Natural sort of (version) numbers within text.
 set sortnumbers
 
+" Sort order
+set sort=+iname
+
 " Maximum number of changes that can be undone.
 set undolevels=100
 
