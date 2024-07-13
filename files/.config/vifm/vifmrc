@@ -140,6 +140,8 @@ command! mkcd :mkdir %a | cd %a
 command! vgrep nvim "+grep %a"
 command! reload :write | restart full
 
+command! mc !mc %d %D
+
 " ------------------------------------------------------------------------------
 " File types association
 " ------------------------------------------------------------------------------
