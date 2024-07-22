@@ -177,6 +177,16 @@ command! mc !mc %d %D
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
+" PCAP
+filextype {*.pcap}
+    \ { Open with a custom PCAP viewer }
+    \ ~/bin/pcapviewer.sh %f,
+    \ { View in wireshark }
+    \ wireshark %f,
+filextype {*.pcap.xz}
+    \ { Open with a custom PCAP viewer }
+    \ ~/bin/pcapviewer.sh %f,
+
 " Pdf
 filextype {*.pdf},<application/pdf> atril %c &, zathura %c %i &, apvlv %c, xpdf %c
 fileviewer {*.pdf},<application/pdf> pdftotext -nopgbrk %c -
