@@ -103,6 +103,7 @@ function fu_configuration()
         fira_code = {"Use Fira Code font?", "yn"},
         source_code_pro = {"Use Source Code Pro font?", "yn"},
         alacritty_sources = {"Install Alacritty from sources?", "yn"},
+        wezterm = {"Install WezTerm?", "yn"},
         starship_sources = {"Install Starship from sources?", "yn"},
         tokei_sources = {"Install Tokei from sources?", "yn"},
         ninja_sources = {"Install Ninja from sources?", "yn"},
@@ -2120,6 +2121,25 @@ function i3_configuration()
         else
             dnf_install "alacritty"
         end
+    end
+
+    -- WezTerm
+    if cfg.rust and cfg.wezterm then
+        if force or not installed "weztermii" then
+            log "WezTerm"
+            gitclone("https://github.com/wez/wezterm.git", { "--depth=1", "--branch=main", "--recursive" })
+            sh "cd %(repo_path)/wezterm && git submodule update --init --recursive && ./get-deps"
+            sh "cd %(repo_path)/wezterm && ~/.cargo/bin/cargo build --release --no-default-features --features vendored-fonts"
+            sh "cd %(repo_path)/wezterm && install -vm755 target/release/wezterm -t ~/.local/bin"
+            sh "cd %(repo_path)/wezterm && install -vm755 target/release/wezterm-gui -t ~/.local/bin"
+            sh "cd %(repo_path)/wezterm && install -vm755 target/release/wezterm-mux-server -t ~/.local/bin"
+            sh "cd %(repo_path)/wezterm && install -vm755 target/release/strip-ansi-escapes -t ~/.local/bin"
+            sh "cd %(repo_path)/wezterm && install -vm755 assets/open-wezterm-here -t ~/.local/bin"
+            sh "cd %(repo_path)/wezterm && sudo install -vm644 assets/shell-integration/* -t /etc/profile.d"
+            sh "cd %(repo_path)/wezterm && sudo install -vm644 assets/shell-completion/zsh /usr/local/share/zsh/site-functions/_wezterm"
+            sh "cd %(repo_path)/wezterm && sudo install -vm644 assets/shell-completion/bash /etc/bash_completion.d/wezterm"
+        end
+        script ".config/wezterm/wezterm.lua"
     end
 
     -- urxvt

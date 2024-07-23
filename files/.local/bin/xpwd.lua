@@ -32,6 +32,7 @@ local process_blacklist = F[[
     keepassxc-proxy
     plugin-container
     thunderbird
+    wezterm-gui
 ]] : words() : from_set(F.const(true))
 
 local path_blacklist = F[[
