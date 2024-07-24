@@ -5,21 +5,21 @@ URxvt*foreground: white
 
 URxvt*scrollBar: False
 
-# Extensions
+! Extensions
 URxvt.perl-ext-common:  default,matcher,clipboard,url-select,keyboard-select,font-size
 
-# Right click to open a link in a browser
+! Right click to open a link in a browser
 URxvt.url-launcher:     %(BROWSER)
 URxvt.matcher.button:   3
 
-# https://addy-dclxvi.github.io/post/configuring-urxvt/
+! https://addy-dclxvi.github.io/post/configuring-urxvt/
 
 !! Colorscheme
 
 ! special
-#*.foreground: #93a1a1
-#*.background: #000000
-#*.cursorColor: #afbfbf
+!*.foreground: #93a1a1
+!*.background: #000000
+!*.cursorColor: #afbfbf
 
 ! black
 *.color0: #000000
@@ -56,7 +56,7 @@ URxvt.matcher.button:   3
 !! URxvt Appearance
 URxvt.cursorBlink: true
 URxvt.cursorUnderline: false
-URxvt.saveline: 10000
+URxvt.saveLines: 20000
 URxvt.scrollBar: false
 URxvt.scrollBar_right: true
 URxvt.urgentOnBell: true
@@ -76,7 +76,7 @@ URxvt.urlLauncher: firefox
 URxvt.underlineURLs: true
 URxvt.urlButton: 1
 
-# https://github.com/majutsushi/urxvt-font-size
+! https://github.com/majutsushi/urxvt-font-size
 
 URxvt.keysym.C-KP_Add:          font-size:increase
 URxvt.keysym.C-KP_Subtract:     font-size:decrease
