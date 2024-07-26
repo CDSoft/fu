@@ -355,13 +355,14 @@ fileviewer *.zip,*.jar,*.war,*.ear,*.oxt unzip -l %f
 
 " ArchiveMount
 filetype {*.cpio,*.cpio.gz,*.rpm,*.tar,*.tar.bz2,*.tbz2,*.tgz,*.tar.gz,*.tar.xz,
-         \*.txz,*.tar.zst,*.tzst},
+         \*.txz,*.tar.zst,*.tzst,*.tar.lz,*.tlz},
         \<application/x-cpio,application/x-rpm,application/x-tar>
        \ {Mount with archivemount}
        \ FUSE_MOUNT|archivemount %SOURCE_FILE %DESTINATION_DIR,
 fileviewer *.tgz,*.tar.gz tar -tzf %c
 fileviewer *.tar.bz2,*.tbz2 tar -tjf %c
 fileviewer *.tar.xz,*.txz tar -tJf %c
+fileviewer *.tar.lz,*.tlz tar -taf %c
 fileviewer *.tar.zst,*.tzst tar -t --zstd -f %c
 fileviewer {*.tar},<application/x-tar> tar -tf %c
 fileviewer {*.cpio},<application/x-cpio> cpio -t < %c
