@@ -77,8 +77,6 @@ function fu_configuration()
 
     cfg = interactive(config_path/"config.lua") {
 
-        hey_install_from_sources = {"Install hey from sources?", "yn"},
-
         powertop = {"Install powertop?", "yn"},
 
         hostname = {"Hostname:", "str"},
@@ -194,7 +192,7 @@ end
 
 function os_configuration()
 
-    LUA_VERSION = "5.4.6"
+    LUA_VERSION = "5.4.7"
 
     TIMEZONE = "Europe/Paris"
     KEYMAP = "fr"
@@ -251,7 +249,7 @@ function main()
     check_last_upgrade()
 
     system_configuration()
-    hey_configuration()
+    luax_configuration()
     if cfg.rust then rust_configuration() end
     shell_configuration()
     network_configuration()
@@ -792,18 +790,13 @@ end
 
 -- }}}
 
--- Hey packages {{{
+-- luax packages {{{
 
-function hey_configuration()
-    title "Hey configuration"
+function luax_configuration()
+    title "luax configuration"
 
     if force or upgrade or not installed "bang" or not installed "ypp" or not installed "panda" then
-        if cfg.hey_install_from_sources then
-            gitclone "https://github.com/CDSoft/hey"
-            sh "%(repo_path)/hey/hey install all"
-        else
-            sh "curl -sSL https://cdelord.fr/hey/cdsoft-linux-x86_64 | sh"
-        end
+        sh "curl -sSL https://cdelord.fr/pub/luax-full.sh | sh"
     end
 
 end
@@ -1799,7 +1792,7 @@ function pandoc_configuration()
         ]]
     end
 
-    --[[ Pandoc is installed by hey, this section is kept for future reference in case the dynamic executable is needed
+    --[[ Pandoc is installed by luax, this section is kept for future reference in case the dynamic executable is needed
     if force or upgrade or not installed "pandoc" then
         if cfg.haskell and cfg.compile_pandoc_with_cabal then
             log "Pandoc"
@@ -1818,7 +1811,7 @@ function pandoc_configuration()
     end
     --]]
 
-    --[[ Typst is installed by hey
+    --[[ Typst is installed by luax
     if force or upgrade or not installed "typst" then
         if cfg.rust and cfg.compile_typst_with_rust then
             log "Typst"
