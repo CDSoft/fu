@@ -1244,11 +1244,13 @@ function dev_configuration()
         sh "cp %(repo_path)/tup/tup.1 ~/.local/man/man1"
     end
 
+    --[[
     if force or not installed "jupyter-lab" or not installed "jupyter" or not installed "voila" then
         sh "pip install jupyterlab"
         sh "pip install notebook"
         sh "pip install voila"
     end
+    --]]
 
 end
 
