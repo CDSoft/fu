@@ -2577,8 +2577,12 @@ function work_configuration()
 
     sh [[ export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
           pip3 install '--user'             \
+                appdirs                     \
                 awscli                      \
                 click                       \
+                google-api-python-client    \
+                google-auth-httplib2        \
+                google-auth-oauthlib        \
                 junitparser                 \
                 junit-xml                   \
                 matplotlib                  \
@@ -2587,6 +2591,7 @@ function work_configuration()
                 python-can                  \
                 scipy                       \
                 tftpy                       \
+                tqdm                        \
     ]]
 
     -- ROS: http://wiki.ros.org/Installation/Source
