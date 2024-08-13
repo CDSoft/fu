@@ -2080,8 +2080,8 @@ function i3_configuration()
                 font_cache_update = true
             end
         end
-        install_font("SourceCodePro", "Sauce Code Pro Nerd Font Complete.ttf")
-        install_font("FiraCode", "Fira Code Regular Nerd Font Complete.ttf")
+        install_font("SourceCodePro", "SauceCodeProNerdFont-Regular.ttf")
+        install_font("FiraCode", "FiraCodeNerdFont-Regular.ttf")
         if font_cache_update then
             log "Font: update cache"
             sh "fc-cache -f"
