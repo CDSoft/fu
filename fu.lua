@@ -74,6 +74,7 @@ function fu_configuration()
     installed_packages      = db(config_path/"packages.lua")
     installed_snap_packages = db(config_path/"snap_packages.lua")
     installed_lua_packages  = db(config_path/"lua_packages.lua")
+    installed_pip_packages  = db(config_path/"pip_packages.lua")
 
     cfg = interactive(config_path/"config.lua") {
 
@@ -597,6 +598,20 @@ function dnf_install(names)
         log("Install packages: "..names, 1)
         sh("sudo dnf install "..names.." --skip-broken --best --allowerasing")
         F(new_packages):map(function(name) installed_packages[name] = true end)
+    end
+end
+
+function pip_install(names)
+    names = I(names):words()
+    local new_packages = {}
+    for _, name in ipairs(names) do
+        if force or update or not installed_pip_packages[name] then table.insert(new_packages, name) end
+    end
+    if #new_packages > 0 then
+        names = table.concat(new_packages, " ")
+        log("Install pip: "..names, 1)
+        sh("PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip install --user "..names)
+        F(new_packages):map(function(name) installed_pip_packages[name] = true end)
     end
 end
 
@@ -1244,13 +1259,15 @@ function dev_configuration()
         sh "cp %(repo_path)/tup/tup.1 ~/.local/man/man1"
     end
 
-    --[[
+    --[===[
     if force or not installed "jupyter-lab" or not installed "jupyter" or not installed "voila" then
-        sh "pip install jupyterlab"
-        sh "pip install notebook"
-        sh "pip install voila"
+        pip_install [[
+            jupyterlab
+            notebook
+            voila
+        ]]
     end
-    --]]
+    --]===]
 
 end
 
@@ -1835,7 +1852,7 @@ function pandoc_configuration()
     if cfg.blockdiag then
         if force or upgrade or not installed "blockdiag" then
             log "Blockdiag"
-            sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user blockdiag seqdiag actdiag nwdiag"
+            pip_install "blockdiag seqdiag actdiag nwdiag"
         end
     end
 
@@ -1908,7 +1925,7 @@ function neovim_configuration()
         xclip
     ]]
 
-    sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user pynvim"
+    pip_install "pynvim"
 
     for config_file in ls ".config/nvim/*.vim" do
         script(config_file)
@@ -2533,7 +2550,7 @@ function work_configuration()
     -- AWS
     if force or upgrade then
         log "AWS configuration"
-        sh "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring pip3 install --user awscli boto3"
+        pip_install "awscli boto3"
         sh "sudo groupadd docker || true"
         sh "sudo usermod -a -G docker %(USER)"
         sh "sudo systemctl enable docker || true"
@@ -2575,23 +2592,22 @@ function work_configuration()
         end
     end
 
-    sh [[ export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
-          pip3 install '--user'             \
-                appdirs                     \
-                awscli                      \
-                click                       \
-                google-api-python-client    \
-                google-auth-httplib2        \
-                google-auth-oauthlib        \
-                junitparser                 \
-                junit-xml                   \
-                matplotlib                  \
-                pyaml                       \
-                pydantic                    \
-                python-can                  \
-                scipy                       \
-                tftpy                       \
-                tqdm                        \
+    pip_install [[
+        appdirs
+        awscli
+        click
+        google-api-python-client
+        google-auth-httplib2
+        google-auth-oauthlib
+        junitparser
+        junit-xml
+        matplotlib
+        pyaml
+        pydantic
+        python-can
+        scipy
+        tftpy
+        tqdm
     ]]
 
     -- ROS: http://wiki.ros.org/Installation/Source
