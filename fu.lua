@@ -978,7 +978,11 @@ function nextcloud_client_configuration()
         if installed then
             version = pipe("%(HOME)/.local/bin/Nextcloud -v"):match("version%s+([%d%.]+)")
         end
-        new_version = pipe("curl -sSL https://github.com/nextcloud-releases/desktop/releases/latest/"):match("tag/v([%d%.]+)")
+        new_version = pipe("curl -sSL https://github.com/nextcloud-releases/desktop/releases/")
+            : matches "tag/v([%d%.]+)"
+            : map(function(v) return v:split"%." end)
+            : maximum(F.op.ule)
+            : str "."
         --[[
         new_version = new_version == "3.9.0" and "3.8.2"
                    or new_version
@@ -2194,18 +2198,18 @@ function i3_configuration()
 
         local colors = {
             -- /* 8 normal colors */
-            [0] = "#000000",
-            [1] = "#cd3131",
-            [2] = "#0dbc79",
-            [3] = "#e5e510",
-            [4] = "#2472c8",
-            [5] = "#bc3fbc",
-            [6] = "#11a8cd",
-            [7] = "#e5e5e5",
+            [ 0] = "#000000",
+            [ 1] = "#cd3131",
+            [ 2] = "#0dbc79",
+            [ 3] = "#e5e510",
+            [ 4] = "#2472c8",
+            [ 5] = "#bc3fbc",
+            [ 6] = "#11a8cd",
+            [ 7] = "#e5e5e5",
 
             -- /* 8 bright colors */
-            [8] = "#666666",
-            [9] = "#f14c4c",
+            [ 8] = "#666666",
+            [ 9] = "#f14c4c",
             [10] = "#23d18b",
             [11] = "#f5f543",
             [12] = "#3b8eea",
@@ -2217,7 +2221,7 @@ function i3_configuration()
             [256] = "#000000",
             [257] = "#f8f8f2",
             [258] = "#000000",
-            [259]= "#eeeeee",
+            [259] = "#eeeeee",
         }
         with_file("%(repo_path)/st/config.def.h", function(config)
             config = config:gsub("font = \".-\";", I"font = \"%(FONT):style=%(FONT_VARIANT):size=%(FONT_SIZE):antialias=true:autohint=true\";")
