@@ -770,6 +770,10 @@ function system_configuration()
         xmlstarlet
     ]]
 
+    if installed "/usr/sbin/updatedb" then
+        sh "sudo dnf remove plocate"
+    end
+
     -- Locale and timezone
     log "Timezone and keyboard"
     sh "sudo timedatectl set-timezone %(TIMEZONE)"
