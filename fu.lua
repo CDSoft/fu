@@ -1804,6 +1804,26 @@ function text_edition_configuration()
         translate-shell
     ]]
 
+    -- PlantUML
+    if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
+        log "PlantUML"
+        local http = require "socket.http"
+        local index = assert(http.request "https://plantuml.com/fr/download")
+        local latest = assert(index : match 'href="(https://[^"]+%.jar)"')
+        local content = assert(http.request(latest))
+        write("%(HOME)/.local/bin/plantuml.jar", content, {raw=true})
+    end
+
+    -- ditaa
+    if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
+        log "ditaa"
+        local http = require "socket.http"
+        local index = assert(http.request "https://github.com/stathissideris/ditaa/releases/latest")
+        local tag = assert(index : match "releases/tag/v([%d%.]+)")
+        local content = assert(http.request("https://github.com/stathissideris/ditaa/releases/download/v"..tag.."/ditaa-"..tag.."-standalone.jar"))
+        write("%(HOME)/.local/bin/ditaa.jar", content, {raw=true})
+    end
+
 end
 
 -- }}}
