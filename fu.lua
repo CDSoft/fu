@@ -983,7 +983,7 @@ function nextcloud_client_configuration()
             version = pipe("%(HOME)/.local/bin/Nextcloud -v"):match("version%s+([%d%.]+)")
         end
         new_version = pipe("curl -sSL https://github.com/nextcloud-releases/desktop/releases/")
-            : matches "tag/v([%d%.]+)"
+            : matches "tag/v([%d%.]+)\""
             : map(function(v) return v:split"%." end)
             : maximum(F.op.ule)
             : str "."
