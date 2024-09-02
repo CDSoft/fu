@@ -80,6 +80,9 @@ bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
 bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 
+bindsym $alt+XF86Calculator     exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Numbat' -e numbat
+bindsym $mod+$alt+c             exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Numbat' -e numbat
+
 %(when(cfg.screenshot_with_ksnip) [=[
 bindsym Print                   exec ksnip -m
 bindsym $win+Print              exec ksnip -a
@@ -114,6 +117,7 @@ for_window [window_role="task_dialog"]                          floating enable
 for_window [title="^Alacritty$"]                                border pixel 4
 for_window [title="^🖩 hCalc$"]                                  floating enable, border pixel 4
 for_window [title="^🖩 Calculadoira$"]                           floating enable, border pixel 4
+for_window [title="^🖩 Numbat$"]                                 floating enable, border pixel 4
 for_window [title="^🖩 bc$"]                                     floating enable, border pixel 4
 for_window [title="^ssh-agent$"]                                floating enable
 for_window [title="VM VirtualBox$"]                             floating enable, border normal 8

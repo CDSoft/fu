@@ -349,6 +349,7 @@ use "nvim-treesitter/nvim-treesitter" {
                 "markdown",
                 "markdown_inline",
                 "mermaid",
+                "numbat",
                 "ninja",
                 "ocaml",
                 "ocaml_interface",
@@ -387,6 +388,23 @@ use "nvim-treesitter/nvim-treesitter" {
                 enable = false, -- neovim autoindent seems better
             },
         }
+        local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+        parser_config.numbat = {
+            install_info = {
+                url = "https://github.com/irevoire/tree-sitter-numbat",
+                files = { "src/parser.c", "src/scanner.c" },
+                branch = "main",
+                generate_requires_npm = false,
+                requires_generate_from_grammar = false,
+            },
+            filetype = "numbat",
+            }
+            vim.filetype.add({
+            extension = {
+                nbt = "numbat",
+            },
+        })
+        vim.treesitter.language.register("numbat", "numbat")
     end,
     post_config = function()
         highlight "Title" { fg="Red" }

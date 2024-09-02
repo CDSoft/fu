@@ -1277,6 +1277,17 @@ function dev_configuration()
     end
     --]===]
 
+    if force or upgrade or not installed "numbat" then
+        log "numbat"
+        local curr_version = ((pipe("numbat --version") or ""):lines()[1] or F""):words()[2]
+        local version = pipe("curl -sSL https://github.com/sharkdp/numbat/releases/latest/"):match("tag/v([%d%.]+)")
+        if version ~= curr_version then
+            with_tmpdir(function(tmp)
+                sh("wget https://github.com/sharkdp/numbat/releases/download/v"..version.."/numbat-v"..version.."-x86_64-unknown-linux-musl.tar.gz -O "..tmp.."/numbat.tar.gz")
+                sh("tar xvzf "..tmp.."/numbat.tar.gz -C ~/.local/bin --strip-components 1 \"*/numbat\"")
+            end)
+        end
+    end
 end
 
 function lsp_configuration()
@@ -2010,6 +2021,18 @@ function neovim_configuration()
 
     -- spell directory containing word lists
     mkdir "%(HOME)/.local/share/nvim/site/spell"
+
+    -- numbat colors
+    do
+        local url = "https://raw.githubusercontent.com/irevoire/tree-sitter-numbat/main/queries/highlights.scm"
+        local highlights_path = "%(HOME)/.local/share/nvim/lazy/nvim-treesitter/queries/numbat/highlights.scm"
+        if force or upgrade or not file_exist(highlights_path) then
+            local http = require "socket.http"
+            local highlights = assert(http.request(url))
+            mkdir(fs.dirname(highlights_path))
+            write(highlights_path, highlights, {raw=true})
+        end
+    end
 
 end
 
