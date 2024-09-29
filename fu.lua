@@ -551,6 +551,11 @@ function sh(...)
     assert(sh.run(F{...}:flatten():map(I)))
 end
 
+function download(url)
+    local sh = require "sh"
+    return assert(sh.read("curl", "-sSL", I(url)))
+end
+
 mkdir = F.compose{fs.mkdirs, I}
 
 rm = F.compose{os.remove, I}
@@ -1818,8 +1823,7 @@ function text_edition_configuration()
     -- PlantUML
     if force or not file_exist "%(HOME)/.local/bin/plantuml.jar" then
         log "PlantUML"
-        local http = require "socket.http"
-        local index = assert(http.request "https://plantuml.com/fr/download")
+        local index = download "https://plantuml.com/fr/download"
         local latest = assert(index : match 'href="(https://[^"]+%.jar)"')
         local content = assert(http.request(latest))
         write("%(HOME)/.local/bin/plantuml.jar", content, {raw=true})
@@ -1828,8 +1832,7 @@ function text_edition_configuration()
     -- ditaa
     if force or not file_exist "%(HOME)/.local/bin/ditaa.jar" then
         log "ditaa"
-        local http = require "socket.http"
-        local index = assert(http.request "https://github.com/stathissideris/ditaa/releases/latest")
+        local index = download "https://github.com/stathissideris/ditaa/releases/latest"
         local tag = assert(index : match "releases/tag/v([%d%.]+)")
         local content = assert(http.request("https://github.com/stathissideris/ditaa/releases/download/v"..tag.."/ditaa-"..tag.."-standalone.jar"))
         write("%(HOME)/.local/bin/ditaa.jar", content, {raw=true})
@@ -2027,8 +2030,7 @@ function neovim_configuration()
         local url = "https://raw.githubusercontent.com/irevoire/tree-sitter-numbat/main/queries/highlights.scm"
         local highlights_path = "%(HOME)/.local/share/nvim/lazy/nvim-treesitter/queries/numbat/highlights.scm"
         if force or upgrade or not file_exist(highlights_path) then
-            local http = require "socket.http"
-            local highlights = assert(http.request(url))
+            local highlights = download(url)
             mkdir(fs.dirname(highlights_path))
             write(highlights_path, highlights, {raw=true})
         end
