@@ -597,6 +597,30 @@ use "junegunn/fzf.vim"
 
 use "tpope/vim-fugitive"
 
+--[[
+use "NeogitOrg/neogit" {
+    dependencies = {
+        "nvim-lua/plenary.nvim",         -- required
+        "sindrets/diffview.nvim",        -- optional - Diff integration
+
+        -- Only one of these is needed.
+        "nvim-telescope/telescope.nvim", -- optional
+        --"ibhagwan/fzf-lua",              -- optional
+        --"echasnovski/mini.pick",         -- optional
+    },
+    config = function()
+        local neogit = require "neogit"
+        neogit.setup {
+            -- Disables signs for sections/items/hunks
+            disable_signs = false,
+            -- "ascii"   is the graph the git CLI generates
+            -- "unicode" is the graph like https://github.com/rbong/vim-flog
+            graph_style = "unicode",
+        }
+    end,
+}
+--]]
+
 use "lewis6991/gitsigns.nvim" {
     config = function()
         require"gitsigns".setup()
