@@ -1825,7 +1825,7 @@ function text_edition_configuration()
         log "PlantUML"
         local index = download "https://plantuml.com/fr/download"
         local latest = assert(index : match 'href="(https://[^"]+%.jar)"')
-        local content = assert(http.request(latest))
+        local content = download(latest)
         write("%(HOME)/.local/bin/plantuml.jar", content, {raw=true})
     end
 
@@ -1834,7 +1834,7 @@ function text_edition_configuration()
         log "ditaa"
         local index = download "https://github.com/stathissideris/ditaa/releases/latest"
         local tag = assert(index : match "releases/tag/v([%d%.]+)")
-        local content = assert(http.request("https://github.com/stathissideris/ditaa/releases/download/v"..tag.."/ditaa-"..tag.."-standalone.jar"))
+        local content = download("https://github.com/stathissideris/ditaa/releases/download/v"..tag.."/ditaa-"..tag.."-standalone.jar")
         write("%(HOME)/.local/bin/ditaa.jar", content, {raw=true})
     end
 
