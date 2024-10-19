@@ -1037,7 +1037,7 @@ function filesystem_configuration()
         cryptsetup
         squashfs-tools squashfuse
         baobab ncdu qdirstat
-        xz unrar lzip
+        xz unrar lzip lz4
         archivemount fuseiso sshfs curlftpfs fuse-7z
         fuse-zip
         zstd
