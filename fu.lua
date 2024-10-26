@@ -2190,7 +2190,7 @@ function i3_configuration()
 
     -- WezTerm
     if cfg.rust and cfg.wezterm then
-        if force or not installed "weztermii" then
+        if force or not installed "wezterm" then
             log "WezTerm"
             gitclone("https://github.com/wez/wezterm.git", { "--depth=1", "--branch=main", "--recursive" })
             sh "cd %(repo_path)/wezterm && git submodule update --init --recursive && ./get-deps"
