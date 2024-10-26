@@ -14,6 +14,7 @@ local DEBUG = true
 
 local process_blacklist = F[[
     alacritty
+    xfce4-terminal
     st
     bash-language-server
     clangd.main
