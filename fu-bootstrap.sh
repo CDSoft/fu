@@ -43,4 +43,4 @@ export PREFIX=~/.local
 )
 
 ln -sf "$(dirname "$(realpath "$0")")"/fu.lua $PREFIX/bin/fu
-$PREFIX/bin/luax $PREFIX/bin/fu -u
+$PREFIX/bin/luax $PREFIX/bin/fu "$@"

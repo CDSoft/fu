@@ -1038,7 +1038,7 @@ function filesystem_configuration()
         squashfs-tools squashfuse
         baobab ncdu qdirstat
         xz unrar lzip lz4
-        archivemount fuseiso sshfs curlftpfs fuse-7z
+        archivemount sshfs curlftpfs
         fuse-zip
         zstd
     ]]
@@ -1090,7 +1090,6 @@ function dev_configuration()
             git-delta
             subversion
             clang llvm clang-tools-extra llvm-devel clang-devel lld-devel
-            ccls
             cppcheck
             cmake
             ninja-build
@@ -1099,12 +1098,12 @@ function dev_configuration()
             meld
             pl pl-xpce pl-devel
             libev-devel startup-notification-devel xcb-util-devel xcb-util-cursor-devel xcb-util-keysyms-devel xcb-proto xcb-util-wm-devel xcb-util-xrm-devel libxkbcommon-devel libxkbcommon-x11-devel yajl-devel
-            arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++ arm-none-eabi-gdb
+            arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++
             mingw64-gcc
             gcc-gnat
             python-pip
             pypy
-            lua lua-filesystem lua-fun lua-lpeg lua-posix lua-socket luajit
+            lua lua-filesystem lua-lpeg lua-posix lua-socket luajit
             luarocks
             lua-devel
             love
@@ -1122,9 +1121,8 @@ function dev_configuration()
             boost boost-devel
             libjpeg-turbo-devel libpng-devel libtiff-devel
             npm
-            liblzma-devel
             protobuf-devel python3-protobuf
-            lzma-devel xz-devel zlib-devel
+            xz-devel zlib-devel
             blas-devel lapack-devel
             gnuplot
             openssl-devel
@@ -1491,7 +1489,6 @@ function framac_configuration()
 
     dnf_install [[
         z3
-        cvc4
     ]]
 
     if force or not installed "frama-c" then
@@ -1961,7 +1958,7 @@ function neovim_configuration()
 
     dnf_install [[
         neovim
-        ccrypt pwgen
+        pwgen
         gzip
         jq
         xclip
@@ -2036,6 +2033,18 @@ function neovim_configuration()
         end
     end
 
+    -- ccrypt
+    if force or not installed "ccrypt" then
+        local url = "https://ccrypt.sourceforge.net/download/1.11/ccrypt-1.11.linux-x86_64.tar.gz"
+        local archive = repo_path/url:basename()
+        if not fs.is_file(archive) then
+            sh("curl -fsSL", url, "-o", archive)
+        end
+        fs.with_tmpdir(function(tmp)
+            sh("cd", tmp, "&&", "tar -xvzf", archive, "--strip-components 1", "&&", "cp", tmp/"ccrypt", "~/.local/bin/")
+        end)
+    end
+
 end
 
 -- }}}
@@ -2100,7 +2109,6 @@ function i3_configuration()
         numlockx
         rlwrap
         i3 i3status i3lock dmenu xbacklight feh
-        i3-ipc
         picom
         arandr
         sox
@@ -2427,7 +2435,7 @@ function graphic_application_configuration()
         libreoffice libreoffice-langpack-fr libreoffice-help-fr
         vokoscreenNG
         simple-scan
-        evince okular mupdf qpdfview
+        evince okular mupdf
         atril
         xournal
         curl
@@ -2621,7 +2629,7 @@ function work_configuration()
         --]]
 
         -- https://docs.docker.com/engine/install/fedora/
-        sh "sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo"
+        sh "sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo --overwrite"
         dnf_install [[
             docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
         ]]
