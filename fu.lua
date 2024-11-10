@@ -135,11 +135,8 @@ function fu_configuration()
         povray = {"Install Povray?", "yn"},
         lazygit = {"Install lazygit?", "yn"},
         lazydocker = {"Install lazydocker?", "yn"},
-        abp = {"Install abp?", "yn"},
-        pp = {"Install pp?", "yn"},
 
         zoom = {"Install Zoom?", "yn"},
-        teams = {"Install Teams?", "yn"},
 
         virtualization = {"Install virtualization tools?", "yn"},
 
@@ -1098,12 +1095,9 @@ function dev_configuration()
             meld
             pl pl-xpce pl-devel
             libev-devel startup-notification-devel xcb-util-devel xcb-util-cursor-devel xcb-util-keysyms-devel xcb-proto xcb-util-wm-devel xcb-util-xrm-devel libxkbcommon-devel libxkbcommon-x11-devel yajl-devel
-            arm-none-eabi-gcc arm-none-eabi-gcc-cs-c++
-            mingw64-gcc
             gcc-gnat
-            python-pip
             pypy
-            lua lua-filesystem lua-lpeg lua-posix lua-socket luajit
+            lua
             luarocks
             lua-devel
             love
@@ -2318,7 +2312,6 @@ function i3_configuration()
     mime_default "wireshark.desktop"
     mime_default "nvim.desktop"
 
-    script ".config/alacritty/alacritty.yml"
     script ".config/alacritty/alacritty.toml"
     script ".Xdefaults"
 
@@ -2731,7 +2724,7 @@ function work_vpn_configuration()
     fs.with_tmpdir(function(tmp)
         local pmod = "RSA1024.pmod"
         fs.write(tmp/pmod, F.unlines {
-            "# The Aviatrix VPN uses certificates with 1024-bits RSA keys",
+            "# Allow certificates with 1024-bits RSA keys",
             "min_rsa_size = 1024",
         })
         sh("sudo cp "..tmp/pmod.." /etc/crypto-policies/policies/modules/")
