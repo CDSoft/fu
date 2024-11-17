@@ -239,7 +239,7 @@ end
 
 require "config"
 
-F.foreach(#args.packages>0 and packages or {HOSTNAME}, install)
+F.foreach(#args.packages>0 and args.packages or {HOSTNAME}, install)
 
 if UPDATE then
     title "Upgrade packages"
