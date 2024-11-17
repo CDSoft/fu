@@ -9,6 +9,8 @@ if not fs.is_file "/etc/resolv.conf.orig" then
     end
     run "systemctl restart NetworkManager"
 end
+
+--[[
 -- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening
 --sh "sudo update-crypto-policies --set LEGACY"
 fs.with_tmpdir(function(tmp)
@@ -20,3 +22,4 @@ fs.with_tmpdir(function(tmp)
     run { "sudo cp", tmp/pmod, "/etc/crypto-policies/policies/modules/" }
 end)
 run "sudo update-crypto-policies --set DEFAULT:RSA1024"
+--]]
