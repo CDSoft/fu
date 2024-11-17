@@ -1,0 +1,11 @@
+[gui]
+    fontui = -family \"DejaVu Sans\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
+    fontdiff = -family \"DejaVu Sans Mono\" -size 8 -weight normal -slant roman -underline 0 -overstrike 0
+    encoding = utf-8
+[user]
+    email = %(assert(myconf.git.user_email))
+    name = %(assert(myconf.git.user_name))
+[core]
+    excludesfile = %(HOME)/.gitignore
+[alias]
+    meld = !git difftool -t meld --dir-diff

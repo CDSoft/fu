@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# `retry N cmd` runs `cmd` at most `N` times until `cmd` succeeds.
+
+TRIES=$1
+shift 1
+
+while [ "$TRIES" -gt 0 ]
+do
+    echo ""
+    echo "$@"
+    echo ""
+    "$@"
+    RES=$?
+    [ "$RES" -eq 0 ] && exit $RES
+    TRIES=$((TRIES-1))
+done
+
+echo ""
+echo "Too many failures..."
+read
+
+exit "$RES"
