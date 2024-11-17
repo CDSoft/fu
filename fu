@@ -21,17 +21,6 @@
 # along with FU.  If not, see <http://www.gnu.org/licenses/>.
 ########################################################################
 
-if ! sudo true
-then
-    su -c "
-        echo '%sudo ALL=(ALL:ALL) ALL' > /etc/sudoers.d/10-sudo;
-        chmod 440 /etc/sudoers.d/10-sudo;
-        usermod -a -G sudo $USER;
-        "
-    newgrp sudo
-    exec "$@"
-fi
-
 export PREFIX=~/.local
 
 [ -x $PREFIX/bin/luax ] || (
