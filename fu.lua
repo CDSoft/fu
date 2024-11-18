@@ -78,6 +78,19 @@ db = setmetatable({}, db_mt)
 if RESET then db:reset() end
 db:load()
 
+-- update at least every 2 weeks
+do
+    local t0 = db.last_update or 0
+    local t = os.time()
+    if t - t0 > 14*86400 then UPDATE = true end
+end
+-- complete update at least every 4 weeks
+do
+    local t0 = db.last_force or 0
+    local t = os.time()
+    if t - t0 > 28*86400 then FORCE = true; UPDATE = true end
+end
+
 function title(s)
     local cols = term.size(io.stdout).cols
     local color = term.color.black + term.color.ongreen
@@ -245,4 +258,11 @@ if UPDATE then
     run "sudo dnf upgrade"
 end
 
--- TODO : force update after a while (e.g. twice a month)
+if UPDATE then
+    local t = os.time()
+    db.last_update = t
+    if FORCE then
+        db.last_force = t
+    end
+    db:save()
+end
