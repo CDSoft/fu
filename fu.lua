@@ -92,7 +92,7 @@ function title(s)
 end
 
 function when(cond)
-    return function(s) return cond and I(s) or "" end
+    return cond and I or F.const""
 end
 
 function gitclone(url, options)
