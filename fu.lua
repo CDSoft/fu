@@ -54,16 +54,13 @@ FU_PATH  = HOME/".config"/"fu"
 
 fs.chdir(arg[0]:realpath():dirname())
 
-db = setmetatable({}, {
+db = setmetatable({ dnf={}, lua={}, pip={}, mime={} }, {
     __index = {
         dbfile = FU_PATH/"db.lua",
-        empty = { dnf={}, lua={}, pip={}, mime={} },
         load = function(self)
-            if RESET then fs.remove(db.dbfile); RESET = false end
-            local newdb = fs.is_file(self.dbfile) and assert(loadfile(self.dbfile))() or {}
-            F.foreachk(self, function(k, _) self[k] = nil end)
-            F.foreachk(self.empty, function(k, v) self[k] = v end)
-            F.foreachk(newdb, function(k, v) self[k] = v end)
+            if RESET then fs.remove(db.dbfile) end
+            F(fs.is_file(self.dbfile) and assert(loadfile(self.dbfile))() or {})
+               : foreachk(function(k, v) self[k] = v end)
         end,
         save = function(self)
             fs.mkdirs(self.dbfile:dirname())
