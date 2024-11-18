@@ -1,7 +1,4 @@
-myconf = {}
-if fs.is_file(HOME/".myconf") then
-    assert(loadfile(HOME/".myconf", "t", myconf))()
-end
+myconf = fs.is_file(HOME/".myconf") and import(HOME/".myconf") or {}
 
 local function os_release(param) return read(". /etc/os-release; echo $"..param):trim() end
 OS_RELEASE_NAME         = os_release "NAME"

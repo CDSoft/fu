@@ -25,6 +25,7 @@ along with FU.  If not, see <http://www.gnu.org/licenses/>.
 F = require "F"
 fs = require "fs"
 local term = require "term"
+import = require "import"
 
 I = F.I(_G) % "%%()"
 
@@ -53,29 +54,23 @@ FU_PATH  = HOME/".config"/"fu"
 
 fs.chdir(arg[0]:realpath():dirname())
 
-local db_mt = {__index={}}
-function db_mt.__index:dbfile() return FU_PATH/"db.lua" end
-function db_mt.__index:reset() fs.remove(self:dbfile()) end
-function db_mt.__index:load()
-    local dbfile = self:dbfile()
-    local confdb = {}
-    if fs.is_file(dbfile) then
-        confdb = assert(loadfile(dbfile))()
-    end
-    confdb.dnf = confdb.dnf or {}
-    confdb.lua = confdb.lua or {}
-    confdb.pip = confdb.pip or {}
-    confdb.mime = confdb.mime or {}
-    F.foreachk(self, function(k, _) self[k] = nil end)
-    F.foreachk(confdb, function(k, v) self[k] = v end)
-end
-function db_mt.__index:save()
-    local dbfile = self:dbfile()
-    fs.mkdirs(dbfile:dirname())
-    assert(fs.write(dbfile, "return "..F.show(self, {indent=4})))
-end
-db = setmetatable({}, db_mt)
-if RESET then db:reset() end
+db = setmetatable({}, {
+    __index = {
+        dbfile = FU_PATH/"db.lua",
+        empty = { dnf={}, lua={}, pip={}, mime={} },
+        load = function(self)
+            if RESET then fs.remove(db.dbfile); RESET = false end
+            local newdb = fs.is_file(self.dbfile) and assert(loadfile(self.dbfile))() or {}
+            F.foreachk(self, function(k, _) self[k] = nil end)
+            F.foreachk(self.empty, function(k, v) self[k] = v end)
+            F.foreachk(newdb, function(k, v) self[k] = v end)
+        end,
+        save = function(self)
+            fs.mkdirs(self.dbfile:dirname())
+            assert(fs.write(self.dbfile, "return "..F.show(self, {indent=4})))
+        end,
+    },
+})
 db:load()
 
 -- update at least every 2 weeks
@@ -106,7 +101,6 @@ end
 function gitclone(url, options)
     url = I(url)
     local name = url:basename()
-    options = F.unwords(options or {})
     local path = FU_PATH/name:gsub("%.git$", "")
     if fs.is_dir(path) then
         run {
@@ -117,7 +111,7 @@ function gitclone(url, options)
             "git pull",
         }
     else
-        run { "git clone", url, path, options }
+        run { "git clone", url, path, options or {} }
     end
     run {
         "cd", path,
