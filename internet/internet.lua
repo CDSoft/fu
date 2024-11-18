@@ -29,7 +29,7 @@ if fs.is_file(HOME/".mozilla/firefox/profiles.ini") then
 end
 
 -- Thunderbird extensions
-if UPDATE or not fs.is_file(FU_PATH/"reply_as_original_recipient.xpi") then
+if FORCE or not fs.is_file(FU_PATH/"reply_as_original_recipient.xpi") then
     gitclone "https://github.com/qiqitori/reply_as_original_recipient.git"
     run { "cd", FU_PATH/"reply_as_original_recipient", "&&", "zip -r ../reply_as_original_recipient.xpi *" }
 end

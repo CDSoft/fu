@@ -1,6 +1,7 @@
+title(...)
+
 local nextcloud_installed = fs.is_file(HOME/".local/bin/Nextcloud")
 if UPDATE or not nextcloud_installed then
-    title(...)
 
     local version, new_version
     if nextcloud_installed then
@@ -28,4 +29,3 @@ if UPDATE or not nextcloud_installed then
         end)
     end
 end
-

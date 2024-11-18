@@ -3,7 +3,7 @@ title(...)
 local asymptote_sources = false
 
 if asymptote_sources then
-    if UPDATE or not fs.is_file(HOME/".local/bin/asy") then
+    if FORCE or not fs.is_file(HOME/".local/bin/asy") then
         gitclone "https://github.com/vectorgraphics/asymptote"
         run { "cd", FU_PATH/"asymptote", "&&", "./autogen.sh" }
         run { "cd", FU_PATH/"asymptote", "&&", "./configure", "--prefix="..HOME/".local" }

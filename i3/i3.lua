@@ -87,7 +87,7 @@ else
 end
 
 -- urxvt
-if UPDATE or not fs.is_file(HOME/".urxvt/ext/font-size") then
+if FORCE or not fs.is_file(HOME/".urxvt/ext/font-size") then
     -- Urxvt font-size
     gitclone "https://github.com/majutsushi/urxvt-font-size"
     fs.mkdirs(HOME/".urxvt/ext")

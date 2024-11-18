@@ -16,7 +16,7 @@ end
 
 -- ShellCheck
 if fs.is_file(HOME/".ghcup/env") and shellcheck_sources then
-    if UPDATE or not installed "shellcheck" then
+    if FORCE or not installed "shellcheck" then
         run ". ~/.ghcup/env; ghcup run stack install -- ShellCheck"
     end
 else

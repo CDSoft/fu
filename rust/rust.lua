@@ -8,7 +8,7 @@ if not installed "rustc" then
         run { "sh", tmp, "-y -v --no-modify-path" }
     end)
     run "~/.cargo/bin/rustup update stable"
-elseif UPDATE then
+elseif FORCE then
     run "rustup override set stable"
     run "rustup update stable"
 end

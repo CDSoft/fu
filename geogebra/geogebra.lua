@@ -1,6 +1,6 @@
 title(...)
 
-if UPDATE or not installed "geogebra" then
+if FORCE or not installed "geogebra" then
     local GEOGEBRA_URL = "https://download.geogebra.org/installers/6.0/"
     local GEOGEBRA_ARCHIVE
     read("curl -i "..GEOGEBRA_URL):gsub('href="(GeoGebra%-Linux64%-Portable%-(.-)%.zip)"', function(archive)

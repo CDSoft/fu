@@ -10,7 +10,7 @@ dnf_install [[
 ]]
 
 -- AWS
-if UPDATE then
+if UPDATE or not installed "aws" then
     pip_install "awscli boto3"
     run { "sudo groupadd docker || true" }
     run { "sudo usermod -a -G docker", USER }
@@ -18,7 +18,7 @@ if UPDATE then
 end
 
 -- Docker
-if UPDATE then
+if UPDATE or not install "docker" then
     -- https://docs.docker.com/engine/install/fedora/
     run "sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo --overwrite"
     dnf_install [[

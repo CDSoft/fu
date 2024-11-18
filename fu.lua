@@ -96,15 +96,13 @@ function gitclone(url, options)
     options = F.unwords(options or {})
     local path = FU_PATH/name:gsub("%.git$", "")
     if fs.is_dir(path) then
-        if UPDATE then
-            run {
-                "cd", path,
-                "&&",
-                "( git stash && ( (git checkout master && git reset --hard master) || (git checkout main && git reset --hard main) || true ) )",
-                "&&",
-                "git pull",
-            }
-        end
+        run {
+            "cd", path,
+            "&&",
+            "( git stash && ( (git checkout master && git reset --hard master) || (git checkout main && git reset --hard main) || true ) )",
+            "&&",
+            "git pull",
+        }
     else
         run { "git clone", url, path, options }
     end
@@ -133,7 +131,7 @@ end
 
 function dnf_install(...)
     names = F.flatten{...}:map(I):unlines():words()
-    local new_packages = names : filter(function(name) return UPDATE or not db.dnf[name] end)
+    local new_packages = names : filter(function(name) return not db.dnf[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
         print("# dnf install "..new_names)
@@ -145,7 +143,7 @@ end
 
 function luarocks(names, opts)
     names = I(names):words()
-    local new_packages = names:filter(function(name) return UPDATE or not db.lua[name] end)
+    local new_packages = names:filter(function(name) return not db.lua[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
         print("# luarocks install "..new_names)
@@ -159,7 +157,7 @@ end
 
 function pip_install(names)
     names = I(names):words()
-    local new_packages = names:filter(function(name) return UPDATE or not db.pip[name] end)
+    local new_packages = names:filter(function(name) return not db.pip[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
         print("# pip install "..new_names)
@@ -186,7 +184,7 @@ end
 function mime_default(desktop_file)
     desktop_file = I(desktop_file)
     local path = "/usr/share/applications"/desktop_file
-    if fs.is_file(path) and (UPDATE or not db.mime[desktop_file]) then
+    if fs.is_file(path) and not db.mime[desktop_file] then
         fs.read(path):gsub("MimeType=([^\n]*)", function(mimetypes)
             mimetypes:gsub("[^;]+", function(mimetype)
                 run { "xdg-mime default", desktop_file, mimetype }
@@ -246,3 +244,5 @@ if UPDATE then
     run "sudo dnf update --refresh"
     run "sudo dnf upgrade"
 end
+
+-- TODO : force update after a while (e.g. twice a month)

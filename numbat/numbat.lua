@@ -1,6 +1,6 @@
 title(...)
 
-if UPDATE or not installed "numbat" then
+if FORCE or not installed "numbat" then
     local curr_version = (read("numbat --version || true"):lines()[1] or F""):words()[2]
     local version = read("curl -sSL https://github.com/sharkdp/numbat/releases/latest/"):match("tag/v([%d%.]+)")
     if version ~= curr_version then
@@ -15,7 +15,7 @@ end
 do
     local url = "https://raw.githubusercontent.com/irevoire/tree-sitter-numbat/main/queries/highlights.scm"
     local highlights_path = HOME/".local/share/nvim/lazy/nvim-treesitter/queries/numbat/highlights.scm"
-    if UPDATE or not fs.is_file(highlights_path) then
+    if FORCE or not fs.is_file(highlights_path) then
         local highlights = download(url)
         fs.mkdirs(fs.dirname(highlights_path))
         fs.write(highlights_path, highlights)

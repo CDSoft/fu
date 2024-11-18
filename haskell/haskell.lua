@@ -5,7 +5,7 @@ dnf_install [[
 ]]
 
 -- GHCup
-if UPDATE or not installed "ghcup" then
+if FORCE or not installed "ghcup" then
     run {
         "export BOOTSTRAP_HASKELL_NONINTERACTIVE=1;",
         "export BOOTSTRAP_HASKELL_INSTALL_HLS=1;",
@@ -23,7 +23,7 @@ local HASKELL_STACK_PACKAGES = {
     "MissingH",
     "timeit",
 }
-if UPDATE then
+if FORCE then
     for _, package in ipairs(HASKELL_STACK_PACKAGES) do
         run { ". ~/.ghcup/env; ghcup run stack install --", package }
     end
@@ -32,7 +32,7 @@ end
 local HASKELL_CABAL_PACKAGES = {
     "implicit-hie",
 }
-if UPDATE then
+if FORCE then
     for _, package in ipairs(HASKELL_CABAL_PACKAGES) do
         run { ". ~/.ghcup/env; ghcup run cabal install -- --overwrite-policy=always", package }
     end
