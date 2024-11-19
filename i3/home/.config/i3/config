@@ -70,9 +70,9 @@ bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec menu-web
 
-bindsym $mod+t                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi todo.txt
-bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi notes.txt
-bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(WIKI) -e vi secret.pwd
+bindsym $mod+t                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi todo.txt
+bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi notes.txt
+bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi secret.pwd
 %(when(myconf.keepass) [=[
 bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
 ]=])
@@ -205,7 +205,6 @@ bindsym $mod+egrave     workspace number $ws7
 bindsym $mod+underscore workspace number $ws8
 bindsym $mod+ccedilla   workspace number $ws9
 bindsym $mod+agrave     workspace number $ws10
-%(when(HOSTNAME=="desktop") [[
 bindsym $mod+F1         workspace number $ws1
 bindsym $mod+F2         workspace number $ws2
 bindsym $mod+F3         workspace number $ws3
@@ -218,7 +217,6 @@ bindsym $mod+F9         workspace number $ws9
 bindsym $mod+F10        workspace number $ws10
 bindsym $mod+F11        workspace number $ws11
 bindsym $mod+F12        workspace number $ws12
-]])
 
 # move focused container to workspace
 bindsym $mod+Shift+ampersand    move container to workspace number $ws1
@@ -231,7 +229,6 @@ bindsym $mod+Shift+egrave       move container to workspace number $ws7
 bindsym $mod+Shift+underscore   move container to workspace number $ws8
 bindsym $mod+Shift+ccedilla     move container to workspace number $ws9
 bindsym $mod+Shift+agrave       move container to workspace number $ws10
-%(when(HOSTNAME=="desktop") [[
 bindsym $mod+Shift+F1           move container to workspace number $ws1
 bindsym $mod+Shift+F2           move container to workspace number $ws2
 bindsym $mod+Shift+F3           move container to workspace number $ws3
@@ -244,7 +241,6 @@ bindsym $mod+Shift+F9           move container to workspace number $ws9
 bindsym $mod+Shift+F10          move container to workspace number $ws10
 bindsym $mod+Shift+F11          move container to workspace number $ws11
 bindsym $mod+Shift+F12          move container to workspace number $ws12
-]])
 
 # move workspace to another monitor
 bindsym $mod+$alt+$ctrl+Left    move workspace to output left
@@ -329,11 +325,11 @@ bar {
 # Autostart applications
 
 exec --no-startup-id picom -bc
-exec --no-startup-id numlockx %(myconf.numlock and "on" or "off")
+exec --no-startup-id numlockx %(NUMLOCK and "on" or "off")
 exec --no-startup-id /usr/lib64/xfce4/notifyd/xfce4-notifyd &
 exec --no-startup-id xfce4-volumed-pulse &
 exec --no-startup-id hsetroot -solid '#020608'
-%(when(HOSTNAME=="desktop") [[exec --no-startup-id every 1h wallpaper_of_the_day]])
+%(when(WALLPAPER) [[exec --no-startup-id every 1h wallpaper_of_the_day]])
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'
@@ -346,14 +342,14 @@ exec --no-startup-id st -t ssh-agent -e ~/.local/bin/ssha &
 
 #exec --no-startup-id %(HOME)/.local/bin/transient_clipboard.lua &
 
-%(when(HOSTNAME=="desktop") [=[
+%(when(START_VLC) [=[
 # VLC minimized
 exec --no-startup-id vlc --qt-start-minimized &
 ]=])
 
 # run specific scripts at i3 startup
 
-%(when(HOSTNAME=="desktop" or HOSTNAME=="laptop" or HOSTNAME~="FR000773") "exec --no-startup-id Nextcloud")
+%(when(db.start_nextcloud) "exec --no-startup-id Nextcloud")
 
 # custom configuration from ~/.myconf
 

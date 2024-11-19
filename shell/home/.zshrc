@@ -149,7 +149,7 @@ eval "$(\luax env)"       # \luax to skip the luax alias and let mc start faster
 # Lua Language Server
 alias luamake=%(FU_PATH)/lua-language-server/3rd/luamake/luamake
 
-%(when(HOSTNAME=="work") [==[
+%(when(db.default_configuration=="pro") [==[
 # Work configuration
 
 #alias docker='docker -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY -v /dev/bus/usb:/dev/bus/usb --privileged -p host_port:container_port/tcp'

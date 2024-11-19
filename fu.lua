@@ -36,7 +36,7 @@ local args = (function()
     parser : flag "-u" : description "Fast update"
     parser : flag "-f" : description "Force update of all packages"
     parser : flag "-r" : description "Reset the package database"
-    parser : argument "packages" : description "Packages to update" : args "*"
+    parser : argument "packages" : description "Configuration or packages to update" : args "*"
     return parser : parse(arg)
 end)()
 
@@ -201,7 +201,7 @@ end
 
 local already_installed = {}
 
-function install(package)
+local function install_package(package)
     if already_installed[package] then return end
     already_installed[package] = true
     assert(fs.is_dir(package), package..": package not found")
@@ -239,9 +239,70 @@ function install(package)
     end)
 end
 
-require "config"
+local function install_configuration(name)
+    title(name)
+    F.foreach(CONFIGURATIONS, function(conf)
+        local package_name = F.head(conf)
+        local confs = F.tail(conf):flatten()
+        if confs:elem(name) then
+            install_package(package_name)
+        end
+    end)
+end
 
-F.foreach(#args.packages>0 and args.packages or {HOSTNAME}, install)
+myconf = fs.is_file(HOME/".myconf") and import(HOME/".myconf") or {}
+
+require "config"
+local implemented_packages = fs.dir() : filter(fs.is_dir) : sort() : filter(function(name) return name:head()~="." end)
+local referenced_packages = F.map(F.head, CONFIGURATIONS)
+local implemented_but_not_referenced = F.difference(implemented_packages, referenced_packages)
+if #implemented_but_not_referenced > 0 then error(implemented_but_not_referenced:str(", ", " and ")..": implemented but not referenced") end
+local referenced_but_not_implemented = F.difference(referenced_packages, implemented_packages)
+if #referenced_but_not_implemented > 0 then error(referenced_but_not_implemented:str(", ", " and ")..": referenced but not implemented") end
+local configuration_names = F(CONFIGURATIONS)
+    : map(function(conf) return F.tail(conf) end)
+    : flatten()
+    : nub()
+    : sort()
+if #F.intersection(referenced_packages, configuration_names) > 0 then
+    error(F.intersection(referenced_packages, configuration_names):str(", ", " and ")..": configurations and packages can not have the same names")
+end
+
+local function default_configuration()
+    if db.default_configuration then return db.default_configuration end
+    local linenoise = require "linenoise"
+    local prompt = "Default configuration ("..configuration_names:str(", ").."): "
+    for _ = 1, 3 do
+        local name = linenoise.read(prompt)
+        if configuration_names:elem(name) then
+            db.default_configuration = name
+            db:save()
+            return name
+        end
+    end
+end
+
+if #args.packages>0 and not db.default_configuration then
+    error("the first installation must be a configuration, not individual packages")
+end
+
+local names = #args.packages>0 and args.packages or {default_configuration()}
+
+F.foreach(PARAMETERS, function(conf)
+    local name = F.head(conf)
+    local confs = F.tail(conf):flatten()
+    _G[name] = confs:elem(db.default_configuration)
+end)
+
+F.foreach(names, function(name)
+    if referenced_packages:elem(name) then
+        install_package(name)
+    elseif configuration_names:elem(name) then
+        install_configuration(name)
+    else
+        error(name..": configuration or package not found")
+    end
+end)
 
 if UPDATE then
     title "Upgrade packages"

@@ -1,5 +1,11 @@
 title(...)
 
+if not db.wiki or not db.start_nextcloud then
+    db.wiki = db.wiki or HOME/"Nextcloud/Wiki"
+    db.start_nextcloud = true
+    db:save()
+end
+
 local nextcloud_installed = fs.is_file(HOME/".local/bin/Nextcloud")
 if UPDATE or not nextcloud_installed then
 

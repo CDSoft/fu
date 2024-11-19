@@ -18,7 +18,7 @@ if UPDATE or not installed "aws" then
 end
 
 -- Docker
-if UPDATE or not install "docker" then
+if UPDATE or not installed "docker" then
     -- https://docs.docker.com/engine/install/fedora/
     run "sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo --overwrite"
     dnf_install [[

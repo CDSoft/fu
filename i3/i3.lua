@@ -176,7 +176,7 @@ mime_default "libreoffice-math.desktop"
 mime_default "libreoffice-startcenter.desktop"
 mime_default "libreoffice-writer.desktop"
 mime_default "libreoffice-xsltfilter.desktop"
-if HOSTNAME == "desktop" then
+if USE_THUNDERBIRD then
     mime_default "mozilla-thunderbird.desktop"
 end
 mime_default "atril.desktop"
@@ -193,6 +193,8 @@ if FORCE or not installed "hsetroot" then
     run { "cd", FU_PATH/"hsetroot", "&&", "make", "&&", "DESTDIR="..HOME, "PREFIX=/.local", "make install" }
 end
 
-require"sh".write "base64 -d > ~/.config/i3/empty.wav" "UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="
+if not fs.is_file(HOME/".config/i3/empty.wav") then
+    fs.write(HOME/".config/i3/empty.wav", ("UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="):unbase64())
+end
 
 run { "sudo setcap cap_net_admin=ep", read'which i3status' }
