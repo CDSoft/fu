@@ -18,7 +18,7 @@ dnf_install [[
     chkconfig
 ]]
 
-if FORCE or not db.network_configured then
+db:once(FORCE, "network_configured", function()
 
     -- sshd
     run "sudo systemctl start sshd.service"
@@ -30,7 +30,4 @@ if FORCE or not db.network_configured then
     -- wireshark
     run { "sudo usermod -a -G wireshark", USER }
 
-    db.network_configured = true
-    db:save()
-
-end
+end)

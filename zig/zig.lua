@@ -43,8 +43,8 @@ if FORCE or not installed "zig" or not installed "zls" then
                     "&&",
                     "chmod +x", HOME/".local/bin/zls",
                 }
-                db.zls_version = version
             end)
+            db.zls_version = version
             db:save()
         end
     end

@@ -74,6 +74,13 @@ db = setmetatable({ dnf={}, lua={}, pip={}, mime={} }, {
             fs.mkdirs(self.dbfile:dirname())
             assert(fs.write(self.dbfile, "return "..F.show(self, {indent=4})))
         end,
+        once = function(self, cond, key, func)
+            if cond or not self[key] then
+                func()
+                self[key] = true
+                self:save()
+            end
+        end,
     },
 })
 db:load()
@@ -168,7 +175,7 @@ end
 
 function luarocks(names, opts)
     names = I(names):words()
-    local new_packages = names:filter(function(name) return not db.lua[name] end)
+    local new_packages = names:filter(function(name) return UPDATE or not db.lua[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
         print("# luarocks install "..new_names)
@@ -182,7 +189,7 @@ end
 
 function pip_install(names)
     names = I(names):words()
-    local new_packages = names:filter(function(name) return not db.pip[name] end)
+    local new_packages = names:filter(function(name) return UPDATE or not db.pip[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
         print("# pip install "..new_names)
