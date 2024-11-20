@@ -73,9 +73,7 @@ bindsym $mod+Shift+w            exec menu-web
 bindsym $mod+t                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi todo.txt
 bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi notes.txt
 bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi secret.pwd
-%(when(myconf.keepass) [=[
-bindsym $mod+k                  exec keepassxc %(myconf.keepass.db)
-]=])
+bindsym $mod+k                  exec keepassxc
 
 bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
 bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
