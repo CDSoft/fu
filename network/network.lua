@@ -21,10 +21,8 @@ dnf_install [[
 ]]
 
 -- sshd
-run "sudo systemctl start sshd"
-run "sudo systemctl enable sshd"
-run "sudo chkconfig sshd on"
-run "sudo service sshd start"
+run "sudo systemctl start sshd.service"
+run "sudo systemctl enable sshd.service"
 
 -- Disable firewalld
 run "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.

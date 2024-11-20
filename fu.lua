@@ -106,24 +106,30 @@ function gitclone(url, options)
     url = I(url)
     local name = url:basename()
     local path = FU_PATH/name:gsub("%.git$", "")
-    if fs.is_dir(path) then
+    local function update()
         run {
             "cd", path,
             "&&",
-            "( git stash && ( (git checkout master && git reset --hard master) || (git checkout main && git reset --hard main) || true ) )",
+            "git submodule sync",
             "&&",
-            "git pull",
+            "git submodule update --init --recursive"
         }
+    end
+    if fs.is_dir(path) then
+        if UPDATE then
+            run {
+                "cd", path,
+                "&&",
+                "( git stash && ( (git checkout master && git reset --hard master) || (git checkout main && git reset --hard main) || true ) )",
+                "&&",
+                "git pull",
+            }
+            update()
+        end
     else
         run { "git clone", url, path, options or {} }
+        update()
     end
-    run {
-        "cd", path,
-        "&&",
-        "git submodule sync",
-        "&&",
-        "git submodule update --init --recursive"
-    }
 end
 
 function repo(local_name, name)

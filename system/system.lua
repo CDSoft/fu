@@ -48,4 +48,4 @@ if read "upower -e" : match "battery" then
 end
 
 -- Higher inotify limits
-run "sudo sysctl -p /etc/sysctl.d/99-inotify_limits.conf"
+run "sudo sysctl -q -p /etc/sysctl.d/99-inotify_limits.conf"
