@@ -27,7 +27,7 @@ fs = require "fs"
 local term = require "term"
 local import = require "import"
 
-local I = F.I(_G) % "%%()"
+I = F.I(_G) % "%%()"
 
 local args = (function()
     local parser = require "argparse"()
