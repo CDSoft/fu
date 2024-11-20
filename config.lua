@@ -1,10 +1,10 @@
-local function os_release(param) return read(". /etc/os-release; echo $"..param):trim() end
+local function os_release(param) return read(". /etc/os-release; echo $"..param) end
 OS_RELEASE_NAME         = os_release "NAME"
 OS_RELEASE_PRETTY_NAME  = os_release "PRETTY_NAME"
 OS_RELEASE_ID           = os_release "ID"
 OS_RELEASE_VERSION_ID   = os_release "VERSION_ID"
 
-RELEASE = read "rpm -E %fedora" : trim()
+RELEASE = read "rpm -E %fedora"
 
 title(OS_RELEASE_PRETTY_NAME)
 
@@ -18,8 +18,7 @@ FONT_VARIANT = "Medium"
 FONT         = "FiraCode Nerd Font"
 --FONT         = "SauceCodePro Nerd Font"
 
-dnf_install "xdpyinfo"
-local xres, yres = (read "xdpyinfo | awk '/dimensions/ {print $2}'" or "1920x1080") : trim() : split "x" : map(tonumber) : unpack()
+local xres, yres = screen_resolution()
 FONT_SIZE =    (xres <= 1920 or yres <= 1080) and 9
             or (xres <= 2560 or yres <= 1440) and 9+4
             or                                    9+8

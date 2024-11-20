@@ -83,6 +83,13 @@ do
     if t - t0 > 28*86400 then FORCE = true; UPDATE = true end
 end
 
+function screen_resolution()
+    if not installed "xdpyinfo" then dnf_install "xdpyinfo" end
+    local display_ok, res = pcall(read, "xdpyinfo")
+    if not display_ok then return 1920, 1080 end
+    return res : match "dimensions:%s*(%d+x%d+)" : split "x" : map(tonumber) : unpack()
+end
+
 function title(s)
     local cols = term.size(io.stdout).cols
     local color = term.color.black + term.color.ongreen
