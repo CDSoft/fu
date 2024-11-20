@@ -33,4 +33,4 @@ if FORCE or not fs.is_file(FU_PATH/"reply_as_original_recipient.xpi") then
 end
 
 -- Remove unecessary language symlinks
-run "sudo find /usr/share/myspell -type l -exec rm -v {} \\;"
+run "find /usr/share/myspell -type l -exec sudo rm -v {} \\;"

@@ -63,16 +63,10 @@ pip_install [[
 -- ROS: http://wiki.ros.org/Installation/Source
 if ros then
     copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo", "thofmann/ros")
-    if tonumber(OS_RELEASE_VERSION_ID) <= 34 then
-        dnf_install [[
-            ros-desktop_full-devel
-        ]]
-    else
-        dnf_install [[
-            ros-ros_base
-            ros-ros_base-devel
-        ]]
-    end
+    dnf_install [[
+        ros-ros_base
+        ros-ros_base-devel
+    ]]
             --[=[ WARNING: this does not seem to work!
             dnf_install [[
                 gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build

@@ -18,12 +18,19 @@ dnf_install [[
     chkconfig
 ]]
 
--- sshd
-run "sudo systemctl start sshd.service"
-run "sudo systemctl enable sshd.service"
+if FORCE or not db.network_configured then
 
--- Disable firewalld
-run "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
+    -- sshd
+    run "sudo systemctl start sshd.service"
+    run "sudo systemctl enable sshd.service"
 
--- wireshark
-run { "sudo usermod -a -G wireshark", USER }
+    -- Disable firewalld
+    run "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
+
+    -- wireshark
+    run { "sudo usermod -a -G wireshark", USER }
+
+    db.network_configured = true
+    db:save()
+
+end

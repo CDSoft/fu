@@ -240,20 +240,24 @@ local function install_package(package)
         fs.mkdirs(dest:dirname())
         local content = assert(fs.read(file))
         content = interpolate(file, content)
-        assert(fs.write(dest, content))
-        fs.chmod(dest, file)
+        if content ~= fs.read(dest) then
+            assert(fs.write(dest, content))
+            fs.chmod(dest, file)
+        end
     end)
     fs.ls(package/"root/**", true) : filter(fs.is_file) : foreach(function(file)
         local name = file:drop(#(package/"root/"))
         local dest = "/"..name
-        fs.with_tmpfile(function(tmp)
-            local content = assert(fs.read(file))
-            content = interpolate(file, content)
-            assert(fs.write(tmp, content))
-            fs.chmod(tmp, file)
-            run { "sudo", "mv", "-f", tmp, dest }
-            run { "sudo", "chown", "root:root", dest }
-        end)
+        local content = assert(fs.read(file))
+        content = interpolate(file, content)
+        if content ~= fs.read(dest) then
+            fs.with_tmpfile(function(tmp)
+                assert(fs.write(tmp, content))
+                fs.chmod(tmp, file)
+                run { "sudo", "mv", "-f", tmp, dest }
+                run { "sudo", "chown", "root:root", dest }
+            end)
+        end
     end)
     -- Package installation
     fs.ls(package/"*.lua") : foreach(function(script)

@@ -78,8 +78,8 @@ if alacritty_sources and fs.is_file(HOME/".cargo/bin/cargo") and (FORCE or not i
     run { "sudo update-desktop-database" }
     -- Manual Page
     fs.mkdirs(HOME/".local/share/man/man1")
-    run { "cd", FU_PATH/"alacritty", "&&", "gzip -c extra/alacritty.man", "|", "sudo tee", HOME/".local/share/man/man1/alacritty.1.gz", "> /dev/null" }
-    run { "cd", FU_PATH/"alacritty", "&&", "gzip -c extra/alacritty-msg.man", "|", "sudo tee", HOME/".local/share/man/man1/alacritty-msg.1.gz", "> /dev/null" }
+    run { "cd", FU_PATH/"alacritty", "&&", "gzip -c extra/alacritty.man", ">", "tee", HOME/".local/share/man/man1/alacritty.1.gz" }
+    run { "cd", FU_PATH/"alacritty", "&&", "gzip -c extra/alacritty-msg.man", ">", "tee", HOME/".local/share/man/man1/alacritty-msg.1.gz" }
 else
     dnf_install "alacritty"
 end
@@ -195,4 +195,6 @@ if not fs.is_file(HOME/".config/i3/empty.wav") then
     fs.write(HOME/".config/i3/empty.wav", ("UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="):unbase64())
 end
 
-run { "sudo setcap cap_net_admin=ep", read'which i3status' }
+if read { "getcap", read"which i3status" } : words()[2] ~= "cap_net_admin=ep" then
+    run { "sudo setcap cap_net_admin=ep", read'which i3status' }
+end

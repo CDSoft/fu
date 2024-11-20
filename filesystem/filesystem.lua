@@ -33,7 +33,7 @@ gitclone "https://github.com/thimc/vifm_devicons"
 run { "cp -f", FU_PATH/"vifm_devicons/favicons.vifm", HOME/".config/vifm/" }
 
 -- 7Z
-do
+if UPDATE or not installed "7zzs" then
     local curr_version = (read "7zzs || true" or ""):words()[3]
     local version = read("curl -sSL https://github.com/ip7z/7zip/releases/latest/"):match("tag/([%d%.]+)")
     if version ~= curr_version then
