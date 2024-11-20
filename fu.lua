@@ -52,6 +52,14 @@ HOME     = os.getenv "HOME"
 USER     = os.getenv "USER"
 FU_PATH  = HOME/".config"/"fu"
 
+local function os_release(param) return read(". /etc/os-release; echo $"..param) end
+
+OS_RELEASE_NAME         = os_release "NAME"
+OS_RELEASE_PRETTY_NAME  = os_release "PRETTY_NAME"
+OS_RELEASE_ID           = os_release "ID"
+OS_RELEASE_VERSION_ID   = os_release "VERSION_ID"
+RELEASE = read "rpm -E %fedora"
+
 fs.chdir(arg[0]:realpath():dirname())
 
 db = setmetatable({ dnf={}, lua={}, pip={}, mime={} }, {

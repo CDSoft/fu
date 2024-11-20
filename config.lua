@@ -1,11 +1,3 @@
-local function os_release(param) return read(". /etc/os-release; echo $"..param) end
-OS_RELEASE_NAME         = os_release "NAME"
-OS_RELEASE_PRETTY_NAME  = os_release "PRETTY_NAME"
-OS_RELEASE_ID           = os_release "ID"
-OS_RELEASE_VERSION_ID   = os_release "VERSION_ID"
-
-RELEASE = read "rpm -E %fedora"
-
 TIMEZONE = "Europe/Paris"
 KEYMAP   = "fr"
 LOCALE   = "fr_FR.UTF-8"
