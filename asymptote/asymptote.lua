@@ -1,5 +1,3 @@
-title(...)
-
 local asymptote_sources = false
 
 if asymptote_sources then

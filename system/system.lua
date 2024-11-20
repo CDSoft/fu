@@ -1,5 +1,3 @@
-title(...)
-
 -- dnf configuration
 
 local dnf_conf = fs.read("/etc/dnf/dnf.conf")

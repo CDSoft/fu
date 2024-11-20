@@ -1,5 +1,3 @@
-title(...)
-
 dnf_install [[
     git git-gui gitk qgit gitg tig git-lfs
     git-delta

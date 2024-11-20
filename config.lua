@@ -6,8 +6,6 @@ OS_RELEASE_VERSION_ID   = os_release "VERSION_ID"
 
 RELEASE = read "rpm -E %fedora"
 
-title(OS_RELEASE_PRETTY_NAME)
-
 TIMEZONE = "Europe/Paris"
 KEYMAP   = "fr"
 LOCALE   = "fr_FR.UTF-8"
@@ -23,8 +21,8 @@ FONT_SIZE =    (xres <= 1920 or yres <= 1080) and 9
             or (xres <= 2560 or yres <= 1440) and 9+4
             or                                    9+8
 I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
-ST = I"st"
-ALACRITTY = I"alacritty"
+ST = "st"
+ALACRITTY = "alacritty"
 
 BROWSER = "firefox"
 BROWSER2 = "chromium-browser"

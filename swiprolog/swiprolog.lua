@@ -1,5 +1,3 @@
-title(...)
-
 local install_sources = false
 
 if install_sources then

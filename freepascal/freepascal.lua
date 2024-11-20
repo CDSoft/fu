@@ -1,5 +1,3 @@
-title(...)
-
 dnf_install [[
     fpc
     lazarus

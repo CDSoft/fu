@@ -1,5 +1,3 @@
-title(...)
-
 if FORCE or not installed "code" then
     fs.with_tmpdir(function(tmp)
         run {

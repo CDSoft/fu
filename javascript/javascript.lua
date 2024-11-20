@@ -1,5 +1,3 @@
-title(...)
-
 -- Typescript language server
 if FORCE or not installed "typescript-language-server" then
     fs.mkdirs(HOME/".local/opt/typescript-language-server")

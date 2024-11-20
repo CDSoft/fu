@@ -1,5 +1,3 @@
-title(...)
-
 if FORCE or not installed "geogebra" then
     local GEOGEBRA_URL = "https://download.geogebra.org/installers/6.0/"
     local GEOGEBRA_ARCHIVE

@@ -1,5 +1,3 @@
-title(...)
-
 local shellcheck_sources = false
 
 -- Bash language server

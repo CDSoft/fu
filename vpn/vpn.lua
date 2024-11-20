@@ -1,5 +1,3 @@
-title(...)
-
 -- VPN
 if not fs.is_file "/etc/resolv.conf.orig" then
     dnf_install "NetworkManager-openvpn-gnome"

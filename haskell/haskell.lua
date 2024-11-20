@@ -1,5 +1,3 @@
-title(...)
-
 dnf_install [[
     gcc gcc-c++ gmp gmp-devel make ncurses ncurses-compat-libs xz perl
 ]]

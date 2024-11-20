@@ -1,5 +1,3 @@
-title(...)
-
 local alacritty_sources = false
 
 dnf_install [[

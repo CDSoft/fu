@@ -1,5 +1,3 @@
-title(...)
-
 if FORCE or not installed "julia" then
 
     local JULIA_URL = "https://julialang.org/downloads/"

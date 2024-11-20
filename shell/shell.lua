@@ -1,5 +1,3 @@
-title(...)
-
 local starship_sources = db.default_configuration=="XXX"
 
 dnf_install [[

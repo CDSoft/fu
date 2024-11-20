@@ -1,5 +1,3 @@
-title(...)
-
 if FORCE or not installed "nim" or not fs.is_file(HOME/".nimble/bin/nimlsp") then
 
     local NIM_URL = "https://nim-lang.org/install_unix.html"

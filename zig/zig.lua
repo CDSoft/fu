@@ -1,7 +1,5 @@
 if FORCE or not installed "zig" or not installed "zls" then
 
-    title(...)
-
     -- zig
     do
         local ZIG_URL = "https://ziglang.org/download/"

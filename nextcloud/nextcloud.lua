@@ -1,5 +1,3 @@
-title(...)
-
 if not db.wiki or not db.start_nextcloud then
     db.wiki = db.wiki or HOME/"Nextcloud/Wiki"
     db.start_nextcloud = true

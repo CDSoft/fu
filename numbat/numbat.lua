@@ -1,5 +1,3 @@
-title(...)
-
 if FORCE or not installed "numbat" then
     local curr_version = (read("numbat --version || true"):lines()[1] or F""):words()[2]
     local version = read("curl -sSL https://github.com/sharkdp/numbat/releases/latest/"):match("tag/v([%d%.]+)")

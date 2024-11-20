@@ -1,5 +1,3 @@
-title(...)
-
 dnf_install [[
     shutter feh gimp ImageMagick scribus inkscape
     qt5-qtx11extras

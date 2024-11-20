@@ -1,5 +1,3 @@
-title(...)
-
 -- cryfs is already in the Fedora repository
 --copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:fcsm:cryfs.repo", "fcsm/cryfs")
 

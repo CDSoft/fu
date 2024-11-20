@@ -1,5 +1,3 @@
-title(...)
-
 local move_docker_to_home = false
 local ros = false
 

@@ -25,9 +25,9 @@ along with FU.  If not, see <http://www.gnu.org/licenses/>.
 F = require "F"
 fs = require "fs"
 local term = require "term"
-import = require "import"
+local import = require "import"
 
-I = F.I(_G) % "%%()"
+local I = F.I(_G) % "%%()"
 
 local args = (function()
     local parser = require "argparse"()
@@ -90,7 +90,7 @@ function screen_resolution()
     return res : match "dimensions:%s*(%d+x%d+)" : split "x" : map(tonumber) : unpack()
 end
 
-function title(s)
+local function title(s)
     local cols = term.size(io.stdout).cols
     local color = term.color.black + term.color.ongreen
     s = I(s or arg[0])
@@ -217,6 +217,7 @@ local already_installed = {}
 local function install_package(package)
     if already_installed[package] then return end
     already_installed[package] = true
+    title(package)
     assert(fs.is_dir(package), package..": package not found")
     -- Configuration files
     local function interpolate(name, content)
@@ -266,6 +267,9 @@ end
 myconf = fs.is_file(HOME/".myconf") and import(HOME/".myconf") or {}
 
 require "config"
+
+title(OS_RELEASE_PRETTY_NAME)
+
 local implemented_packages = fs.dir() : filter(fs.is_dir) : sort() : filter(function(name) return name:head()~="." end)
 local referenced_packages = F.map(F.head, CONFIGURATIONS)
 local implemented_but_not_referenced = F.difference(implemented_packages, referenced_packages)
