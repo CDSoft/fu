@@ -30,4 +30,4 @@ export PREFIX=~/.local
 )
 
 eval "$("$PREFIX/bin/luax" env)"
-"$(dirname "$(realpath "$0")")/fu.lua" "$@"
+$PREFIX/bin/luax "$(dirname "$(realpath "$0")")/fu.lua" "$@"
