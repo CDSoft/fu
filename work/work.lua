@@ -10,20 +10,23 @@ dnf_install [[
 -- AWS
 if UPDATE or not installed "aws" then
     pip_install "awscli boto3"
-    run { "sudo groupadd docker || true" }
-    run { "sudo usermod -a -G docker", USER }
-    run { "sudo systemctl enable docker || true" }
 end
 
 -- Docker
-if UPDATE or not installed "docker" then
+if not installed "docker" then
     -- https://docs.docker.com/engine/install/fedora/
     run "sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo --overwrite"
     dnf_install [[
         docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     ]]
-    run "sudo systemctl start docker || true"
 end
+
+db:once(FORCE, "docker_configured", function()
+    run { "sudo groupadd docker || true" }
+    run { "sudo usermod -a -G docker", USER }
+    run { "sudo systemctl enable docker || true" }
+    run "sudo systemctl start docker || true"
+end)
 
 if move_docker_to_home then
     if not fs.is_dir "/home/docker" then
