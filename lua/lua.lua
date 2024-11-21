@@ -33,7 +33,9 @@ luarocks [[
 ]]
 --]=]
 
-luarocks "lua-sdl2"
+if FORCE or not fs.is_file(HOME/".luarocks/lib64/lua/5.4/SDL.so") then
+    luarocks "lua-sdl2"
+end
 
 -- Lua language server
 if FORCE or not installed "lua-language-server" then
