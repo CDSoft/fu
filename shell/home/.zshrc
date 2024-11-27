@@ -160,7 +160,7 @@ alias rm_containers="docker ps -a -q | xargs --no-run-if-empty docker rm"
 alias rm_dang_images="docker images -q --filter \"dangling=true\" | xargs --no-run-if-empty docker rmi"
 alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run-if-empty docker volume rm"
 
-[ -f /usr/lib64/ros/setup.zsh ] && . /usr/lib64/ros/setup.zsh
+[ -f /opt/ros/iron/setup.zsh ] && . /opt/ros/iron/setup.zsh
 ]==])
 
 # no warnings in Wine

@@ -65,29 +65,48 @@ pip_install [[
 
 -- ROS: http://wiki.ros.org/Installation/Source
 if ros then
-    copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:thofmann:ros.repo", "thofmann/ros")
-    dnf_install [[
-        ros-ros_base
-        ros-ros_base-devel
-    ]]
-            --[=[ WARNING: this does not seem to work!
-            dnf_install [[
-                gcc-c++ python3-rosdep python3-rosinstall_generator python3-vcstool @buildsys-build
-                python3-sip-devel qt-devel python3-qt5-devel
-            ]]
-            if not dir_exist "%(HOME)/ros_catkin_ws" then
-                log "Build ROS"
-                sh "sudo rosdep init"
-                sh "rosdep update"
-                sh [[
-                    mkdir -p %(HOME)/ros_catkin_ws;
-                    cd %(HOME)/ros_catkin_ws;
-                    rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.rosinstall;
-                    mkdir -p src;
-                    vcs import --input noetic-desktop.rosinstall ./src;
-                    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y;
-                    ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3;
-                ]]
-            end
-            --]=]
+
+    if FORCE or not installed "rosXXX" then
+
+        dnf_install [[
+            curl
+            cmake
+            gcc-c++
+            git
+            make
+            patch
+            python3-colcon-common-extensions
+            python3-flake8-builtins
+            python3-flake8-comprehensions
+            python3-flake8-import-order
+            python3-flake8-quotes
+            python3-mypy
+            python3-pip
+            python3-pydocstyle
+            python3-pytest
+            python3-pytest-repeat
+            python3-pytest-rerunfailures
+            python3-rosdep
+            python3-setuptools
+            python3-vcstool
+            wget
+        ]]
+            -- python3-flake8-docstrings
+
+        pip_install [[
+            flake8-blind-except==0.1.1
+            flake8-class-newline
+            flake8-deprecated
+        ]]
+
+        run "sudo dnf install 'dnf-command(config-manager)' epel-release -y"
+        run "sudo dnf config-manager --set-enabled crb"
+        run "sudo curl --output /etc/yum.repos.d/ros2.repo http://packages.ros.org/ros2/rhel/ros2.repo"
+        run "sudo dnf makecache"
+
+        dnf_install "ros-iron-ros-base"
+        --dnf_install "ros-iron-desktop"
+
+    end
+
 end
