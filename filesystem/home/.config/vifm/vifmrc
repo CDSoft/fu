@@ -111,6 +111,9 @@ set mouse=a
 mark b ~/bin/
 mark h ~/
 
+" Load plugins before using new commands opf column view options
+plugin load
+
 " ------------------------------------------------------------------------------
 " Commands
 " ------------------------------------------------------------------------------
@@ -453,7 +456,7 @@ fileviewer *[^/] pygmentize -O style=monokai -f console256 -g
 
 " Customize view columns a bit (enable ellipsis for truncated file names)
 " set viewcolumns=-{name}..,6{}.
-windo set viewcolumns=-{name}..,6{size},18{mtime}
+windo set viewcolumns=-{name}..,8{FileExt},6{size},18{mtime}
 
 " Show vertical border
 " set fillchars=vborder:│
