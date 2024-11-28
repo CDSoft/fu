@@ -47,11 +47,8 @@ if FORCE or not installed "starship" then
         }
     else
         fs.with_tmpfile(function(tmp)
-            run {
-                "curl -fsSL https://starship.rs/install.sh -o", tmp,
-                "&&",
-                "sh", tmp, "-f -b ~/.local/bin"
-            }
+            download("https://starship.rs/install.sh", tmp)
+            run { "sh", tmp, "-f -b ~/.local/bin" }
         end)
     end
 end

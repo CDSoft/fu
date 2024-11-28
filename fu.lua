@@ -62,11 +62,22 @@ RELEASE = read "rpm -E %fedora"
 
 fs.chdir(arg[0]:realpath():dirname())
 
+local function title(fmt, ...)
+    local color = term.color.green + term.color.reverse
+    print(color("▓▒░ %s ░▒▓"):format(fmt:format(...)))
+end
+
+local function log(fmt, ...)
+    local color = term.color.yellow
+    print(color(">>> %s"):format(fmt:format(...)))
+end
+
 db = setmetatable({ dnf={}, lua={}, pip={}, mime={} }, {
     __index = {
         dbfile = FU_PATH/"db.lua",
         load = function(self)
-            if RESET then fs.remove(db.dbfile) end
+            log("Load %s", self.dbfile)
+            if RESET then fs.remove(self.dbfile) end
             F(fs.is_file(self.dbfile) and assert(loadfile(self.dbfile))() or {})
                : foreachk(function(k, v) self[k] = v end)
         end,
@@ -105,14 +116,6 @@ function screen_resolution()
     return res : match "dimensions:%s*(%d+x%d+)" : split "x" : map(tonumber) : unpack()
 end
 
-local function title(s)
-    local cols = term.size(io.stdout).cols
-    local color = term.color.black + term.color.ongreen
-    s = I(s or arg[0])
-    s = s .. string.rep(" ", cols - #s - 4)
-    print(color("### "..s:ljust(cols-#s-4)))
-end
-
 function when(cond)
     return cond and I or F.const""
 end
@@ -132,6 +135,7 @@ function gitclone(url, options)
     end
     if fs.is_dir(path) then
         if UPDATE then
+            log("git update %s", url)
             run {
                 "cd", path,
                 "&&",
@@ -142,6 +146,7 @@ function gitclone(url, options)
             update()
         end
     else
+        log("clone update %s", url)
         run { "git clone", url, path, options or {} }
         update()
     end
@@ -150,6 +155,7 @@ end
 function repo(local_name, name)
     if not fs.is_file(I(local_name)) then
         name = I(name)
+        log("add repo %", name)
         run("sudo dnf install -y \""..name.."\"")
     end
 end
@@ -157,6 +163,7 @@ end
 function copr(local_name, name)
     if not fs.is_file(I(local_name)) then
         name = I(name)
+        log("add copr %", name)
         run("sudo dnf copr enable \""..name.."\"")
     end
 end
@@ -166,7 +173,7 @@ function dnf_install(...)
     local new_packages = names : filter(function(name) return not db.dnf[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
-        print("# dnf install "..new_names)
+        log("dnf install %s", new_names)
         run { "sudo dnf install", new_names, "--skip-broken --best --allowerasing" }
         new_packages : foreach(function(name) db.dnf[name] = true end)
         db:save()
@@ -178,7 +185,7 @@ function luarocks(names, opts)
     local new_packages = names:filter(function(name) return UPDATE or not db.lua[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
-        print("# luarocks install "..new_names)
+        log("luarocks install %s", new_names)
         new_packages : foreach(function(name)
             run { "luarocks install --local", opts or {}, name }
             db.lua[name] = true
@@ -192,7 +199,7 @@ function pip_install(names)
     local new_packages = names:filter(function(name) return UPDATE or not db.pip[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
-        print("# pip install "..new_names)
+        log("pip install %s", new_names)
         run { "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring", "pip install --user", names }
         new_packages : foreach(function(name) db.pip[name] = true end)
         db:save()
@@ -203,8 +210,18 @@ function installed(cmd)
     return (os.execute("hash "..I(cmd).." 2>/dev/null"))
 end
 
-function download(url)
-    return assert(require"sh".read("curl", "-sSL", I(url)))
+function download(url, dest)
+    local sh = require "sh"
+    log("download %s", url)
+    dnf_install "curl"
+    if not dest then
+        return assert(sh.read("curl", "-sSL", I(url)))
+    end
+    local ok, msg = sh.run("curl", "-sSL", I(url), "-o", dest)
+    if not ok then
+        fs.remove(dest)
+        error(msg)
+    end
 end
 
 function with_file(name, f)
@@ -217,6 +234,7 @@ function mime_default(desktop_file)
     desktop_file = I(desktop_file)
     local path = "/usr/share/applications"/desktop_file
     if fs.is_file(path) and not db.mime[desktop_file] then
+        log("update mime association for %s", desktop_file)
         fs.read(path):gsub("MimeType=([^\n]*)", function(mimetypes)
             mimetypes:gsub("[^;]+", function(mimetype)
                 run { "xdg-mime default", desktop_file, mimetype }
@@ -248,6 +266,7 @@ local function install_package(package)
         local content = assert(fs.read(file))
         content = interpolate(file, content)
         if content ~= fs.read(dest) then
+            log("update %s", dest)
             assert(fs.write(dest, content))
             fs.chmod(dest, file)
         end
@@ -258,6 +277,7 @@ local function install_package(package)
         local content = assert(fs.read(file))
         content = interpolate(file, content)
         if content ~= fs.read(dest) then
+            log("update %s", dest)
             fs.with_tmpfile(function(tmp)
                 assert(fs.write(tmp, content))
                 fs.chmod(tmp, file)
@@ -268,6 +288,7 @@ local function install_package(package)
     end)
     -- Package installation
     fs.ls(package/"*.lua") : foreach(function(script)
+        log("run %s", script)
         assert(loadfile(script))(package)
     end)
 end
@@ -283,6 +304,7 @@ local function install_configuration(name)
     end)
 end
 
+log("load %s", HOME/".myconf")
 myconf = fs.is_file(HOME/".myconf") and import(HOME/".myconf") or {}
 
 require "config"

@@ -11,7 +11,7 @@ if UPDATE or not nextcloud_installed then
     if nextcloud_installed then
         version = read(HOME/".local/bin/Nextcloud", "-v"):match("version%s+([%d%.]+)")
     end
-    new_version = read "curl -sSL https://github.com/nextcloud-releases/desktop/releases/"
+    new_version = download "https://github.com/nextcloud-releases/desktop/releases/"
         : matches "tag/v([%d%.]+)\""
         : map(function(v) return v:split"%." end)
         : maximum(F.op.ule)
@@ -23,13 +23,8 @@ if UPDATE or not nextcloud_installed then
     if new_version ~= version then
         if version then run { HOME/".local/bin/Nextcloud", "-q" } end
         fs.with_tmpdir(function(tmp)
-            run {
-                "wget", "https://github.com/nextcloud-releases/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage", "-O", tmp/"Nextcloud",
-                "&&",
-                "mv -f", tmp/"Nextcloud", HOME/".local/bin/Nextcloud",
-                "&&",
-                "chmod +x", HOME/".local/bin/Nextcloud",
-            }
+            download("https://github.com/nextcloud-releases/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage", HOME/".local/bin/Nextcloud")
+            fs.chmod(HOME/".local/bin/Nextcloud", fs.aR|fs.uW|fs.uX)
         end)
     end
 end

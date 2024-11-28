@@ -45,8 +45,8 @@ local release = nil
 local font_cache_update = false
 local function install_font(name, file)
     if FORCE or not fs.is_file(HOME/".local/share/fonts"/file) then
-        release = release or read("curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/"):match("tag/(v[%d%.]+)")
-        run { "wget", "https://github.com/ryanoasis/nerd-fonts/releases/download"/release/name..".zip", "-c", "-O", FU_PATH/name.."-"..release..".zip" }
+        release = release or download("https://github.com/ryanoasis/nerd-fonts/releases/latest/"):match("tag/(v[%d%.]+)")
+        download("https://github.com/ryanoasis/nerd-fonts/releases/download"/release/name..".zip", FU_PATH/name.."-"..release..".zip")
         fs.mkdirs(HOME/".local/share/fonts")
         run { "unzip", "-j", "-u", FU_PATH/name.."-"..release..".zip", "'*.ttf'", "-d", HOME/".local/share/fonts/" }
         font_cache_update = true
@@ -102,7 +102,7 @@ if FORCE or not fs.is_file(HOME/".local/bin/st") then
         local file = FU_PATH/"st-patches"/fs.basename(url)
         if not fs.is_file(file) then
             fs.mkdirs(fs.dirname(file))
-            run { "wget", url, "-O", file }
+            download(url, file)
         end
         run { "cd", FU_PATH/"st", "&&", "patch -p1 <", file }
     end

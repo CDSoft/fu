@@ -55,8 +55,9 @@ dnf_install [[
 -- git
 -- https://stackoverflow.com/questions/34119866/setting-up-and-using-meld-as-your-git-difftool-and-mergetool
 -- use git meld to call git difftool with meld
-run "git config --global alias.meld '!git difftool -t meld --dir-diff'"
-run "git config --global core.excludesfile ~/.gitignore"
+-- Not setup here, hard coded in .gitconfig
+--run "git config --global alias.meld '!git difftool -t meld --dir-diff'"
+--run "git config --global core.excludesfile ~/.gitignore"
 
 if FORCE or not installed "pmccabe" then
     gitclone "https://github.com/datacom-teracom/pmccabe"

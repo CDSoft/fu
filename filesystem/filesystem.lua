@@ -35,10 +35,10 @@ run { "cp -f", FU_PATH/"vifm_devicons/favicons.vifm", HOME/".config/vifm/" }
 -- 7Z
 if UPDATE or not installed "7zzs" then
     local curr_version = (read "7zzs || true" or ""):words()[3]
-    local version = read("curl -sSL https://github.com/ip7z/7zip/releases/latest/"):match("tag/([%d%.]+)")
+    local version = download("https://github.com/ip7z/7zip/releases/latest/"):match("tag/([%d%.]+)")
     if version ~= curr_version then
         fs.with_tmpdir(function(tmp)
-            run { "wget", "https://github.com/ip7z/7zip/releases/download/"..version.."/7z"..(version:gsub("%.", "")).."-linux-x64.tar.xz", "-O", tmp/"7z.tar.xz" }
+            download("https://github.com/ip7z/7zip/releases/download/"..version.."/7z"..(version:gsub("%.", "")).."-linux-x64.tar.xz", tmp/"7z.tar.xz")
             run { "cd", tmp, "&& tar -xvJf 7z.tar.xz --exclude=MANUAL --exclude='*.txt'" }
             run { "cp -af", tmp/"7zz*", "~/.local/bin" }
         end)

@@ -19,7 +19,7 @@ if FORCE or not installed "ccrypt" then
     local url = "https://ccrypt.sourceforge.net/download/1.11/ccrypt-1.11.linux-x86_64.tar.gz"
     local archive = FU_PATH/fs.basename(url)
     if not fs.is_file(archive) then
-        run { "curl -fsSL", url, "-o", archive }
+        download(url, archive)
     end
     fs.with_tmpdir(function(tmp)
         run {
