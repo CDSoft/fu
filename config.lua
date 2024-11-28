@@ -65,6 +65,7 @@ CONFIGURATIONS = {
     { "graphic",        D, L, P },
     { "geogebra",       D, L, P },
     { "internet",       D, L, P },
+    { "1password",      D, _, P },
     { "zoom",           D, _, P },
     { "virtualization", D, L, P },
     { "work",           _, _, P },
