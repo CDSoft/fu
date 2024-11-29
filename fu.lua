@@ -338,6 +338,7 @@ local function default_configuration()
             return name
         end
     end
+    error "Try again..."
 end
 
 if #args.packages>0 and not db.default_configuration then
