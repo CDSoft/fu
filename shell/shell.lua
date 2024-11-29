@@ -1,4 +1,4 @@
-local starship_sources = db.default_configuration=="XXX"
+local starship_sources = false
 
 dnf_install [[
     zsh
@@ -38,7 +38,7 @@ gitclone "https://github.com/zsh-users/zsh-autosuggestions"
 if FORCE or not installed "starship" then
     -- The binary downloaded by install.sh is buggy (crashes on non existing directory)
     -- If Rust is installed, building from sources is better.
-    if starship_sources then
+    if starship_sources and fs.is_file(HOME/".cargo/bin/cargo") then
         gitclone "https://github.com/starship/starship.git"
         run {
             "cd", FU_PATH/"starship",
