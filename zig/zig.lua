@@ -18,6 +18,7 @@ if FORCE or not installed "zig" or not installed "zls" then
         local ZIG_VERSION = version
 
         if version ~= curr_version then
+            fs.mkdirs(HOME/".local/opt")
             download(ZIG_ARCHIVE, "~/.local/opt"/fs.basename(ZIG_ARCHIVE))
             run { "rm -rf", "~/.local/opt/zig"/ZIG_VERSION }
             run { "mkdir -p", "~/.local/opt/zig"/ZIG_VERSION }

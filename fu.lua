@@ -98,15 +98,13 @@ db:load()
 
 -- update at least every 2 weeks
 do
-    local t0 = db.last_update or 0
-    local t = os.time()
-    if t - t0 > 14*86400 then UPDATE = true end
+    local t0, t = db.last_update, os.time()
+    if t0 and t - t0 > 14*86400 then UPDATE = true end
 end
 -- complete update at least every 4 weeks
 do
-    local t0 = db.last_force or 0
-    local t = os.time()
-    if t - t0 > 28*86400 then FORCE = true; UPDATE = true end
+    local t0, t = db.last_force, os.time()
+    if t0 and t - t0 > 28*86400 then FORCE = true; UPDATE = true end
 end
 
 function screen_resolution()
@@ -155,7 +153,7 @@ end
 function repo(local_name, name)
     if not fs.is_file(I(local_name)) then
         name = I(name)
-        log("add repo %", name)
+        log("add repo %s", name)
         run("sudo dnf install -y \""..name.."\"")
     end
 end
@@ -163,7 +161,7 @@ end
 function copr(local_name, name)
     if not fs.is_file(I(local_name)) then
         name = I(name)
-        log("add copr %", name)
+        log("add copr %s", name)
         run("sudo dnf copr enable \""..name.."\"")
     end
 end
