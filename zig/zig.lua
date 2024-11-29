@@ -35,15 +35,8 @@ if FORCE or not installed "zig" or not installed "zls" then
         if version ~= curr_version then
             fs.with_tmpdir(function(tmp)
                 download("https://github.com/zigtools/zls/releases/download"/version/"zls-x86_64-linux.tar.xz", tmp/"zls-x86_64-linux.tar.xz")
-                run {
-                    "cd", tmp,
-                    "&&",
-                    "tar xJf zls-x86_64-linux.tar.xz",
-                    "&&",
-                    "mv", "zls", HOME/".local/bin/zls",
-                    "&&",
-                    "chmod +x", HOME/".local/bin/zls",
-                }
+                run { "tar xJf", tmp/"zls-x86_64-linux.tar.xz", "-C", HOME/".local/bin", "zls" }
+                fs.touch(HOME/".local/bin/zls", tmp/"zls-x86_64-linux.tar.xz")
             end)
             db.zls_version = version
             db:save()
