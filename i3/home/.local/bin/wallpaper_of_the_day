@@ -1,33 +1,19 @@
-#!/usr/bin/env lua
+#!/usr/bin/env luax
+
+local fs = require "fs"
+local sh = require "sh"
 
 local INDEXES = {
     {url="https://apod.nasa.gov/apod/astropix.html",       pattern="href=\"([^\"]-%.jpg)\""},
     {url="https://bing.gifposter.com/",                    pattern="https://[^\"]-%.jpg"},
 }
 local CACHE = os.getenv"HOME"/".local/var/wallpaper_of_the_day"
-local COUNTER = CACHE.."/.counter"
+local COUNTER = CACHE/".counter"
 
 local function counter()
-    local f = io.open(COUNTER, "r")
-    local n = 0
-    if f then
-        n = tonumber(f:read("a")) or 0
-        f:close()
-    end
-    f = io.open(COUNTER, "w")
-    if f then
-        f:write(tostring(n+1))
-        f:close()
-    end
+    local n = tonumber(fs.read(COUNTER) or 0)
+    fs.write(COUNTER, tostring(n+1))
     return n
-end
-
-local function pipe(...)
-    local cmd = table.concat({...}, " ")
-    local p = assert(io.popen(cmd, "r"))
-    local content = p:read "a"
-    p:close()
-    return content
 end
 
 local function first_image(content, pattern)
@@ -35,36 +21,32 @@ local function first_image(content, pattern)
     return url
 end
 
-local function basename(s)
-    return (s:gsub(".*/([^/]*)$", "%1"))
-end
-
-local function dirname(s)
-    return (s:gsub("/([^/]*)$", ""))
-end
-
 local function add_base(base, url)
     if url and not url:match "^http" then
-        url = dirname(base).."/"..url
+        url = fs.dirname(base).."/"..url
     end
     return url
 end
 
-os.execute(("mkdir -p %s"):format(CACHE))
+local function download(url, dest)
+    if fs.is_file(dest) then return dest end
+    if sh.run("wget", url, "-c", "-O", image) then return dest end
+    fs.remove(image)
+end
+
+fs.mkdirs(CACHE)
 
 local images = {}
 for _, idx in ipairs(INDEXES) do
-    local index = pipe("curl", "-A", "Firefox", "-sSL", idx.url)
+    local index = sh.read("curl", "-A", "Firefox", "-sSL", idx.url)
     local url = first_image(index, idx.pattern)
     url = add_base(idx.url, url)
     if url then
-        local image = CACHE.."/"..(url and basename(url) or pipe("ls -t "..CACHE.." | head -1"))
-        os.execute(("wget %s -c -O %s"):format(url, image))
-        table.insert(images, image)
+        local image = CACHE.."/"..(url and fs.basename(url) or fs.ls(cache):choose())
+        images[#images+1] = download(url, image)
     end
 end
 
 if #images > 0 then
-    local image = images[(counter()%#images)+1]
-    os.execute(("feh --bg-max %s"):format(image))
+    sh.run("feh", "--bg-max", images[(counter()%#images)+1])
 end
