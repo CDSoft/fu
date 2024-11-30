@@ -7,9 +7,9 @@ db:once(FORCE, "dnf_configured", function()
         dnf_conf, n = dnf_conf:gsub(name.."=(.-)\n", name.."="..val.."\n")
         if n == 0 then dnf_conf = dnf_conf..name.."="..val.."\n" end
     end
-    add_param("fastestmirrors", "true")
+    add_param("fastestmirrors", "True")
     add_param("max_parallel_downloads", "10")
-    add_param("defaultyes", "true")
+    add_param("defaultyes", "True")
     if dnf_conf ~= fs.read("/etc/dnf/dnf.conf") then
         fs.with_tmpfile(function(tmp)
             fs.write(tmp, dnf_conf)
