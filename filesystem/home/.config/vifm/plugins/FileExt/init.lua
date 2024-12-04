@@ -3,10 +3,11 @@
 local max_len = 4
 
 local compressed = {
-    gz = true,
+    gz  = true,
     bz2 = true,
-    xz = true,
-    lz = true,
+    xz  = true,
+    lz  = true,
+    lz4 = true,
 }
 
 local added = vifm.addcolumntype {
