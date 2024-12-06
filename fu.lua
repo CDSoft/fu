@@ -109,7 +109,7 @@ end
 
 function screen_resolution()
     if not installed "xdpyinfo" then dnf_install "xdpyinfo" end
-    local display_ok, res = pcall(read, "xdpyinfo")
+    local display_ok, res = pcall(read, "DISPLAY=:0 xdpyinfo")
     if not display_ok then return 1920, 1080 end
     return res : match "dimensions:%s*(%d+x%d+)" : split "x" : map(tonumber) : unpack()
 end
