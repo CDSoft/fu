@@ -7,8 +7,10 @@ usage: lrandr [single|clone|left|right|above]
 ]]
 
 local resolutions = {
-    ["1920x1200"] = true,
-    ["1920x1080"] = true,
+    --["3840x2160"] = {scale="--scale 1"},
+    --["2560x1440"] = {scale="--scale 1"},
+    ["1920x1200"] = {scale="--scale 1"},
+    ["1920x1080"] = {scale="--scale 1"},
 }
 local default_layout = "right"
 
@@ -16,9 +18,10 @@ local primary_screen = nil
 local secondary_screen = nil
 local disconnected_screens = {}
 local screen_resolution = {}
+local screen_scale = {}
 
 local function xrandr(...)
-    local cmd = "xrandr "..table.concat({...}, " ")
+    local cmd = table.concat({"xrandr", ...}, " ")
     print(cmd)
     os.execute(cmd)
 end
@@ -29,9 +32,9 @@ local layouts = {
         if secondary_screen then xrandr("--output", secondary_screen, "--off") end
     end,
     clone = function() xrandr("--output", secondary_screen, "--auto", "--same-as", primary_screen, "--scale-from", screen_resolution[primary_screen]) end,
-    left = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], "--left-of", primary_screen) end,
-    right = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], "--right-of", primary_screen) end,
-    above = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], "--above", primary_screen) end,
+    left = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], screen_scale[secondary_screen], "--left-of", primary_screen) end,
+    right = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], screen_scale[secondary_screen], "--right-of", primary_screen) end,
+    above = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], screen_scale[secondary_screen], "--above", primary_screen) end,
 }
 
 local current_name = nil
@@ -44,9 +47,12 @@ for s in io.popen("xrandr"):lines() do
         table.insert(disconnected_screens, name)
         current_name = name
     end)
-    if not screen_resolution[current_name] then
+    if current_name and not screen_resolution[current_name] then
         s:gsub("%s+(%w+)%s+", function(res)
-            if resolutions[res] then screen_resolution[current_name] = res end
+            if resolutions[res] then
+                screen_resolution[current_name] = res
+                screen_scale[current_name] = resolutions[res].scale
+            end
         end)
     end
 end
