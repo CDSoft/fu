@@ -322,7 +322,9 @@ bar {
 
 # Autostart applications
 
-exec --no-startup-id picom -bc
+-- fix screen tearing in Firefox
+exec --no-startup-id pkill compton; picom --daemon --shadow --vsync --backend glx
+
 exec --no-startup-id numlockx %(NUMLOCK and "on" or "off")
 exec --no-startup-id /usr/lib64/xfce4/notifyd/xfce4-notifyd &
 exec --no-startup-id xfce4-volumed-pulse &
