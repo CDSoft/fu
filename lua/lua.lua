@@ -2,7 +2,7 @@ dnf_install [[
     lua
     luarocks
     lua-devel
-
+    wget
 ]]
 
 --[=[
@@ -33,9 +33,9 @@ luarocks [[
 ]]
 --]=]
 
-if FORCE or not fs.is_file(HOME/".luarocks/lib64/lua/5.4/SDL.so") then
-    luarocks "lua-sdl2"
-end
+luarocks "lpeg"
+luarocks "luasocket luasec"
+luarocks "lua-sdl2"
 
 -- Lua language server
 if FORCE or not installed "lua-language-server" then

@@ -180,7 +180,7 @@ end
 
 function luarocks(names, opts)
     names = I(names):words()
-    local new_packages = names:filter(function(name) return UPDATE or not db.lua[name] end)
+    local new_packages = names:filter(function(name) return FORCE or not db.lua[name] end)
     if #new_packages > 0 then
         local new_names = new_packages : unwords()
         log("luarocks install %s", new_names)
