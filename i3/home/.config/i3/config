@@ -322,7 +322,7 @@ bar {
 
 # Autostart applications
 
--- fix screen tearing in Firefox
+# fix screen tearing in Firefox
 exec --no-startup-id pkill compton; picom --daemon --shadow --vsync --backend glx
 
 exec --no-startup-id numlockx %(NUMLOCK and "on" or "off")
