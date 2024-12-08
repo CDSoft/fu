@@ -3,4 +3,9 @@
 LOCK=/tmp/lock.png
 import -window root $LOCK
 convert $LOCK -scale 10% -scale 1000% $LOCK
-i3lock --ignore-empty-password --tiling --image=$LOCK "$@"
+if [ -n "$SWAYSOCK" ]
+then
+    swaylock --ignore-empty-password --tiling --image=$LOCK "$@"
+else
+    i3lock --ignore-empty-password --tiling --image=$LOCK "$@"
+fi

@@ -33,35 +33,42 @@ EndOfMenu
     test -n "$action" && $0 "$action"
 }
 
+if [ -n "$SWAYSOCK" ]
+then
+    WM_MSG=swaymsg
+else
+    WM_MSG=i3-msg
+fi
+
 move_to_int()
 {
-    i3-msg "[class=\".*\"] move workspace to output xinerama-0"
+    $WM_MSG "[class=\".*\"] move workspace to output xinerama-0"
 }
 
 rename_workspace()
 {
-    PREFIX=$( i3-msg -t get_workspaces |
+    PREFIX=$( $WM_MSG -t get_workspaces |
               jq '.[] | select(.focused==true).name' |
               tr -d "\"" |
               awk -F: '$1 ~ /[0-9]+/ {print $1": "}'
             )
 
     #i3-input -f "%(I3_INPUT_FONT)" -F "rename workspace to \"${PREFIX}%s\"" -P 'New name of the current workspace: '
-    i3-msg "rename workspace to \"$PREFIX$(xprompt 'New name of the current workspace')\""
+    $WM_MSG "rename workspace to \"$PREFIX$(xprompt 'New name of the current workspace')\""
 
-    CLEAN_NAME=$( i3-msg -t get_workspaces |
+    CLEAN_NAME=$( $WM_MSG -t get_workspaces |
                   jq '.[] | select(.focused==true).name' |
                   tr -d "\"" |
                   awk -F: '$1 ~ /[0-9]+/ && $2 ~ /^ *$/ {print $1}'
                 )
 
-    test -n "$CLEAN_NAME" && i3-msg "rename workspace to \"${CLEAN_NAME}\""
+    test -n "$CLEAN_NAME" && $WM_MSG "rename workspace to \"${CLEAN_NAME}\""
 }
 
 new_workspace()
 {
     #i3-input -f "%(I3_INPUT_FONT)" -F "workspace \"%s\"" -P 'New workspace: '
-    i3-msg "workspace \"$(xprompt 'New workspace')\""
+    $WM_MSG "workspace \"$(xprompt 'New workspace')\""
 }
 
 idle()
@@ -83,22 +90,22 @@ rf()
 
 case "$1" in
     (single*)       move_to_int; lrandr single
-                    i3-msg reload
+                    $WM_MSG reload
                     ;;
     (clone*)        move_to_int; lrandr clone
-                    i3-msg reload
+                    $WM_MSG reload
                     ;;
     (left*)         lrandr left
-                    i3-msg move workspace to output left
-                    i3-msg reload
+                    $WM_MSG move workspace to output left
+                    $WM_MSG reload
                     ;;
     (dual*|right*)  lrandr right
-                    i3-msg move workspace to output right
-                    i3-msg reload
+                    $WM_MSG move workspace to output right
+                    $WM_MSG reload
                     ;;
     (above*)        lrandr above
-                    i3-msg move workspace to output up
-                    i3-msg reload
+                    $WM_MSG move workspace to output up
+                    $WM_MSG reload
                     ;;
 
     (mute*)         pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;
@@ -119,7 +126,7 @@ case "$1" in
     ("hibernate"*)          rf off; lock && systemctl hybrid-sleep; rf on ;;
     ("power-off"*)          systemctl poweroff ;;
     ("reboot"*)             systemctl reboot ;;
-    ("exit"*)               i3-msg exit ;;
+    ("exit"*)               $WM_MSG exit ;;
 
     ("") _menu ;;
 esac

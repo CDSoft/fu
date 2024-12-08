@@ -40,6 +40,11 @@ dnf_install [[
     xinput
 ]]
 
+dnf_install [[
+    sway
+    wdisplays
+]]
+
 -- Nerd Fonts
 local release = nil
 local font_cache_update = false
