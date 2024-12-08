@@ -28,9 +28,9 @@ local function add_base(base, url)
     return url
 end
 
-local function download(url, dest)
-    if fs.is_file(dest) then return dest end
-    if sh.run("wget", url, "-c", "-O", image) then return dest end
+local function download(url, image)
+    if fs.is_file(image) then return image end
+    if sh.run("wget", url, "-c", "-O", image) then return image end
     fs.remove(image)
 end
 
