@@ -8,7 +8,7 @@ set $win Mod4
 set $mod Mod4
 
 # Font for window titles.
-font xft:%(FONT) %(FONT_VARIANT) %(FONT_SIZE)
+font pango:%(FONT) %(FONT_VARIANT) %(FONT_SIZE)
 
 # Window colors (default colors, no indicator)
 # class                 border  backgr. text    indicator child_border
@@ -298,6 +298,7 @@ workspace_auto_back_and_forth yes
 bar {
     tray_output       primary
     position          bottom
+    mode              dock
     status_command    i3status -c ~/.config/i3/status
     colors {
         background #000000
