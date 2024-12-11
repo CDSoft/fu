@@ -32,5 +32,5 @@ if FORCE or not fs.is_file(FU_PATH/"reply_as_original_recipient.xpi") then
     run { "cd", FU_PATH/"reply_as_original_recipient", "&&", "zip -r ../reply_as_original_recipient.xpi *" }
 end
 
--- Remove unecessary language symlinks
+-- Remove unnecessary language symlinks
 run "find /usr/share/myspell -type l -exec sudo rm -v {} \\;"
