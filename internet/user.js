@@ -7,6 +7,9 @@ user_pref("browser.aboutConfig.showWarning", false);
 user_pref("browser.compactmode.show", true);
 user_pref("browser.uidensity", 1);
 
+/* Enable tab groups */
+user_pref("browser.tabs.groups.enabled", true);
+
 /* Screen tearing issue */
 /* https://askubuntu.com/questions/1200143/full-screen-video-tearing-in-firefox-ubuntu-19-10/1288650#1288650 */
 user_pref("layers.acceleration.force-enabled", true);
@@ -25,6 +28,6 @@ user_pref("widget.disable-workspace-management", true);
 /* Hardware acceleration */
 /* https://support.mozilla.org/en-US/questions/1232970 */
 user_pref("browser.preferences.defaultPerformanceSettings.enabled", false);
-user_perf("layers.acceleration.force-enabled", true);
-user_perf("layers.force-active", true);
-//user_perf("gfx.xrender.enabled", true);
+user_pref("layers.acceleration.force-enabled", true);
+user_pref("layers.force-active", true);
+//user_pref("gfx.xrender.enabled", true);
