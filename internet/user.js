@@ -8,7 +8,13 @@ user_pref("browser.compactmode.show", true);
 user_pref("browser.uidensity", 1);
 
 /* Enable tab groups */
-user_pref("browser.tabs.groups.enabled", true);
+// Not enable (yet?) since the behaviour is strange:
+// - new tabs are not open in the same group
+// - moving a tab outside its group moves it to the next group
+// For a better experience:
+// - group tabs in windows (i3 is a nice windows manager)
+// - use "Windows Titler" to rename windows (i.e. tab groups) => easy to search with rofi
+//user_pref("browser.tabs.groups.enabled", true);
 
 /* Screen tearing issue */
 /* https://askubuntu.com/questions/1200143/full-screen-video-tearing-in-firefox-ubuntu-19-10/1288650#1288650 */
