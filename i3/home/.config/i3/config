@@ -54,8 +54,8 @@ bindsym $mod+Shift+Return exec cd "`xpwd.lua`" && %(ST) -e tmux
 
 # Filemanagers
 bindsym $mod+Ctrl+Return exec %(ALACRITTY) -t vifm -e vifm "`xpwd.lua`"
-#bindsym $mod+$alt+Return exec thunar "`xpwd.lua`"
-bindsym $mod+$alt+Return exec pcmanfm --new-win "`xpwd.lua`"
+bindsym $mod+$alt+Return exec thunar "`xpwd.lua`"
+#bindsym $mod+$alt+Return exec pcmanfm --new-win "`xpwd.lua`"
 
 # scratchpad
 # move the currently focused window to the scratchpad

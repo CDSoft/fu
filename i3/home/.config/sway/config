@@ -93,8 +93,8 @@ input * {
 
     # Filemanagers
     bindsym $mod+Ctrl+Return exec %(ALACRITTY) -t vifm -e vifm "`xpwd.lua`"
-    #bindsym $mod+$alt+Return exec thunar "`xpwd.lua`"
-    bindsym $mod+$alt+Return exec pcmanfm --new-win "`xpwd.lua`"
+    bindsym $mod+$alt+Return exec thunar "`xpwd.lua`"
+    #bindsym $mod+$alt+Return exec pcmanfm --new-win "`xpwd.lua`"
 
     # Kill focused window
     bindsym $mod+q          kill

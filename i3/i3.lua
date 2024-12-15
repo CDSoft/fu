@@ -1,5 +1,10 @@
 local alacritty_sources = false
 
+-- Thunar bug with miniatures: rm -rf .cache/thumbnails
+if FORCE then
+    sh "rm -rf .cache/thumbnails"
+end
+
 dnf_install [[
     rxvt-unicode
     numlockx
@@ -38,6 +43,11 @@ dnf_install [[
     xdotool
     ksnip
     xinput
+    Thunar
+    thunar-archive-plugin.x86_64
+    thunar-media-tags-plugin.x86_64
+    thunar-vcs-plugin.x86_64
+    thunar-volman.x86_64
 ]]
 
 dnf_install [[
