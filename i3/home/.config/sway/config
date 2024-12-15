@@ -8,7 +8,7 @@ set $win Mod4
 set $mod Mod4
 
 # Font for window titles.
-font xft:%(FONT) %(FONT_VARIANT) %(FONT_SIZE)
+font pango:%(FONT) %(FONT_VARIANT) %(FONT_SIZE)
 
 # Window colors (default colors, no indicator)
 # class                 border  backgr. text    indicator child_border
