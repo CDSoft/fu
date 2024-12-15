@@ -100,7 +100,7 @@ bindsym $mod+$alt+Ctrl+c        exec menu clone # dual internal monitor cloned t
 
 bindsym $mod+l                  exec lock
 
-# custom window settings
+# custom window settings (use xwininfo to get windows information)
 hide_edge_borders smart
 default_border pixel 4
 default_floating_border pixel 4
@@ -128,6 +128,7 @@ for_window [title="^Timeshift$"]                                floating enable,
 for_window [title="^netmon$"]                                   floating enable, border normal 4
 for_window [class="^xprompt$"]                                  floating enable, border normal %(FONT_SIZE)
 for_window [title="^solaar$"]                                   floating enable, border pixel 4
+for_window [title="^Clocks$"]                                   floating enable
 
 # kill focused window
 bindsym $mod+q          kill
