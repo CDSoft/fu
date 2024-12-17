@@ -13,7 +13,7 @@ user_pref("browser.uidensity", 1);
 // - moving a tab outside its group moves it to the next group
 // For a better experience:
 // - group tabs in windows (i3 is a nice windows manager)
-// - use "Windows Titler" to rename windows (i.e. tab groups) => easy to search with rofi
+// - use "Windows Titler" to rename windows (i.e. tab groups) => easy to search with rofi or fzf-launcher
 //user_pref("browser.tabs.groups.enabled", true);
 
 /* Screen tearing issue */

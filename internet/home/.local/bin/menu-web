@@ -2,20 +2,20 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | uniq | rofi -dmenu -i -l 30 -p "Web browser"
-%(("%-24s"):format(fs.basename(BROWSER))): Web browser with the work profile
-%(("%-24s"):format(fs.basename(BROWSER2))): Alternate web browser
-%(("%-24s"):format("meet on "..fs.basename(BROWSER))): Google Meet
-%(("%-24s"):format("meet on "..fs.basename(BROWSER2))): Google Meet in the alternate web browser
+    local action=$(cat <<EndOfMenu | fzfmenu 72 9 --with-nth=2.. --nth=1..
+1 %(("%-24s"):format(fs.basename(BROWSER))): Web browser with the work profile
+2 %(("%-24s"):format(fs.basename(BROWSER2))): Alternate web browser
+3 %(("%-24s"):format("meet on "..fs.basename(BROWSER))): Google Meet
+4 %(("%-24s"):format("meet on "..fs.basename(BROWSER2))): Google Meet in the alternate web browser
 EndOfMenu
 )
     test -n "$action" && $0 "$action"
 }
 
 case "$1" in
-    ("%(fs.basename(BROWSER))"*) %(BROWSER) -P work ;;
-    ("%(fs.basename(BROWSER2))"*) %(BROWSER2) ;;
-    ("meet on %(fs.basename(BROWSER))"*) %(BROWSER) -P work --new-window meet.google.com ;;
-    ("meet on %(fs.basename(BROWSER2))"*) %(BROWSER2) meet.google.com ;;
+    (1*) %(BROWSER) -P work ;;
+    (2*) %(BROWSER2) ;;
+    (3*) %(BROWSER) -P work --new-window meet.google.com ;;
+    (4*) %(BROWSER2) meet.google.com ;;
     ("") _menu ;;
 esac

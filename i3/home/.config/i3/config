@@ -121,6 +121,7 @@ for_window [title="Waiting for low CPU and network activity"]   floating enable,
 for_window [title="Network Manager"]                            floating enable, border pixel 4
 for_window [title="Configuration Center"]                       floating enable, border pixel 4
 for_window [title="^floating fzfmenu$"]                         floating enable, border pixel 4
+for_window [class="^fzfmenu$"]                                  floating enable, border pixel 4
 for_window [title="^Screen Layout Editor"]                      floating enable, border pixel 4
 for_window [title="^Contrôle du volume"]                        floating enable, border normal
 for_window [title="^Xephyr on :"]                               border normal 8
@@ -129,13 +130,17 @@ for_window [title="^netmon$"]                                   floating enable,
 for_window [class="^xprompt$"]                                  floating enable, border normal %(FONT_SIZE)
 for_window [title="^solaar$"]                                   floating enable, border pixel 4
 for_window [title="^Clocks$"]                                   floating enable
+for_window [class="^fzf-launcher$"]                             floating enable, border none
 
 # kill focused window
 bindsym $mod+q          kill
 bindsym $alt+F4         kill
 
 # start rofi (a windows switcher / program launcher)
-bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "run" -show-icons
+#bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "run" -show-icons
+
+# start fzf-launcher (a windows switcher / program launcher)
+bindsym $mod+Escape     exec %(ALACRITTY) --class fzf-launcher -o "window.dimensions.columns=128" -o "window.dimensions.lines=32" -o "font.size=%(FONT_SIZE*3//2)" -o "window.opacity=1.0" -e fzf-launcher.lua -w -d -p
 
 # start arandr
 bindsym $mod+Ctrl+x     exec arandr

@@ -1,7 +1,26 @@
 #!/bin/bash
 
-export FZF_DEFAULT_OPTS=""
-st \
-    -t "floating fzfmenu" \
-    -g 160x32 \
-    -e sh -c "fzf $* < /proc/$$/fd/0 > /proc/$$/fd/1"
+X="$1"
+Y="$2"
+shift 2
+
+ALACRITTY_OPTIONS=(
+    --class fzfmenu
+    -o "font.size=%(FONT_SIZE*3//2)"
+    -o "window.dimensions.columns=$X" -o "window.dimensions.lines=$Y"
+)
+
+FZF_OPTIONS=(
+    --exact
+    --ignore-case
+    --no-sort
+    --no-multi-line
+    --height=-1
+    --layout=reverse
+    --border=rounded
+    --info=hidden
+    --color="dark,current-bg:#105020"
+    --highlight-line
+)
+
+alacritty ${ALACRITTY_OPTIONS[*]} -e sh -c "fzf ${FZF_OPTIONS[*]} $* < /proc/$$/fd/0 > /proc/$$/fd/1"
