@@ -2,7 +2,7 @@ local alacritty_sources = false
 
 -- Thunar bug with miniatures: rm -rf .cache/thumbnails
 if FORCE then
-    sh "rm -rf .cache/thumbnails"
+    run "rm -rf .cache/thumbnails"
 end
 
 dnf_install [[
