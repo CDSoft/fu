@@ -76,6 +76,6 @@ PARAMETERS = {
     { "RFKILL",             _, _, P },
     { "NUMLOCK",            D, _, P },
     { "WALLPAPER",          D, _, _ },
-    { "START_VLC",          D, _, _ },
+    { "START_VLC",          _, _, _ },
     { "USE_THUNDERBIRD",    D, _, _ },
 }
