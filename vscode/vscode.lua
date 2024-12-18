@@ -10,11 +10,3 @@ if FORCE or not installed "code" then
     end)
     dnf_install "code"
 end
-
--- start VLC in a single instance
-if fs.is_file(HOME/".config/vlc/vlcrc") then
-    with_file(HOME/".config/vlc/vlcrc", function(vlcrc)
-        return vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
-    end)
-end
-
