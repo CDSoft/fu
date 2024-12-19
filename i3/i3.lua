@@ -190,7 +190,7 @@ mime_default "libreoffice-math.desktop"
 mime_default "libreoffice-startcenter.desktop"
 mime_default "libreoffice-writer.desktop"
 mime_default "libreoffice-xsltfilter.desktop"
-if USE_THUNDERBIRD then
+if THUNDERBIRD then
     mime_default "mozilla-thunderbird.desktop"
 end
 mime_default "atril.desktop"
