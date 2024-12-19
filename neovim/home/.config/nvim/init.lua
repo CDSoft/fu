@@ -318,6 +318,10 @@ use "norcalli/nvim-colorizer.lua" {
 
 use "nvim-treesitter/nvim-treesitter" {
     build = ":TSUpdate",
+    dependencies = {
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
+    },
     config = function()
         local configs = require "nvim-treesitter.configs"
         configs.setup {
@@ -370,7 +374,8 @@ use "nvim-treesitter/nvim-treesitter" {
                 "tmux",
                 "toml",
                 "tsv",
-                "typst",
+                --"typst",
+                --"tinymist", -- typst
                 "vim",
                 "vimdoc",
                 "xml",
@@ -743,7 +748,8 @@ use "neovim/nvim-lspconfig" {
             "pyright",
             "rust_analyzer",
             "teal_ls",
-            "typst_lsp",
+            --"typst_lsp",
+            "tinymist", -- typst
             "zls",
         }
         for _, lsp in ipairs(servers) do
