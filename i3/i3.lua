@@ -10,6 +10,7 @@ dnf_install [[
     numlockx
     rlwrap
     i3 i3status i3lock dmenu xbacklight feh
+    wmctrl
     picom
     arandr
     sox

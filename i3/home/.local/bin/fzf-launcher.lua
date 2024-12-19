@@ -42,7 +42,7 @@ local actions = {}
 
 local function list_windows()
     if not args.w then return F{} end
-    return sh.read "wmctrl -l"
+    return F(sh.read "wmctrl -l" or "")
         : lines()
         : init() -- ignore the last window (i.e. the fzf-launcher window)
         : map(function(s)
@@ -111,7 +111,7 @@ local function list_executables()
         : split ":" ---@diagnostic disable-line: undefined-field
         : reverse()
         : map(function(path)
-            return fs.dir(path)
+            return (fs.dir(path) or F{})
                 : map(function(file)
                     local item = ("%s run %s"):format((path/file):hash(), file)
                     actions[item] = ("nohup %s &>/dev/null &"):format(path/file)
@@ -131,9 +131,10 @@ local executables = list_executables()
 
 local itemfile = "/tmp/fzf-launcher-items"
 local items = assert(io.open(itemfile, "w"))
-F.foreach(windows, function(item) items:write(item, "\n") end)
-F.foreach(applications, function(item) items:write(item, "\n") end)
-F.foreach(executables, function(item) items:write(item, "\n") end)
+local function write_item(item) items:write(item, "\n") end
+F.foreach(windows, write_item)
+F.foreach(applications, write_item)
+F.foreach(executables, write_item)
 items:close()
 
 if new_db then
