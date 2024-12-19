@@ -5,7 +5,7 @@ Y="$2"
 shift 2
 
 ALACRITTY_OPTIONS=(
-    --class fzfmenu
+    --class fzf
     -o "font.size=%(FONT_SIZE*3//2)"
     -o "window.dimensions.columns=$X" -o "window.dimensions.lines=$Y"
 )
