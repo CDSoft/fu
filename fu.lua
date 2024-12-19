@@ -224,8 +224,10 @@ end
 
 function with_file(name, f)
     local content = fs.read(name)
-    content = f(content)
-    fs.write(name, content)
+    local new_content = f(content)
+    if new_content and new_content ~= content then
+        fs.write(name, new_content)
+    end
 end
 
 function mime_default(desktop_file)
