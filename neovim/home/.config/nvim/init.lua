@@ -749,7 +749,7 @@ use "neovim/nvim-lspconfig" {
             "rust_analyzer",
             "teal_ls",
             --"typst_lsp",
-            "tinymist", -- typst
+            --"tinymist", -- typst
             "zls",
         }
         for _, lsp in ipairs(servers) do

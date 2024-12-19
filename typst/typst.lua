@@ -1,5 +1,6 @@
 -- Typst language server
 
+--[[
 if FORCE or not installed "typst-lsp" then
     if fs.is_file(HOME/".cargo/bin/cargo") then
         gitclone "https://github.com/nvarner/typst-lsp.git"
@@ -35,3 +36,4 @@ if FORCE or not installed "tinymist" then
         end)
     end
 end
+--]]
