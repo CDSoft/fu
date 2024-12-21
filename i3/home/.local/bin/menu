@@ -2,7 +2,7 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | fzfmenu 80 30
+    local action=$(cat <<EndOfMenu | fzfmenu 80 29
 suspend             : lock screen & suspend to memory
 suspend when idle   : lock screen & suspend to memory when the OS is idle
 hibernate           : suspend to disk

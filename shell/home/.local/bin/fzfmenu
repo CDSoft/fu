@@ -15,7 +15,6 @@ FZF_OPTIONS=(
     --ignore-case
     --no-sort
     --no-multi-line
-    --height=-1
     --layout=reverse
     --border=rounded
     --info=hidden

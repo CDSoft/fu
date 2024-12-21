@@ -152,7 +152,6 @@ local item = sh.read {
     "--no-sort",
     --"--wrap",
     "--no-multi-line",
-    "--height=-1",
     "--layout=reverse",
     "--border=rounded",
     "--info=hidden",
