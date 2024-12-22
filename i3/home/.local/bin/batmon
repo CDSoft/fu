@@ -6,39 +6,30 @@ local profiles = {
     { name="low",      level=15, icon="battery-low",   title="Battery low",   message="Please charge", period=60, duration=10, suspend=false},
 }
 
-local fun = require "fun"
 local ps = require "ps"
 local fs = require "fs"
+local sh = require "sh"
+local term = require "term"
 
 local daemon = arg[1] == "-d"
 
-if daemon then
+if daemon and not term.isatty() then
     function print(...) end
 end
 
-local function sh(...)
-    os.execute(table.concat(fun.flatten(...), " "))
-end
-
 local function suspend()
-    sh "rfkill block all"
-    sh "lock"
-    sh "systemctl suspend"
-    sh "rfkill unblock all"
-end
-
-local function read(name)
-    local f = io.open(name)
-    if f then
-        local value = f:read("a"):trim()
-        f:close()
-        return value
-    end
-    return nil
+    sh.run {
+        "rfkill block all;",
+        "lock;",
+        "systemctl suspend;",
+        "rfkill unblock all;",
+    }
 end
 
 local function battery(param)
-    return read(fs.join("/sys/class/power_supply/BAT0", param))
+    local value = fs.read("/sys/class/power_supply/BAT0"/param)
+    if not value then return nil end
+    return value:trim()
 end
 
 local function q(s) return ("'%s'"):format(s) end
@@ -58,10 +49,12 @@ local function monitor()
         for _, profile in ipairs(profiles) do
             if level <= profile.level then
                 print("Battery level:  ", profile.name)
-                sh("notify-send",
+                sh.run {
+                    "notify-send",
                     q(profile.title), q(profile.message),
                     "--icon="..profile.icon,
-                    "--expire-time="..(profile.duration*1000))
+                    "--expire-time="..(profile.duration*1000),
+                }
                 if profile.suspend then suspend() end
                 return profile.period
             end
