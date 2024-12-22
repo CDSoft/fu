@@ -1,17 +1,3 @@
-# Environment variables
-
-export PATH=~/.local/bin:~/bin:$PATH
-
-export EDITOR=nvim
-export VISUAL=nvim
-export BROWSER=%(BROWSER)
-export MANPAGER='nvim +Man!'
-#export TERM=gnome-256color
-
-export QT_QPA_PLATFORMTHEME=qt5ct
-
-export LANG=%(LOCALE)
-
 # Aliases
 
 [ -e /etc/grc.zsh ] && . /etc/grc.zsh
@@ -43,22 +29,12 @@ function gd()
     cd "$filepath"
 }
 
-# Force compression level with tar
-
-export GZIP_OPT="-9"
-export XZ_OPT="-9"
-
 # OMZ scripts
 
 . %(FU_PATH)/ohmyzsh/lib/completion.zsh
 . %(FU_PATH)/ohmyzsh/lib/correction.zsh
 . %(FU_PATH)/ohmyzsh/lib/history.zsh
 . %(FU_PATH)/ohmyzsh/lib/key-bindings.zsh
-
-# Haskell and ocaml environment
-
-[ -f ~/.ghcup/env ] && . ~/.ghcup/env
-[ -f /usr/bin/opam ] && eval "$(opam env)"
 
 # Completion
 
@@ -75,25 +51,8 @@ autoload -U +X bashcompinit && bashcompinit
 
 eval "$(zoxide init zsh)"
 
-# Third-party configuration
+# fzf
 
-[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-[ -f ~/.cargo/env ] && . ~/.cargo/env
-if [ -f /usr/bin/ppcx64 ]
-then
-    export FPCDIR='/usr/share/fpcsrc'       # FPC source directory (This is the only required option for the server to work).
-    export PP='/usr/bin/ppcx64'             # Path to the Free Pascal compiler executable.
-    export LAZARUSDIR='/usr/lib64/lazarus'  # Path to the Lazarus sources.
-    export FPCTARGET=''                     # Target operating system for cross compiling.
-    export FPCTARGETCPU='x86_64'            # Target CPU for cross compiling.
-fi
-[ -f ~/.wasmer/wasmer.sh ] && . ~/.wasmer/wasmer.sh
-
-# Plugins
-
-export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
-export FZF_DEFAULT_OPTS="-m"
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f %(FU_PATH)/fzf-git.sh/fzf-git.sh ] && source %(FU_PATH)/fzf-git.sh/fzf-git.sh
 
 gco() {
@@ -140,15 +99,6 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 
 . %(FU_PATH)/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# luarocks
-eval "$(luarocks path --bin)"
-
-# LuaX environment
-eval "$(\luax env)"       # \luax to skip the luax alias and let mc start faster
-
-# Lua Language Server
-alias luamake=%(FU_PATH)/lua-language-server/3rd/luamake/luamake
-
 %(when(db.default_configuration=="pro") [==[
 # Work configuration
 
@@ -163,12 +113,10 @@ alias rm_dang_volumes="docker volume ls -q -f=\"dangling=true\" | xargs --no-run
 [ -f /opt/ros/iron/setup.zsh ] && . /opt/ros/iron/setup.zsh
 ]==])
 
-# no warnings in Wine
-export WINEDEBUG=-all
-
 # Other user configuration from ~/.myconf
 
 %(myconf.zsh or "")
+%(myconf.zshrc or "")
 
 # User specific environment and startup programs
 [ -n "$SSH_AGENT_PID" ] || eval "$(ssh-agent -s)"

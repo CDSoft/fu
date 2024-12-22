@@ -24,7 +24,7 @@ mixer               : audio mixer
 nm                  : network manager
 bt                  : bluetooth manager
 restartbt           : restart bluetooth
-netmon:             : network monitor (ping)
+netmon              : network monitor (ping)
 
 renws               : rename the active workspace
 newws               : create a new workspace

@@ -53,7 +53,7 @@ if FORCE or not installed "starship" then
     end
 end
 
--- FZF
+-- fzf
 if FORCE or not installed "fzf" then
     gitclone "https://github.com/junegunn/fzf.git"
     run {
