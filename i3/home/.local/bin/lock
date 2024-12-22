@@ -1,8 +1,8 @@
 #!/bin/bash
 
 LOCK=/tmp/lock.png
-import -window root $LOCK
-convert $LOCK -scale 10% -scale 1000% $LOCK
+magick import -window root -colorspace Gray $LOCK
+magick $LOCK -scale 10% -scale 1000% $LOCK
 if [ -n "$SWAYSOCK" ]
 then
     swaylock --ignore-empty-password --tiling --image=$LOCK "$@"
