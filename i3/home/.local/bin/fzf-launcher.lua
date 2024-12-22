@@ -10,39 +10,25 @@ local fs = require "fs"
 local sh = require "sh"
 local cbor = require "cbor"
 
-local dbname = "/tmp/fzf-launcher.db"
+local cache = "/tmp"/arg[0]:basename():splitext()
 
 local args = (function()
-    local parser = require "argparse"() : name "fzf-launcher.lua"
-    parser : flag "-r" : description "reset database"
-    parser : flag "-w" : description "list Windows"
-    parser : flag "-d" : description "list Desktop applications"
-    parser : flag "-p" : description "list applications in PATH"
+    local parser = require "argparse"() : name(arg[0]:basename())
+    parser : flag "-r" : description "refresh cache"
     return parser:parse(arg)
 end)()
-if not args.w and not args.d and not args.p then
-    args.w = true
-    args.d = true
-    args.p = true
-end
 
-local new_db = false
+local refresh = args.r or (function()
+    local cache_stat = fs.stat(cache)
+    return not cache_stat or os.time() > cache_stat.mtime+86400
+end)()
 
-local db = { actions={} }
-local dbstat = fs.stat(dbname)
-if dbstat then
-    if args.r or dbstat.mtime > os.time() then
-        fs.remove(dbname)
-    else
-        db = cbor.decode(fs.read_bin(dbname))
-    end
-end
-
-local actions = {}
-
-local function list_windows()
-    if not args.w then return F{} end
-    return F(sh.read "wmctrl -l" or "")
+-------------------------------------------------------------------------------
+-- Windows
+-------------------------------------------------------------------------------
+local windows_items, windows_actions = (function()
+    local actions = {}
+    local items = F(sh.read "wmctrl -l" or "")
         : lines()
         : init() -- ignore the last window (i.e. the fzf-launcher window)
         : map(function(s)
@@ -52,16 +38,20 @@ local function list_windows()
             actions[item] = ("wmctrl -a %q"):format(title)
             return item
         end)
-end
+        : unlines()
+    return items, actions
+end)()
 
-local function list_applications()
-    if not args.d then return F{} end
-    if db.applications then return db.applications end
+-------------------------------------------------------------------------------
+-- Applications
+-------------------------------------------------------------------------------
+local apps_items, apps_actions = (function()
+    if not refresh then return end
     local lang = os.getenv"LANG":sub(1, 2)
     local section = ""
     local seen = {}
-    new_db = true
-    db.applications = F{
+    local actions = {}
+    local items = F{
             fs.ls("/usr/share/applications/*.desktop"),
             fs.ls(os.getenv"HOME"/".local/share/applications/*.desktop"),
         }
@@ -96,18 +86,21 @@ local function list_applications()
                 (comment) and (" -- %s"):format(comment) or ""
             )
             actions[item] = ("nohup gio launch %s &>/dev/null &"):format(file)
-            db.actions[item] = actions[item]
             return item
         end)
         : filter(function(item) return #item > 0 end)
         : sort(function(a, b) return a:match" (.*)":lower() < b:match" (.*)":lower() end)
-    return db.applications
-end
+        : unlines()
+    return items, actions
+end)()
 
-local function list_executables()
-    if not args.p then return F{} end
-    if db.executables then return db.executables end
-    db.executables =  os.getenv "PATH"
+-------------------------------------------------------------------------------
+-- Executables
+-------------------------------------------------------------------------------
+local exes_items, exes_actions = (function()
+    if not refresh then return end
+    local actions = {}
+    local items = os.getenv "PATH"
         : split ":" ---@diagnostic disable-line: undefined-field
         : reverse()
         : map(function(path)
@@ -115,36 +108,39 @@ local function list_executables()
                 : map(function(file)
                     local item = ("%s run %s"):format((path/file):hash(), file)
                     actions[item] = ("nohup %s &>/dev/null &"):format(path/file)
-                    db.actions[item] = actions[item]
                     return item
                 end)
         end)
         : flatten()
         : sort()
         : sort(function(a, b) return a:match" (.*)":lower() < b:match" (.*)":lower() end)
-    return db.executables
+        : unlines()
+    return items, actions
+end)()
+
+-------------------------------------------------------------------------------
+-- Cache
+-------------------------------------------------------------------------------
+local actions = {}
+if refresh then
+    fs.rmdir(cache)
+    fs.mkdir(cache)
+    fs.write(cache/"items", apps_items..exes_items)
+    actions = F.merge{apps_actions, exes_actions}
+    fs.write_bin(cache/"actions", cbor.encode(actions))
+else
+    actions = cbor.decode(assert(fs.read_bin(cache/"actions")))
 end
+fs.write(cache/"windows", windows_items)
 
-local windows = list_windows()
-local applications = list_applications()
-local executables = list_executables()
-
-local itemfile = "/tmp/fzf-launcher-items"
-local items = assert(io.open(itemfile, "w"))
-local function write_item(item) items:write(item, "\n") end
-F.foreach(windows, write_item)
-F.foreach(applications, write_item)
-F.foreach(executables, write_item)
-items:close()
-
-if new_db then
-    fs.write_bin(dbname, cbor.encode(db))
-end
+-------------------------------------------------------------------------------
+-- Run fzf
+-------------------------------------------------------------------------------
 
 --print(ps.time() - t0)
 
 local item = sh.read {
-    "cat", itemfile, "| fzf",
+    "cat", cache/"windows", cache/"items", "| fzf",
     "--exact",
     "--ignore-case",
     "--with-nth=2..",
@@ -161,7 +157,7 @@ local item = sh.read {
 if not item then return end
 
 item = item:trim()
-local action = assert(actions[item] or db.actions[item], "can not execute "..item)
+local action = assert(actions[item] or windows_actions[item], "can not execute "..item)
 
 --io.stderr:write("item\t", item, "\n")
 --io.stderr:write("action\t", action, "\n")
