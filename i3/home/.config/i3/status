@@ -11,11 +11,18 @@ general {
         colors = true
         interval = 5
 }
-
+%(  (function()
+        local sh = require "sh"
+        partition_root = sh { "df -P", "/" } : lines() : last() : words() : head()
+        partition_home = sh { "df -P", os.getenv"HOME" } : lines() : last() : words() : head()
+        partition_tmp  = sh { "df -P", "/tmp" } : lines() : last() : words() : head()
+        return ""
+    end)()
+)
 #order += "ipv6"
 order += "disk /"
-order += "disk /tmp"
-%(tonumber(read 'lsblk -nl -o MOUNTPOINT | grep "^/home$" | wc -l') == 0 and "#" or "")order += "disk /home"
+%(when(partition_tmp==partition_root) "#")order += "disk /tmp"
+%(when(partition_home==partition_root)"#")order += "disk /home"
 #order += "run_watch DHCP"
 #order += "run_watch VPNC"
 #order += "path_exists VPN"

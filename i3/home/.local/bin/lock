@@ -1,11 +1,26 @@
 #!/bin/bash
 
-LOCK=/tmp/lock.png
-magick import -window root -colorspace Gray $LOCK
-magick $LOCK -scale 10% -scale 1000% $LOCK
+P1=20
+P2=$((10000 / P1)) # P1% * P2% == 1
+
 if [ -n "$SWAYSOCK" ]
 then
-    swaylock --ignore-empty-password --tiling --image=$LOCK "$@"
+    mapfile -t OUTPUTS < <(swaymsg -t get_outputs | jq -r '.[] | .name')
+    IMAGES=()
+    for output in "${OUTPUTS[@]}"
+    do
+        LOCK=/tmp/lock-$output.png
+        IMAGES+=( --image="$output:$LOCK" )
+        (   grim -o "$output" - > "$LOCK"
+            magick "$LOCK" -scale $P1% -blur 0x2 -scale $P2% -fill black -colorize 50% "$LOCK"
+        ) &
+    done
+    wait
+    swaylock --ignore-empty-password --show-failed-attempts --daemonize --tiling "${IMAGES[@]}" "$@"
 else
-    i3lock --ignore-empty-password --tiling --image=$LOCK "$@"
+    LOCK=/tmp/lock.png
+    magick import -window root -colorspace Gray $LOCK
+    #magick $LOCK -scale 10% -scale 1000% $LOCK
+    magick $LOCK -scale $P1% -blur 0x2 -scale $P2% -fill black -colorize 50% $LOCK
+    i3lock --ignore-empty-password --show-failed-attempts --tiling --image=$LOCK "$@"
 fi

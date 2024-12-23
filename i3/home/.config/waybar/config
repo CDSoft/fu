@@ -1,0 +1,202 @@
+// vim: set filetype=jsonc:
+%(  (function()
+        local sh = require "sh"
+        partition_root = sh { "df -P", "/" } : lines() : last() : words() : head()
+        partition_home = sh { "df -P", os.getenv"HOME" } : lines() : last() : words() : head()
+        partition_tmp  = sh { "df -P", "/tmp" } : lines() : last() : words() : head()
+        return ""
+    end)()
+)
+{
+    "layer": "bottom",
+    "position": "bottom",
+    "spacing": 4,
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode",
+        "sway/scratchpad"
+    ],
+    "modules-center": [
+        "sway/window"
+    ],
+    "modules-right": [
+        "disk#root",
+        %(when(partition_tmp==partition_root) "//")"disk#tmp",
+        %(when(partition_home==partition_root)"//")"disk#home",
+        "bluetooth",
+        "network",
+        "cpu",
+        "memory",
+        "temperature",
+        "battery",
+        "idle_inhibitor",
+        "sway/language",
+        "keyboard-state",
+        "pulseaudio",
+        "tray",
+        "clock"
+        //"custom/power"
+    ],
+    "battery": {
+        "interval": 30,
+        "states": {
+            "good": 90,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "blueman-manager"
+    },
+    "clock": {
+        "timezone": "%(TIMEZONE)",
+        "format": "{:%H:%M}  ",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "format": {
+                "months":     "<span color='#ffead3'><b>{}</b></span>",
+                "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+                "weeks":      "<span color='#99ffdd'><b>W{}</b></span>",
+                "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+                "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+            }
+        },
+        "on-click": "gnome-clocks"
+    },
+    "cpu": {
+        "interval": 5,
+        "format": "{usage}% {avg_frequency}GHz {load} ",
+        "on-click": "st btop"
+    },
+    "disk#root": {
+        "path": "/",
+        "interval": 30,
+        "format": "🖴 / {free}",
+        "on-click": "alacritty -e vifm / ~"
+    },
+    "disk#home": {
+        "path": "%(HOME)",
+        "interval": 30,
+        "format": "🖴 ~ {free}",
+        "on-click": "alacritty -e vifm ~ ~"
+    },
+    "disk#tmp": {
+        "path": "/tmp",
+        "interval": 30,
+        "format": "🖴 tmp {free}",
+        "on-click": "alacritty -e vifm /tmp ~"
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        },
+        "timeout": 30.5 // minutes
+    },
+    "keyboard-state": {
+        "numlock": true,
+        "capslock": true,
+        "scrolllock": false,
+        "format": {
+            "numlock": "Num {icon}",
+            "capslock": "Maj {icon}",
+            "scrolllock": "Scroll {icon}"
+        },
+        "format-icons": {
+            "locked": "✸",
+            "unlocked": " "
+        }
+    },
+    "memory": {
+        "interval": 5,
+        "format": "{avail:0.1f}G ",
+        "on-click": "st btop"
+    },
+    "network": {
+        "format": "{ifname} {ipaddr}",
+        "format-wifi": "{essid} {ipaddr} ({signalStrength}%) ",
+        "format-ethernet": "{ifname} {ipaddr} ",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname} {ipaddr}",
+        "tooltip-format-wifi": "{essid} {ipaddr} ({signalStrength}%) ",
+        "tooltip-format-ethernet": "{ifname} {ipaddr} ",
+        "tooltip-format-disconnected": "Disconnected"
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": "🔇 {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphones": "",
+            "handsfree": "",
+            "headset": "",
+            "phone": "",
+            "phone-muted": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "scroll-step": 1,
+        //"on-click": "pavucontrol"
+        "on-click": "pactl set-sink-mute \\@DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol"
+    },
+    "sway/mode": {
+        "format": "<span color=\"#ff0000\" style=\"italic\">{}</span>"
+    },
+    "sway/scratchpad": {
+        "format": "{icon} {count}",
+        "show-empty": false,
+        "format-icons": ["", ""],
+        "tooltip": true,
+        "tooltip-format": "{app}: {title}"
+    },
+    "sway/window": {
+        "format": "{}",
+        "max-length": 50,
+        "rewrite": {
+            "(.*) - Mozilla Firefox": "🌎 $1",
+            "(.*) - zsh": "> [$1]"
+        },
+        "on-click": "%(ST) -c fzf -g 128x32 -f \"%(FONT:gsub(' ', '')):pixelsize=%(FONT_SIZE*16//9)\" fzf-launcher.lua"
+    },
+    "sway/workspaces": {
+        "format": "{value}",
+        "disable-scroll-wraparound": true,
+        "enable-bar-scroll": true,
+        "disable-auto-back-and-forth": true,
+    },
+    "temperature": {
+        "format": "{temperatureC}°C "
+    },
+    "tray": {
+         "icon-size": %(FONT_SIZE*2),
+        "spacing": 8,
+        "show-passive-items": true,
+    },
+    "custom/power": {
+        "format" : "⏻ ",
+        "tooltip": false,
+        "menu": "on-click",
+        "menu-file": "$HOME/.config/waybar/power_menu.xml",
+        "menu-actions": {
+            "shutdown": "shutdown",
+            "reboot": "reboot",
+            "suspend": "systemctl suspend",
+            "hibernate": "systemctl hibernate"
+        }
+    }
+}

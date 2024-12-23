@@ -1,0 +1,27 @@
+# Keyboard configuration (for i3 only)
+# vim: set filetype=i3config:
+
+# xbindkeys --key => get keycodes
+
+# Volume control
+# Use pactl to adjust volume in PulseAudio.
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+#bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+# Brightness
+bindsym XF86MonBrightnessDown   exec brightness -5
+bindsym XF86MonBrightnessUp     exec brightness +5
+
+# start arandr
+bindsym $mod+$ctrl+x    exec arandr
+
+# Screenshots with ksnip
+bindsym Print                   exec ksnip -m
+bindsym $win+Print              exec ksnip -a
+bindsym Shift+Print             exec ksnip -r
+
+# Screenshots with gimp
+#bindsym Print                   exec screenshot root
+#bindsym $win+Print              exec screenshot active

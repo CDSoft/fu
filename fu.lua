@@ -68,7 +68,12 @@ local function title(fmt, ...)
 end
 
 local function log(fmt, ...)
-    local color = term.color.yellow
+    local color = F.case(fmt:lower():words():head()) {
+        load = term.color.yellow,
+        run = term.color.yellow,
+        update = term.color.green + term.color.bold,
+        [F.Nil] = term.color.cyan
+    }
     print(color(">>> %s"):format(fmt:format(...)))
 end
 
@@ -76,7 +81,7 @@ db = setmetatable({ dnf={}, lua={}, pip={}, mime={} }, {
     __index = {
         dbfile = FU_PATH/"db.lua",
         load = function(self)
-            log("Load %s", self.dbfile)
+            log("load %s", self.dbfile)
             if RESET then fs.remove(self.dbfile) end
             F(fs.is_file(self.dbfile) and assert(loadfile(self.dbfile))() or {})
                : foreachk(function(k, v) self[k] = v end)

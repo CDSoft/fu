@@ -1,0 +1,21 @@
+# Applications configuration (for i3 and sway)
+# vim: set filetype=i3config:
+
+%(when(WALLPAPER) [[exec --no-startup-id every 1h wallpaper_of_the_day]])
+
+exec --no-startup-id wait_for_waybar nm-applet
+exec --no-startup-id wait_for_waybar blueman-applet
+
+exec --no-startup-id batmon -d &
+
+exec --no-startup-id st -t ssh-agent -e ~/.local/bin/ssha &
+
+
+%(when(START_VLC) [=[
+# VLC minimized
+exec --no-startup-id wait_for_waybar vlc --qt-start-minimized &
+]=])
+
+# run specific scripts at i3 startup
+
+%(when(db.start_nextcloud) "exec --no-startup-id wait_for_waybar Nextcloud --background &")

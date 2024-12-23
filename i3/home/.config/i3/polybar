@@ -1,0 +1,4 @@
+# Start polybar to display a workspace bar
+# vim: set filetype=i3config:
+
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh

@@ -2,13 +2,13 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | fzfmenu 80 29
+    local action=$(cat <<EndOfMenu | fzfmenu 80 31
 suspend             : lock screen & suspend to memory
 suspend when idle   : lock screen & suspend to memory when the OS is idle
 hibernate           : suspend to disk
 power-off           : switch the computer off
 reboot              : reboot the computer
-exit                : exit i3
+exit                : exit $(test -n "$SWAYSOCK" && echo sway || echo i3)
 lock                : lock screen
 
 single              : internal monitor only
@@ -20,6 +20,8 @@ clone               : clone the internal monitor to the external one
 mute                : mute the main audio output
 unmute              : unmute the main audio output
 mixer               : audio mixer
+
+notifications       : notification control center (sway)
 
 nm                  : network manager
 bt                  : bluetooth manager
@@ -111,6 +113,8 @@ case "$1" in
     (mute*)         pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;
     (unmute*)       pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` false ;;
     (mixer*)        pavucontrol ;;
+
+    (notif*)        swaync-client -t -sw ;;
 
     (nm*)           nm-connection-editor ;;
     (bt*)           blueman-manager ;;

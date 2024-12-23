@@ -1,0 +1,38 @@
+# Keyboard configuration (for sway only)
+# vim: set filetype=swayconfig:
+
+### Input configuration
+#
+# Example configuration:
+#
+#   input "2:14:SynPS/2_Synaptics_TouchPad" {
+#       dwt enabled
+#       tap enabled
+#       natural_scroll enabled
+#       middle_emulation enabled
+#   }
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+input type:keyboard {
+  xkb_layout "%(KEYMAP)"
+  xkb_numlock %(NUMLOCK and "enabled" or "disabled")
+}
+
+# Special keys to adjust volume via PulseAudio
+bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+# Special keys to adjust brightness via brightnessctl
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+
+# start wdisplays
+bindsym $mod+$ctrl+x    exec wdisplays
+
+# Screenshots with swappy
+bindsym Print                   exec swayscreenshot output
+bindsym $win+Print              exec swayscreenshot window
+bindsym Shift+Print             exec swayscreenshot region

@@ -49,11 +49,23 @@ dnf_install [[
     thunar-media-tags-plugin.x86_64
     thunar-vcs-plugin.x86_64
     thunar-volman.x86_64
+    gnome-clocks
+    polybar
 ]]
 
 dnf_install [[
     sway
     wdisplays
+    SwayNotificationCenter
+    swaybg
+    swayidle
+    swayimg
+    swaylock
+    waybar
+    wf-recorder
+    wlsunset
+    grimshot
+    swappy
 ]]
 
 -- Nerd Fonts
@@ -70,6 +82,20 @@ local function install_font(name, file)
 end
 install_font("SourceCodePro", "SauceCodeProNerdFont-Regular.ttf")
 install_font("FiraCode", "FiraCodeNerdFont-Regular.ttf")
+
+-- FontAweome
+local function install_fontawesome()
+    local file = "FontAwesome.otf"
+    if FORCE or not fs.is_file(HOME/".local/share/fonts"/file) then
+        local url = download("https://www.cdnpkg.com/font-awesome/file/FontAwesome.otf/"):match('href="(https://get%.cdnpkg%.com/font%-awesome/[%d%.]+/FontAwesome%.otf)"')
+        download(url, FU_PATH/file)
+        fs.copy(FU_PATH/file, HOME/".local/share/fonts/"/file)
+        font_cache_update = true
+    end
+end
+--install_fontawesome()
+
+-- Update font cache
 if font_cache_update then
     run "fc-cache -f"
 end

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -n "$SWAYSOCK" ]
+then
+    for _ in $(seq 10)
+    do
+        pgrep waybar && break
+        sleep 1s
+    done
+    sleep 1s
+fi
+
+exec "$@"

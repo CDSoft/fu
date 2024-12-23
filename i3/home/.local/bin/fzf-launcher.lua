@@ -26,21 +26,44 @@ end)()
 -------------------------------------------------------------------------------
 -- Windows
 -------------------------------------------------------------------------------
-local windows_items, windows_actions = (function()
-    local actions = {}
-    local items = F(sh.read "wmctrl -l" or "")
-        : lines()
-        : init() -- ignore the last window (i.e. the fzf-launcher window)
-        : map(function(s)
-            local wid, _, _, title = s:split("%s+", 3):unpack()
-            title = title:trim()
-            local item = ("%s win %s"):format(wid, title)
-            actions[item] = ("wmctrl -a %q"):format(title)
-            return item
-        end)
-        : unlines()
-    return items, actions
-end)()
+local windows_items, windows_actions
+
+if os.getenv "SWAYSOCK" then
+
+    windows_items, windows_actions = (function()
+        local actions = {}
+        local items = F(sh.read [[ swaymsg -t get_tree | jq -r '.. | select(.pid? and .name? and .focused==false) | "\(.pid) \(.name)"' ]] or "")
+            : lines()
+            : map(function(s)
+                local wid, title = s:split("%s+", 1):unpack()
+                title = title:trim()
+                local item = ("%s win %s"):format(wid, title)
+                actions[item] = ("swaymsg '[pid=%s] focus'"):format(wid)
+                return item
+            end)
+            : unlines()
+        return items, actions
+    end)()
+
+else
+
+    windows_items, windows_actions = (function()
+        local actions = {}
+        local items = F(sh.read "wmctrl -l" or "")
+            : lines()
+            : init() -- ignore the last window (i.e. the fzf-launcher window)
+            : map(function(s)
+                local wid, _, _, title = s:split("%s+", 3):unpack()
+                title = title:trim()
+                local item = ("%s win %s"):format(wid, title)
+                actions[item] = ("wmctrl -a %q"):format(title)
+                return item
+            end)
+            : unlines()
+        return items, actions
+    end)()
+
+end
 
 -------------------------------------------------------------------------------
 -- Applications
