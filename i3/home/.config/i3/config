@@ -138,7 +138,8 @@ bindsym $alt+F4         kill
 #bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "run" -show-icons
 
 # start fzf-launcher (a windows switcher / program launcher)
-bindsym $mod+Escape     exec %(ALACRITTY) --class fzf -o "window.dimensions.columns=128" -o "window.dimensions.lines=32" -o "font.size=%(FONT_SIZE*3//2)" -o "window.opacity=1.0" -e fzf-launcher.lua
+#bindsym $mod+Escape     exec %(ALACRITTY) --class fzf -o "window.dimensions.columns=128" -o "window.dimensions.lines=32" -o "font.size=%(FONT_SIZE*3//2)" -o "window.opacity=1.0" -e fzf-launcher.lua
+bindsym $mod+Escape     exec %(ST) -c fzf -g 128x32 -f "%(FONT:gsub(' ', '')):pixelsize=%(FONT_SIZE*16//9)" fzf-launcher.lua
 
 # start arandr
 bindsym $mod+Ctrl+x     exec arandr

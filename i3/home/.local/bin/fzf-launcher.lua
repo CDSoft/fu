@@ -151,7 +151,7 @@ local item = sh.read {
     "--layout=reverse",
     "--border=rounded",
     "--info=hidden",
-    "--color=dark,current-bg:#105020",
+    "--color=dark,current-bg:#287755,border:#287755,hl:#FF0000,hl+:#FF0000",
     "--highlight-line",
 }
 if not item then return end
