@@ -48,5 +48,9 @@ for _, idx in ipairs(INDEXES) do
 end
 
 if #images > 0 then
-    sh.run("feh", "--bg-max", images[(counter()%#images)+1])
+    if os.getenv "SWAYSOCK" then
+        sh.run("swaymsg", "output '*' bg", images[(counter()%#images)+1], "fill")
+    else
+        sh.run("feh", "--bg-max", images[(counter()%#images)+1])
+    end
 end

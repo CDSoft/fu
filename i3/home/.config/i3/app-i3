@@ -1,0 +1,17 @@
+# Applications configuration (for i3 only)
+# vim: set filetype=i3config:
+
+%(when(PICOM) [=[
+# fix screen tearing in Firefox
+exec --no-startup-id pkill "(compton|picom)"; picom --daemon --shadow --vsync --backend glx
+]=])
+
+exec --no-startup-id xset dpms 600
+exec --no-startup-id xss-lock --transfer-sleep-lock -- '~/.local/bin/lock' --nofork
+
+exec --no-startup-id numlockx %(NUMLOCK and "on" or "off")
+exec --no-startup-id /usr/lib64/xfce4/notifyd/xfce4-notifyd &
+exec --no-startup-id xfce4-volumed-pulse &
+exec --no-startup-id hsetroot -solid '#020608'
+
+exec --no-startup-id sh -c 'play ~/.config/i3/empty.wav; volumeicon &'

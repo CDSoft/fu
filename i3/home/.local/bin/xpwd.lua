@@ -60,19 +60,32 @@ end
 log(F"#":rep(80))
 log("date: ", os.date())
 
-local window_id = sh.read("xprop", "-root") : lines()
-    : filter(function(line) return line:find("_NET_ACTIVE_WINDOW(WINDOW)", 1, true) end)
-    : head() : words() : last()
-log("window_id: ", window_id)
+local window_pid
 
-if not window_id or tonumber(window_id) == 0 then exit() end
+if os.getenv "SWAYSOCK" then
 
-local window_pid = sh.read("xprop", "-id", window_id) : lines()
-    : filter(function(line) return line:find("PID", 01, true) end)
-    : head() : words() : last()
+    window_pid = sh.read "swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).pid'"
+
+else
+
+    local window_id = sh.read("xprop", "-root") : lines()
+        : filter(function(line) return line:find("_NET_ACTIVE_WINDOW(WINDOW)", 1, true) end)
+        : head() : words() : last()
+    log("window_id: ", window_id)
+
+    if not window_id or tonumber(window_id) == 0 then exit() end
+
+    window_pid = sh.read("xprop", "-id", window_id) : lines()
+        : filter(function(line) return line:find("PID", 01, true) end)
+        : head() : words() : last()
+
+end
+
 log("window_pid: ", window_pid)
 
-if not window_pid or tonumber(window_pid) == 0 then exit() end
+window_pid = tonumber(window_pid) or 0
+
+if window_pid == 0 then exit() end
 
 local pids = F{}
 sh.read("pstree", "-lp", window_pid) : gsub("%((%d+)%)", function(pid) pids[#pids+1] = pid end)

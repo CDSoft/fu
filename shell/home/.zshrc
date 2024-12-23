@@ -53,6 +53,7 @@ eval "$(zoxide init zsh)"
 
 # fzf
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f %(FU_PATH)/fzf-git.sh/fzf-git.sh ] && source %(FU_PATH)/fzf-git.sh/fzf-git.sh
 
 gco() {

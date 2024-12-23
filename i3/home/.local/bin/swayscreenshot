@@ -1,0 +1,8 @@
+#!/bin/bash
+
+case "$1" in
+    region) grim -g "$(slurp)" - | swappy -f - ;;
+    window) grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | "\(.rect.x),\(.rect.y-.deco_rect.height) \(.rect.width)x\(.rect.height+.deco_rect.height)"' | slurp)" - | swappy -f - ;;
+    output) grim -o "$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')" - | swappy -f - ;;
+    all)    grim - | swappy -f - ;;
+esac

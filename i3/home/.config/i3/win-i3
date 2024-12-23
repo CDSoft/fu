@@ -1,0 +1,11 @@
+# Windows configuration (for i3 only)
+# vim: set filetype=i3config:
+
+# move tiling windows via drag & drop by left-clicking into the title bar,
+# or left-clicking anywhere into the window while holding the floating modifier.
+tiling_drag modifier titlebar
+
+# Show fzf windows above fullscreen windows
+popup_during_fullscreen all
+
+
