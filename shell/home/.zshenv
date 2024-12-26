@@ -37,7 +37,7 @@ fi
 [ -f ~/.wasmer/wasmer.sh ] && . ~/.wasmer/wasmer.sh
 
 # luarocks
-eval "$(luarocks path --bin)"
+[ -x /usr/bin/luarocks ] && eval "$(luarocks path --bin)"
 
 # LuaX environment
 eval "$(\luax env)"       # \luax to skip the luax alias and let mc start faster

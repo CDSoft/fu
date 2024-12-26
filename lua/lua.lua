@@ -2,10 +2,11 @@ local install_lua_language_server_from_sources = false
 
 dnf_install [[
     lua
-    luarocks
     lua-devel
     wget
 ]]
+
+--dnf_install "luarocks"
 
 --[=[
 luarocks [[
@@ -35,9 +36,11 @@ luarocks [[
 ]]
 --]=]
 
+--[=[
 luarocks "lpeg"
 luarocks "luasocket luasec"
 luarocks "lua-sdl2"
+--]=]
 
 -- Lua language server
 if install_lua_language_server_from_sources then
@@ -70,6 +73,8 @@ else
 end
 
 -- teal language server
+--[=[
 if FORCE or not installed "teal-language-server" then
     luarocks "teal-language-server"
 end
+--]=]
