@@ -1,0 +1,17 @@
+font-family = %(FONT)
+font-style = %(FONT_VARIANT)
+font-size = %(FONT_SIZE)
+
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+
+theme = light:Builtin Tango Dark,dark:Builtin Tango Dark
+
+mouse-scroll-multiplier = 3
+
+window-vsync = false
+window-decoration = false
+window-theme = dark
+
+gtk-single-instance = false

@@ -1,4 +1,5 @@
 local alacritty_sources = false
+local install_ghostty = false
 
 -- Thunar bug with miniatures: rm -rf .cache/thumbnails
 if FORCE then
@@ -51,6 +52,7 @@ dnf_install [[
     thunar-volman.x86_64
     gnome-clocks
     polybar
+    gtk4-devel libadwaita-devel
 ]]
 
 dnf_install [[
@@ -202,6 +204,18 @@ if FORCE or not fs.is_file(HOME/".local/bin/st") then
     run(I[[cd %(FU_PATH)/st && sed -i 's#PREFIX =.*#PREFIX = %(HOME)/.local#' config.mk]])
     run(I[[cd %(FU_PATH)/st && sed -i 's#MANPREFIX =.*#MANPREFIX = %(HOME)/.local/man#' config.mk]])
     run(I[[cd %(FU_PATH)/st && make install]])
+end
+
+-- ghostty
+if GHOSTTY then
+    if FORCE or not fs.is_file(HOME/".local/bin/ghostty") then
+        gitclone "https://github.com/ghostty-org/ghostty"
+        run {
+            "cd", FU_PATH/"ghostty",
+            "&&",
+            "zig build", "-p $HOME/.local", "-Doptimize=ReleaseFast",
+        }
+    end
 end
 
 -- Default programs
