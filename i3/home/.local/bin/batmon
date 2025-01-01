@@ -6,6 +6,8 @@ local profiles = {
     { name="low",      level=15, icon="battery-low",   title="Battery low",   message="Please charge", period=60, duration=10, suspend=false},
 }
 
+local rfkill = %(tostring(RFKILL))
+
 local ps = require "ps"
 local fs = require "fs"
 local sh = require "sh"
@@ -19,10 +21,10 @@ end
 
 local function suspend()
     sh.run {
-        "rfkill block all;",
+        rfkill and "rfkill block all;" or {},
         "lock;",
         "systemctl suspend;",
-        "rfkill unblock all;",
+        rfkill and "rfkill unblock all;" or {},
     }
 end
 
@@ -45,7 +47,7 @@ local function monitor()
     print("Battery status:  ", status)
     print("Battery capacity:", level)
 
-    if status ~= "Charging" then
+    if status == "Discharging" then
         for _, profile in ipairs(profiles) do
             if level <= profile.level then
                 print("Battery level:  ", profile.name)

@@ -83,7 +83,7 @@ idle()
 
 rf()
 {
-    %(when(RFKILL) "return # no rfkill on suspend")
+    %(when(not RFKILL) "return # no rfkill on suspend")
     case "$1" in
         on)     rfkill unblock all ;;
         off)    rfkill block all ;;
