@@ -234,8 +234,8 @@ if THUNDERBIRD then
     mime_default "mozilla-thunderbird.desktop"
 end
 mime_default "atril.desktop"
---mime_default "thunar.desktop"
-mime_default "pcmanfm.desktop"
+mime_default "thunar.desktop"
+--mime_default "pcmanfm.desktop"
 mime_default "ristretto.desktop" -- shall be configured after atril to overload atril associations
 mime_default "vlc.desktop"
 mime_default "wireshark.desktop"
