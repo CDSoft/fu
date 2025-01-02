@@ -37,6 +37,7 @@ local process_blacklist = F[[
     thunderbird
     wezterm-gui
     ghostty
+    foot
 ]] : words() : from_set(F.const(true))
 
 local path_blacklist = F[[

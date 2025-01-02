@@ -68,6 +68,7 @@ dnf_install [[
     wlsunset
     grimshot
     swappy
+    foot
 ]]
 
 -- Nerd Fonts
