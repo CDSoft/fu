@@ -2,9 +2,6 @@
 
 #export TERM=gnome-256color
 
-if tty -s
-then
-    nvim -p "$@"
-else
-    %(ALACRITTY) -e nvim -p "$@"
-fi
+tty -s && exec nvim -p "$@"
+
+exec term nvim -p "$@"

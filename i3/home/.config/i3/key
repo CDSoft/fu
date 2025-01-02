@@ -4,12 +4,12 @@
 # xbindkeys --key => get keycodes
 
 # start a terminal
-bindsym $mod+Return exec %(ALACRITTY) --working-directory "`xpwd.lua`"
-bindsym $mod+Shift+Return exec cd "`xpwd.lua`" && %(ST) -e tmux
+bindsym $mod+Return exec $terminal --working-directory "`xpwd.lua`"
+bindsym $mod+Shift+Return exec cd "`xpwd.lua`" && st -e tmux
 #bindsym $mod+Shift+Return exec xfce4-terminal --disable-server --working-directory "`xpwd.lua`" -e tmux
 
 # Filemanagers
-bindsym $mod+$ctrl+Return exec %(ALACRITTY) -t vifm -e vifm "`xpwd.lua`"
+bindsym $mod+$ctrl+Return exec $terminal -e vifm "`xpwd.lua`"
 bindsym $mod+$alt+Return exec thunar "`xpwd.lua`"
 #bindsym $mod+$alt+Return exec pcmanfm --new-win "`xpwd.lua`"
 
@@ -26,16 +26,16 @@ bindsym XF86HomePage            exec %(BROWSER)
 bindsym $mod+w                  exec %(BROWSER)
 bindsym $mod+Shift+w            exec menu-web
 
-bindsym $mod+t                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi todo.txt
-bindsym $mod+n                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi notes.txt
-bindsym $mod+p                  exec %(ALACRITTY) --working-directory %(db.wiki or HOME) -e vi secret.pwd
+bindsym $mod+t                  exec cd %(db.wiki or HOME) && st vi todo.txt
+bindsym $mod+n                  exec cd %(db.wiki or HOME) && st vi notes.txt
+bindsym $mod+p                  exec cd %(db.wiki or HOME) && st vi secret.pwd
 bindsym $mod+k                  exec keepassxc
 
-bindsym XF86Calculator          exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
-bindsym $mod+c                  exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Calculadoira' -e calculadoira
+bindsym XF86Calculator          exec $terminal -T '🖩 Calculadoira' -e calculadoira
+bindsym $mod+c                  exec $terminal -T '🖩 Calculadoira' -e calculadoira
 
-bindsym $alt+XF86Calculator     exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Numbat' -e numbat
-bindsym $mod+$alt+c             exec %(ALACRITTY) -o "window.dimensions.columns=80" -o "window.dimensions.lines=24" -T '🖩 Numbat' -e numbat
+bindsym $alt+XF86Calculator     exec $terminal -T '🖩 Numbat' -e numbat
+bindsym $mod+$alt+c             exec $terminal -T '🖩 Numbat' -e numbat
 
 bindsym $win+$ctrl+i            exec ristretto "`xpwd.lua`" &
 bindsym $win+$ctrl+m            exec vlc "`xpwd.lua`" &
@@ -48,7 +48,4 @@ bindsym $mod+l                  exec lock
 #bindsym $mod+Escape     exec rofi -modi combi -show combi -display-combi "run" -show-icons
 
 # start fzf-launcher (a windows switcher / program launcher)
-#bindsym $mod+Escape     exec %(ALACRITTY) --class fzf -o "window.dimensions.columns=128" -o "window.dimensions.lines=32" -o "font.size=%(FONT_SIZE*3//2)" -o "window.opacity=1.0" -e fzf-launcher.lua
-bindsym $mod+Escape     exec %(ST) -c fzf -g 128x32 -f "%(FONT:gsub(' ', '')):pixelsize=%(FONT_SIZE*16//9)" fzf-launcher.lua
-
-
+bindsym $mod+Escape     exec st -c fzf -g 128x32 -f "%(FONT:gsub(' ', '')):pixelsize=%(FONT_SIZE*16//9)" fzf-launcher.lua

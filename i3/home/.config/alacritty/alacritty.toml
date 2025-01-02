@@ -6,6 +6,7 @@
 decorations = "Full"
 opacity = 1.0
 resize_increments = false
+dimensions = { columns=80, lines=24 } # default size of floating windows
 
 ####################################################################
 # Scrolling

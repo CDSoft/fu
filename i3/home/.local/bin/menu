@@ -75,7 +75,7 @@ new_workspace()
 
 idle()
 {
-    %(ST) \
+    st \
         -T "Waiting for low CPU and network activity" \
         -g 41x10 \
         -e bash -c "idle && $1"

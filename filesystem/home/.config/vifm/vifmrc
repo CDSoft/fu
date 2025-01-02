@@ -485,7 +485,7 @@ nnoremap w :view<cr>
 vnoremap w :view<cr>gv
 
 " Open file in nvim
-nnoremap o :!%(ALACRITTY) -e nvim %f<cr>
+nnoremap o :!term -e nvim %f &<cr>
 
 " Open file in the background using its default program
 nnoremap gb :file &<cr>l
@@ -535,13 +535,13 @@ nnoremap A cw
 " nnoremap A cW
 
 " Open console in current directory
-nnoremap ,t :!%(ALACRITTY) &<cr>
+nnoremap ,t :!term zsh &<cr>
 
 " Open editor to edit vifmrc and apply settings after returning to vifm
 nnoremap ,c :write | edit $MYVIFMRC | restart full<cr>
 
 " Open nvim in a terminal to edit vifmrc
-nnoremap ,C :!%(ALACRITTY) -e nvim $MYVIFMRC &<cr>
+nnoremap ,C :!term -e nvim $MYVIFMRC &<cr>
 
 " Thumbnail of all images in the directory
 nnoremap ,i :!ristretto %d &<cr>

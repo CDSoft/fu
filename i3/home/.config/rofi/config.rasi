@@ -3,7 +3,7 @@ configuration {
     modi: "window,run,drun";
     combi-modi: "window,drun,run";
     monitor: "-1";
-    terminal: "%(ALACRITTY)";
+    terminal: "alacritty";
 }
 
 @theme "/usr/share/rofi/themes/glue_pro_blue.rasi"

@@ -8,6 +8,8 @@ set $ctrl Control
 set $win  Mod4
 set $mod  Mod4
 
+set $terminal alacritty
+
 include win
 include win-i3
 include key

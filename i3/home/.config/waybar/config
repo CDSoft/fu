@@ -171,7 +171,7 @@
             "(.*) - Mozilla Firefox": "🌎 $1",
             "(.*) - zsh": "> [$1]"
         },
-        "on-click": "%(ST) -c fzf -g 128x32 -f \"%(FONT:gsub(' ', '')):pixelsize=%(FONT_SIZE*16//9)\" fzf-launcher.lua"
+        "on-click": "st -c fzf -g 128x32 -f \"%(FONT:gsub(' ', '')):pixelsize=%(FONT_SIZE*16//9)\" fzf-launcher.lua"
     },
     "sway/workspaces": {
         "format": "{value}",

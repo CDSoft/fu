@@ -8,6 +8,8 @@ set $ctrl Control
 set $win  Mod4
 set $mod  Mod4
 
+set $terminal foot
+
 include ../i3/win
 include win
 include ../i3/key

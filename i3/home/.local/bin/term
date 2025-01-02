@@ -1,0 +1,5 @@
+#!/bin/bash
+
+[ -n "$SWAYSOCK" ] && exec foot "$@" 2>/dev/null
+
+exec alacritty -e "$@" 2>/dev/null
