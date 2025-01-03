@@ -1,5 +1,5 @@
 local alacritty_sources = false
-local install_ghostty = false
+local install_foot_from_sources = false -- WARNING: this sets some root permissions in files installed in ~/.local !
 
 -- Thunar bug with miniatures: rm -rf .cache/thumbnails
 if FORCE then
@@ -215,6 +215,31 @@ if GHOSTTY then
             "cd", FU_PATH/"ghostty",
             "&&",
             "zig build", "-p $HOME/.local", "-Doptimize=ReleaseFast",
+        }
+    end
+end
+
+-- foot
+if install_foot_from_sources then
+    if FORCE or not fs.is_file(HOME/".local/bin/foot") then
+        dnf_install "meson scdoc utf8proc-devel"
+        gitclone "https://codeberg.org/dnkl/foot"
+        assert(fs.mkdirs(FU_PATH/"foot/bld/release"))
+        run {
+            "cd", FU_PATH/"foot/bld/release",
+            "&&",
+            "export CFLAGS='-O3'",
+            "&&",
+            "meson", "../..", "--prefix=~/.local",
+                "--reconfigure",
+                "--buildtype=release",
+                "-Db_lto=true",
+                "-Ddocs=enabled",
+                "-Dgrapheme-clustering=enabled",
+            "&&",
+            "ninja",
+            "&&",
+            "ninja install",
         }
     end
 end
