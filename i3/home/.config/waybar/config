@@ -155,7 +155,7 @@
         "on-click-right": "pavucontrol"
     },
     "sway/mode": {
-        "format": "<span color=\"#ff0000\" style=\"italic\">{}</span>"
+        //"format": "<span style=\"italic\">{}</span>"
     },
     "sway/scratchpad": {
         "format": "{icon} {count}",
