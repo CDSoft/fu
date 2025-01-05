@@ -1,5 +1,21 @@
-if UPDATE or not installed "bang" or not installed "ypp" or not installed "panda" or not installed "pandoc" then
+-- Ninja
+if UPDATE or not fs.is_file(HOME/".local/bin/ninja") then
+    dnf_install "gcc"
+    gitclone "https://github.com/CDSoft/ninja-builder"
+    run {
+        "cd", FU_PATH/"ninja-builder",
+        "&& ./ninja-builder.sh gcc install", UPDATE and "clean" or {},
+    }
+end
 
-    run "curl -sSL https://cdelord.fr/pub/luax-full.sh | sh"
+-- LuaX
+if UPDATE then
+    gitclone "https://github.com/CDSoft/luax"
+    run { "cd", FU_PATH/"luax", "&& ./bootstrap.sh gcc small && ninja install" }
+end
 
+-- bang
+if UPDATE or not fs.is_file(HOME/".local/bin/bang") then
+    gitclone "https://github.com/CDSoft/bang"
+    run { "cd", FU_PATH/"bang", "&& ./boot.lua && ninja install" }
 end

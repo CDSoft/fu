@@ -23,10 +23,25 @@
 
 export PREFIX=~/.local
 
+( hash git && hash gcc ) 2>/dev/null || sudo dnf install git gcc
+
+[ -x $PREFIX/bin/ninja ] || (
+    NINJA_URL="https://github.com/CDSoft/ninja-builder"
+    TMP=$(mktemp -d)
+    git clone $NINJA_URL "$TMP"
+    cd "$TMP" || exit
+    ./ninja-builder.sh gcc install
+    rm -rf "$TMP"
+)
+
 [ -x $PREFIX/bin/luax ] || (
-    PUB_URL=https://cdelord.fr/pub/luax.sh
-    hash curl 2>/dev/null || sudo dnf install curl
-    curl -sSL $PUB_URL | sh
+    LUAX_URL="https://github.com/CDSoft/luax"
+    TMP=$(mktemp -d)
+    git clone $LUAX_URL "$TMP"
+    cd "$TMP" || exit
+    ./bootstrap.sh gcc small
+    ninja install
+    rm -rf "$TMP"
 )
 
 eval "$("$PREFIX/bin/luax" env)"

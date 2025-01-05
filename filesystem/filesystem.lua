@@ -46,6 +46,7 @@ if UPDATE or not installed "7zzs" then
 end
 
 -- Lzip
+--[[
 if UPDATE or not fs.is_file(HOME/".local/bin/lzip") or not fs.is_file(HOME/".local/bin/plzip") or not fs.is_file(HOME/".local/bin/tarlz") then
     local curr_version = db.lzip_build
     local version = download("https://github.com/CDSoft/lzip-builder/releases/latest/"):match("tag/(r%d+)")
@@ -57,4 +58,17 @@ if UPDATE or not fs.is_file(HOME/".local/bin/lzip") or not fs.is_file(HOME/".loc
         db.lzip_build = version
         db:save()
     end
+end
+--]]
+
+-- LZ4
+if UPDATE or not fs.is_file(HOME/".local/bin/lz4") then
+    gitclone "https://github.com/CDSoft/lz4-builder"
+    run { "cd", FU_PATH/"lz4-builder", "&& bang && ninja install" }
+end
+
+-- Lzip
+if UPDATE or not fs.is_file(HOME/".local/bin/lzip") then
+    gitclone "https://github.com/CDSoft/lzip-builder"
+    run { "cd", FU_PATH/"lzip-builder", "&& bang && ninja install" }
 end
