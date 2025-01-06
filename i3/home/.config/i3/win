@@ -52,6 +52,7 @@ for_window [title="^netmon$"]                                   floating enable,
 for_window [class="^xprompt$"]                                  floating enable, border normal %(FONT_SIZE)
 for_window [title="^solaar$"]                                   floating enable, border pixel 4
 for_window [title="^Clocks$"]                                   floating enable
+for_window [title="^Horloges$"]                                 floating enable
 for_window [class="^fzf$"]                                      floating enable, border none
 
 # kill focused window
