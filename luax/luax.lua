@@ -4,7 +4,7 @@ if UPDATE or not fs.is_file(HOME/".local/bin/ninja") then
     gitclone "https://github.com/CDSoft/ninja-builder"
     run {
         "cd", FU_PATH/"ninja-builder",
-        "&& ./ninja-builder.sh gcc install", UPDATE and "clean" or {},
+        "&& ./ninja-builder.sh gcc install",
     }
 end
 
