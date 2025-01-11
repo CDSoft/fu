@@ -12,11 +12,6 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 
 export LANG=%(LOCALE)
 
-# Force compression level with tar
-
-export GZIP_OPT="-9"
-export XZ_OPT="-9"
-
 # Haskell and ocaml environment
 
 [ -f ~/.ghcup/env ] && . ~/.ghcup/env
