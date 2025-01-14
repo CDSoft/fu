@@ -9,7 +9,7 @@ dnf_install [[
 
 -- AWS
 if UPDATE or not installed "aws" then
-    pip_install "awscli boto3"
+    pip_install "awscli boto3 pre-commit"
 end
 
 -- Docker
