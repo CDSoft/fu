@@ -38,7 +38,7 @@ if os.getenv "SWAYSOCK" then
                 local wid, title = s:split("%s+", 1):unpack()
                 title = title:trim()
                 local item = ("%s win %s"):format(wid, title)
-                actions[item] = ("swaymsg '[pid=%s] focus'"):format(wid)
+                actions[wid] = ("swaymsg '[pid=%s] focus'"):format(wid)
                 return item
             end)
             : unlines()
@@ -56,7 +56,7 @@ else
                 local wid, _, _, title = s:split("%s+", 3):unpack()
                 title = title:trim()
                 local item = ("%s win %s"):format(wid, title)
-                actions[item] = ("wmctrl -a %q"):format(title)
+                actions[wid] = ("wmctrl -a %q"):format(title)
                 return item
             end)
             : unlines()
@@ -105,10 +105,10 @@ local apps_items, apps_actions = (function()
             local item = ("%s drun %s%s%s"):format(
                 hash,
                 name,
-                (generic_name) and (" (%s)"):format(generic_name) or "",
-                (comment) and (" -- %s"):format(comment) or ""
+                generic_name and (" (%s)"):format(generic_name) or "",
+                comment and (" -- %s"):format(comment) or ""
             )
-            actions[item] = ("nohup gio launch %s &>/dev/null &"):format(file)
+            actions[hash] = ("nohup gio launch '%s' &>/dev/null &"):format(file)
             return item
         end)
         : filter(function(item) return #item > 0 end)
@@ -129,8 +129,9 @@ local exes_items, exes_actions = (function()
         : map(function(path)
             return (fs.dir(path) or F{})
                 : map(function(file)
-                    local item = ("%s run %s"):format((path/file):hash(), file)
-                    actions[item] = ("nohup %s &>/dev/null &"):format(path/file)
+                    local hash = (path/file):hash()
+                    local item = ("%s run %s"):format(hash, file)
+                    actions[hash] = ("nohup %s &>/dev/null &"):format(path/file)
                     return item
                 end)
         end)
@@ -180,7 +181,8 @@ local item = sh.read {
 if not item then return end
 
 item = item:trim()
-local action = assert(actions[item] or windows_actions[item], "can not execute "..item)
+local hash = item:words():head()
+local action = assert(actions[hash] or windows_actions[hash], "can not execute "..item)
 
 --io.stderr:write("item\t", item, "\n")
 --io.stderr:write("action\t", action, "\n")
