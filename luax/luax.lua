@@ -1,11 +1,9 @@
+dnf_install "gcc"
+
 -- Ninja
 if UPDATE or not fs.is_file(HOME/".local/bin/ninja") then
-    dnf_install "gcc"
     gitclone "https://github.com/CDSoft/ninja-builder"
-    run {
-        "cd", FU_PATH/"ninja-builder",
-        "&& ./ninja-builder.sh gcc install",
-    }
+    run { "cd", FU_PATH/"ninja-builder", "&& ./ninja-builder.sh gcc install" }
 end
 
 -- LuaX
