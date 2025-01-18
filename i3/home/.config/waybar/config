@@ -1,9 +1,14 @@
 // vim: set filetype=jsonc:
 %(  (function()
         local sh = require "sh"
-        partition_root = sh { "df -P", "/" } : lines() : last() : words() : head()
-        partition_home = sh { "df -P", os.getenv"HOME" } : lines() : last() : words() : head()
-        partition_tmp  = sh { "df -P", "/tmp" } : lines() : last() : words() : head()
+        local function getpart(path)
+            local part = sh { "df -P", path, "2>/dev/null" }
+            if part then return part : lines() : last() : words() : head() end
+        end
+        partition_root = getpart "/"
+        partition_home = getpart(os.getenv"HOME")
+        partition_hd   = getpart "/home/hd"
+        partition_tmp  = getpart "/tmp"
         return ""
     end)()
 )
@@ -23,6 +28,7 @@
         "disk#root",
         %(when(partition_tmp==partition_root) "//")"disk#tmp",
         %(when(partition_home==partition_root)"//")"disk#home",
+        %(when(not partition_hd or partition_hd==partition_root)"//")"disk#hd",
         "bluetooth",
         "network",
         "cpu",
@@ -88,6 +94,12 @@
         "interval": 30,
         "format": "🖴 ~ {free}",
         "on-click": "alacritty -e vifm ~ ~"
+    },
+    "disk#hd": {
+        "path": "/home/hd",
+        "interval": 30,
+        "format": "🖴 hd {free}",
+        "on-click": "alacritty -e vifm /home/hd ~"
     },
     "disk#tmp": {
         "path": "/tmp",
