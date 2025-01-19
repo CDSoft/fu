@@ -34,3 +34,34 @@ end
 
 -- Remove unnecessary language symlinks
 run "find /usr/share/myspell -type l -exec sudo rm -v {} \\;"
+
+-- NextDNS
+if myconf.nextdns then
+
+    local resolved = F{
+        fs.read("/etc/systemd/resolved.conf")
+        : lines()
+        : filter(function(line)
+            local key = line:match "^%s*(%w+)%s*="
+            return not myconf.nextdns[key]
+        end),
+        F(myconf.nextdns) : items() : map(function(key_val)
+            local key, val = F.unpack(key_val)
+            if type(val) == "table" then
+                return F(val) : map(function(item)
+                    return ("%s=%s"):format(key, item)
+                end)
+            else
+                return ("%s=%s"):format(key, val)
+            end
+        end),
+    } : flatten() : unlines()
+
+    if resolved ~= fs.read("/etc/systemd/resolved.conf") then
+        fs.with_tmpfile(function(tmp)
+            fs.write(tmp, resolved)
+            run { "sudo cp -f", tmp, "/etc/systemd/resolved.conf" }
+        end)
+    end
+
+end
