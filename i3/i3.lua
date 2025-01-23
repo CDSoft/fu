@@ -6,6 +6,10 @@ if FORCE then
     run "rm -rf .cache/thumbnails"
 end
 
+db:once(FORCE, "i3_sway_input_group_configured", function()
+    run { "sudo usermod -a -G input", USER }
+end)
+
 dnf_install [[
     rxvt-unicode
     numlockx

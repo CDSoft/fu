@@ -8,13 +8,9 @@ FONT_VARIANT = "Medium"
 FONT         = "FiraCode Nerd Font"
 --FONT         = "SauceCodePro Nerd Font"
 
-local xres, yres = screen_resolution()
-FONT_SIZE =    (xres <= 1920 or yres <= 1080) and 9
-            or (xres <= 2560 or yres <= 1440) and 9+4
-            or                                    9+8
+FONT_SIZE = 9
+
 I3_INPUT_FONT = "-*-*-*-*-*-*-20-*-*-*-*-*-*-*"
-ST = "st"
-ALACRITTY = "alacritty"
 
 BROWSER = "firefox"
 BROWSER2 = "chromium-browser"

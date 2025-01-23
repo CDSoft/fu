@@ -50,13 +50,14 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{capacity}% {icon}",
+        "format": "{capacity:3d}% {icon}",
         "format-icons": ["", "", "", "", ""]
     },
     "bluetooth": {
         "format": " {status}",
         "format-connected": " {device_alias}",
         "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "format-no-controller": "",
         "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
         "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
         "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
@@ -65,7 +66,7 @@
     },
     "clock": {
         "timezone": "%(TIMEZONE)",
-        "format": "{:%H:%M}  ",
+        "format": "{:%d/%m - %H:%M}  ",
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
             "format": {
@@ -80,7 +81,7 @@
     },
     "cpu": {
         "interval": 5,
-        "format": "{usage}% {avg_frequency}GHz {load} ",
+        "format": "{usage:3d}% {avg_frequency:3.1f}GHz {load:5.2f} ",
         "on-click": "st btop"
     },
     "disk#root": {
@@ -113,7 +114,7 @@
             "activated": "",
             "deactivated": ""
         },
-        "timeout": 30.5 // minutes
+        "timeout": 60.5 // minutes
     },
     "keyboard-state": {
         "numlock": true,
@@ -131,7 +132,7 @@
     },
     "memory": {
         "interval": 5,
-        "format": "{avail:0.1f}G ",
+        "format": "{avail:4.1f}G ",
         "on-click": "st btop"
     },
     "network": {
@@ -192,7 +193,7 @@
         "disable-auto-back-and-forth": true,
     },
     "temperature": {
-        "format": "{temperatureC}°C "
+        "format": "{temperatureC:2d}°C "
     },
     "tray": {
          "icon-size": %(FONT_SIZE*2),
