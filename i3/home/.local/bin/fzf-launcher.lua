@@ -70,7 +70,7 @@ end
 -------------------------------------------------------------------------------
 local apps_items, apps_actions = (function()
     if not refresh then return end
-    local lang = os.getenv"LANG":sub(1, 2)
+    local lang -- = os.getenv"LANG":sub(1, 2)
     local section = ""
     local seen = {}
     local actions = {}
@@ -98,10 +98,10 @@ local apps_items, apps_actions = (function()
                     return {k, v}
                 end)
                 : from_list()
-            local name = app["Name["..lang.."]"] or app["Name"]
+            local name = lang and app["Name["..lang.."]"] or app["Name"]
             if not name or app["NoDisplay"] == "true" then return "" end
-            local generic_name = app["GenericName["..lang.."]"] or app["GenericName"]
-            local comment = app["Comment["..lang.."]"] or app["Comment"]
+            local generic_name = lang and app["GenericName["..lang.."]"] or app["GenericName"]
+            local comment = lang and app["Comment["..lang.."]"] or app["Comment"]
             local item = ("%s drun %s%s%s"):format(
                 hash,
                 name,
