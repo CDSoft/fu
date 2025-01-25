@@ -2,7 +2,9 @@
 
 _menu()
 {
-    local action=$(cat <<EndOfMenu | fzfmenu 80 31
+    local action=$(
+    (
+        cat <<EndOfMenu1
 suspend             : lock screen & suspend to memory
 suspend when idle   : lock screen & suspend to memory when the OS is idle
 hibernate           : suspend to disk
@@ -11,11 +13,21 @@ reboot              : reboot the computer
 exit                : exit $(test -n "$SWAYSOCK" && echo sway || echo i3)
 lock                : lock screen
 
+EndOfMenu1
+
+test -n "$SWAYSOCK" && cat <<EndOfSwayMenu
+wdisplays           : display layout
+EndOfSwayMenu
+
+test -z "$SWAYSOCK" && cat <<EndOfI3Menu
 single              : internal monitor only
 right               : external monitor on the right
 left                : external monitor on the left
 above               : external monitor on the top
 clone               : clone the internal monitor to the external one
+EndOfI3Menu
+
+        cat <<EndOfMenu2
 
 mute                : mute the main audio output
 unmute              : unmute the main audio output
@@ -30,7 +42,8 @@ netmon              : network monitor (ping)
 
 renws               : rename the active workspace
 newws               : create a new workspace
-EndOfMenu
+EndOfMenu2
+    ) | fzfmenu 80 $(test -n "$SWAYSOCK" && echo $((31-4)) || echo 31)
 )
     test -n "$action" && $0 "$action"
 }
@@ -108,6 +121,8 @@ case "$1" in
     (above*)        lrandr above
                     $WM_MSG move workspace to output up
                     $WM_MSG reload
+                    ;;
+    (wdisplays*)    wdisplays
                     ;;
 
     (mute*)         pactl set-sink-mute `LANG=C pactl list short sinks | cut -f2` true ;;

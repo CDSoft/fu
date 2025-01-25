@@ -54,6 +54,7 @@ for_window [title="^solaar$"]                                   floating enable,
 for_window [title="^Clocks$"]                                   floating enable
 for_window [title="^Horloges$"]                                 floating enable
 for_window [class="^fzf$"]                                      floating enable, border none
+for_window [title="^wdisplays$"]                                floating enable, resize set width %(1920//2) px height %(1080//2) px
 
 # kill focused window
 bindsym $mod+q          kill
