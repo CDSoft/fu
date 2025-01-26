@@ -9,11 +9,13 @@ dnf_install [[
 ]]
 
 -- Default browser
-run { "BROWSER= xdg-settings set default-web-browser", BROWSER..".desktop || true" }
-run { "BROWSER= xdg-mime default", BROWSER..".desktop text/html" }
-run { "BROWSER= xdg-mime default", BROWSER..".desktop x-scheme-handler/http" }
-run { "BROWSER= xdg-mime default", BROWSER..".desktop x-scheme-handler/https" }
-run { "BROWSER= xdg-mime default", BROWSER..".desktop x-scheme-handler/about" }
+db:once(FORCE, "set_default_browser", function()
+    run { "BROWSER= xdg-settings set default-web-browser", BROWSER..".desktop || true" }
+    run { "BROWSER= xdg-mime default", BROWSER..".desktop text/html" }
+    run { "BROWSER= xdg-mime default", BROWSER..".desktop x-scheme-handler/http" }
+    run { "BROWSER= xdg-mime default", BROWSER..".desktop x-scheme-handler/https" }
+    run { "BROWSER= xdg-mime default", BROWSER..".desktop x-scheme-handler/about" }
+end)
 
 -- Firefox configuration
 -- https://askubuntu.com/questions/313483/how-do-i-change-firefoxs-aboutconfig-from-a-shell-script
