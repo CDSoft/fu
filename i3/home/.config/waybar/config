@@ -88,25 +88,25 @@
         "path": "/",
         "interval": 30,
         "format": "🖴 / {free}",
-        "on-click": "alacritty -e vifm / ~"
+        "on-click": "foot -e vifm / ~"
     },
     "disk#home": {
         "path": "%(HOME)",
         "interval": 30,
         "format": "🖴 ~ {free}",
-        "on-click": "alacritty -e vifm ~ ~"
+        "on-click": "foot -e vifm ~ ~"
     },
     "disk#hd": {
         "path": "/home/hd",
         "interval": 30,
         "format": "🖴 hd {free}",
-        "on-click": "alacritty -e vifm /home/hd ~"
+        "on-click": "foot -e vifm /home/hd ~"
     },
     "disk#tmp": {
         "path": "/tmp",
         "interval": 30,
         "format": "🖴 tmp {free}",
-        "on-click": "alacritty -e vifm /tmp ~"
+        "on-click": "foot -e vifm /tmp ~"
     },
     "idle_inhibitor": {
         "format": "{icon}",

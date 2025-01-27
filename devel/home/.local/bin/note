@@ -7,7 +7,9 @@ local sh = require "sh"
 local cwd = fs.getcwd()
 local root = os.getenv"HOME"/"Nextcloud/Notes"
 
-local terminal = require "term".isatty() and {} or { "alacritty", "-e" }
+local terminal = require "term".isatty() and {} or {
+    os.getenv"SWAYSOCK" and "foot" or "alacritty", "-e",
+}
 
 local function vifm(path)
     if os.getenv "VIFM" then return end
