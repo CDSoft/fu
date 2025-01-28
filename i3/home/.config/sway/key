@@ -36,3 +36,8 @@ bindsym $mod+$ctrl+x    exec wdisplays
 bindsym Print                   exec swayscreenshot output
 bindsym $win+Print              exec swayscreenshot window
 bindsym Shift+Print             exec swayscreenshot region
+
+# Screen records with wf-recorder
+bindsym $win+twosuperior        exec rec
+bindsym $win+Alt+twosuperior    exec rec audio
+bindsym $win+Ctrl+twosuperior   exec rec stop

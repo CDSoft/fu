@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# https://github.com/ammen99/wf-recorder
+
+OUTPUT="$HOME/Vidéos/rec-$(date +%Y-%m-%d-%H-%M-%S).mp4"
+PID_FILE=/tmp/rec.pid
+
+# kill previous record
+kill "$(cat $PID_FILE)" 2>/dev/null
+rm -f $PID_FILE
+
+notify()
+{
+    notify-send -a rec -i /usr/share/icons/gnome/48x48/devices/camera-web.png "$*"
+}
+
+ARGS=()
+for a in "$@"
+do
+    case "$a" in
+        stop)   notify "Stop recording"; exit ;;
+        audio)  ARGS+=("--audio") ;;
+        *)      echo "$a: invalid argument"; exit 1 ;;
+    esac
+done
+ARGS+=("-g" "$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | "\(.rect.x),\(.rect.y-.deco_rect.height) \(.rect.width)x\(.rect.height+.deco_rect.height)"' | slurp)")
+
+notify "Recording $(basename "$OUTPUT")"
+
+wf-recorder "${ARGS[@]}" --file="$OUTPUT" &
+echo "$!" > $PID_FILE
+
+wait
+rm -f $PID_FILE
