@@ -38,7 +38,7 @@ bindsym $alt+XF86Calculator     exec $terminal -T '🖩 Numbat' -e numbat
 bindsym $mod+$alt+c             exec $terminal -T '🖩 Numbat' -e numbat
 
 bindsym $win+$ctrl+i            exec ristretto "`xpwd.lua`" &
-bindsym $win+$ctrl+m            exec vlc "`xpwd.lua`" &
+bindsym $win+$ctrl+m            exec vlc --loop "`xpwd.lua`" &
 
 bindsym $mod+x                  exec menu
 
