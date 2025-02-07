@@ -603,4 +603,4 @@ nnoremap <c-x>q :view<cr>
 " ------------------------------------------------------------------------------
 
 " https://github.com/cirala/vifm_devicons
-"source %(HOME)/.config/vifm/favicons.vifm
+source %(HOME)/.config/vifm/favicons.vifm

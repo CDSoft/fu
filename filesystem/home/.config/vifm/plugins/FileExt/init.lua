@@ -3,18 +3,22 @@
 local max_len = 4
 
 local compressed = {
-    gz  = true,
-    bz2 = true,
-    xz  = true,
-    lz  = true,
-    lz4 = true,
+    gz   = true,
+    bz2  = true,
+    xz   = true,
+    lz   = true,
+    lz4  = true,
+    lzma = true,
+    lzo  = true,
+    zst  = true,
+    z    = true,
 }
 
 local added = vifm.addcolumntype {
     name = 'FileExt',
     handler = function(info)
         local e = info.entry
-        if e.isdir then return { text = "/" } end
+        if e.isdir then return { text = e.name==".." and "" or "" } end
         local name1 = vifm.fnamemodify(e.name, ':r')
         local ext1  = vifm.fnamemodify(e.name, ':e')
         local ext2  = vifm.fnamemodify(name1, ':e')
