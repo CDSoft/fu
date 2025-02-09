@@ -76,5 +76,5 @@ PARAMETERS = {
     { "START_VLC",      _, _, _, _ },
     { "THUNDERBIRD",    D, _, _, _ },
     { "PICOM",          D, _, _, P },
-    { "GHOSTTY",        D, _, _, _ },
+    { "GHOSTTY",        _, _, _, _ },
 }
