@@ -15,17 +15,28 @@ notify()
 }
 
 ARGS=()
+WHAT="video only"
 for a in "$@"
 do
     case "$a" in
-        stop)   notify "Stop recording"; exit ;;
-        audio)  ARGS+=("--audio") ;;
-        *)      echo "$a: invalid argument"; exit 1 ;;
+        stop)
+            notify "Stop recording"
+            exit
+            ;;
+        audio)
+            ARGS+=("--audio")
+            WHAT="video + audio"
+            ;;
+        *)
+            echo "$a: invalid argument"
+            exit 1
+            ;;
     esac
 done
 ARGS+=("-g" "$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | "\(.rect.x),\(.rect.y-.deco_rect.height) \(.rect.width)x\(.rect.height+.deco_rect.height)"' | slurp)")
 
-notify "Recording $(basename "$OUTPUT")"
+notify "Recording $WHAT
+$(basename "$OUTPUT")"
 
 wf-recorder "${ARGS[@]}" --file="$OUTPUT" &
 echo "$!" > $PID_FILE
