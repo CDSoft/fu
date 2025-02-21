@@ -55,6 +55,7 @@ pip_install [[
     junitparser
     junit-xml
     matplotlib
+    pandas
     pyaml
     pydantic
     python-can
