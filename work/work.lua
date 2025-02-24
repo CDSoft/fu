@@ -58,6 +58,7 @@ pip_install [[
     pandas
     pyaml
     pydantic
+    PyQt6
     python-can
     scipy
     tftpy
