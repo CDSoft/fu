@@ -248,6 +248,60 @@ if install_foot_from_sources then
     end
 end
 
+-- https://docs.xfce.org/xfce/xfconf/xfconf-query#listing_properties
+do
+    -- xfce4-terminal configuration
+    -- xfconf-query -c xfce4-terminal -lv
+    F[[
+        /color-palette                  #000000;#cc0000;#4e9a06;#c4a000;#3465a4;#75507b;#06989a;#d3d7cf;#555753;#ef2929;#8ae234;#fce94f;#739fcf;#ad7fa8;#34e2e2;#eeeeec
+        /font-name                      %(FONT) %(FONT_VARIANT) %(FONT_SIZE)
+        /misc-always-show-tabs          false
+        /misc-bell                      false
+        /misc-bell-urgent               true
+        /misc-borders-default           true
+        /misc-confirm-close             false
+        /misc-copy-on-select            true
+        /misc-cursor-blinks             false
+        /misc-cursor-shape              TERMINAL_CURSOR_SHAPE_BLOCK
+        /misc-cycle-tabs                true
+        /misc-default-geometry          80x24
+        /misc-highlight-urls            true
+        /misc-inherit-geometry          false
+        /misc-menubar-default           false
+        /misc-middle-click-opens-uri    false
+        /misc-mouse-autohide            false
+        /misc-mouse-wheel-zoom          true
+        /misc-new-tab-adjacent          false
+        /misc-rewrap-on-resize          true
+        /misc-right-click-action        TERMINAL_RIGHT_CLICK_ACTION_CONTEXT_MENU
+        /misc-search-dialog-opacity     100
+        /misc-show-relaunch-dialog      true
+        /misc-show-unsafe-paste-dialog  true
+        /misc-slim-tabs                 true
+        /misc-tab-close-buttons         true
+        /misc-tab-close-middle-click    true
+        /misc-tab-position              GTK_POS_TOP
+        /misc-toolbar-default           false
+        /overlay-scrolling              true
+        /scrolling-lines                10001
+        /shortcuts-no-menukey           true
+        /shortcuts-no-mnemonics         true
+        /title-mode                     TERMINAL_TITLE_REPLACE
+    ]] : trim() : lines() : foreach(function(line)
+        local param, value = line:trim():split("%s+", 1):unpack()
+        run { "xfconf-query -c xfce4-terminal", "-p", param, "-s", string.format("%q", I(value)) }
+    end)
+
+    -- xfce4-notifyd
+    -- xfconf-query -c xfce4-notifyd -lv
+    F[[
+        /theme                            Greybird
+    ]] : trim() : lines() : foreach(function(line)
+        local param, value = line:trim():split("%s+", 1):unpack()
+        run { "xfconf-query -c xfce4-notifyd", "-p", param, "-s", string.format("%q", I(value)) }
+    end)
+end
+
 -- Default programs
 
 mime_default "%(BROWSER).desktop"
