@@ -8,7 +8,7 @@ local cwd = fs.getcwd()
 local root = os.getenv"HOME"/"Nextcloud/Notes"
 
 local terminal = require "term".isatty() and {} or {
-    os.getenv"SWAYSOCK" and "foot" or "alacritty", "-e",
+    os.getenv"SWAYSOCK" and "foot" or "xfce4-terminal --disable-server", "-e",
 }
 
 local function vifm(path)

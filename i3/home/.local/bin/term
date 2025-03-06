@@ -2,4 +2,5 @@
 
 [ -n "$SWAYSOCK" ] && exec foot "$@" 2>/dev/null
 
-exec alacritty -e "$@" 2>/dev/null
+#exec alacritty -e "$@" 2>/dev/null
+exec xfce4-terminal --disable-server -e "$@" 2>/dev/null

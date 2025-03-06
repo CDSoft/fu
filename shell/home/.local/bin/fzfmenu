@@ -28,5 +28,4 @@ FZF_OPTIONS=(
     --highlight-line
 )
 
-#alacritty ${ALACRITTY_OPTIONS[*]} -e sh -c "fzf ${FZF_OPTIONS[*]} $* < /proc/$$/fd/0 > /proc/$$/fd/1"
 st "${ST_OPTIONS[@]}" sh -c "fzf ${FZF_OPTIONS[*]} $* < /proc/$$/fd/0 > /proc/$$/fd/1"

@@ -509,7 +509,7 @@ elseif $WAYLAND_DISPLAY != ''
         nnoremap yf :!echo -n %c:p | wl-copy %i &&
                     \ echo -n %c:p | wl-copy -p %i<cr>
     endif
-elseif $DISPLAY
+elseif $DISPLAY != ''
     if executable('xclip')
         " Yank current directory path into the clipboard
         nnoremap yd :!echo -n %d | xclip -selection clipboard %i<cr>
