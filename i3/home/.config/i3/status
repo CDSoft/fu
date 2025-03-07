@@ -13,9 +13,14 @@ general {
 }
 %(  (function()
         local sh = require "sh"
-        partition_root = sh { "df -P", "/" } : lines() : last() : words() : head()
-        partition_home = sh { "df -P", os.getenv"HOME" } : lines() : last() : words() : head()
-        partition_tmp  = sh { "df -P", "/tmp" } : lines() : last() : words() : head()
+        local function getpart(path)
+            local part = sh { "df -P", path, "2>/dev/null" }
+            if part then return part : lines() : last() : words() : head() end
+        end
+        partition_root = getpart "/"
+        partition_home = getpart(os.getenv"HOME")
+        partition_hd   = getpart "/home/hd"
+        partition_tmp  = getpart "/tmp"
         return ""
     end)()
 )
@@ -23,6 +28,7 @@ general {
 order += "disk /"
 %(when(partition_tmp==partition_root) "#")order += "disk /tmp"
 %(when(partition_home==partition_root)"#")order += "disk /home"
+%(when(not partition_hd or partition_hd==partition_root)"#")order += "disk /home/hd"
 #order += "run_watch DHCP"
 #order += "run_watch VPNC"
 #order += "path_exists VPN"
@@ -111,6 +117,10 @@ disk "/tmp" {
 
 disk "/home" {
     format = "🖴 /home %avail"
+}
+
+disk "/home/hd" {
+    format = "🖴 hd %avail"
 }
 
 memory {
