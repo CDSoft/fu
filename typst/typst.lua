@@ -3,7 +3,6 @@
 if UPDATE or not fs.is_file(HOME/".local/bin/typst") then
     local version = download("https://github.com/typst/typst/releases/latest/"):match("tag/v([%d%.]+)")
     local curr_version = read "typst --version || true":words()[2]
-    print(version, curr_version)
     if version ~= curr_version then
         local url = "https://github.com/typst/typst/releases/download/v"..version.."/typst-x86_64-unknown-linux-musl.tar.xz"
         download(url, FU_PATH/url:basename())
