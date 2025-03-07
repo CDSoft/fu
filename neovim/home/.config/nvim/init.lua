@@ -1036,5 +1036,9 @@ nkey("<Leader>st", ":tabnew term://zsh<CR>")
 nkey("<Leader>sn", ":split term://zsh<CR>")
 nkey("<Leader>sv", ":vsplit term://zsh<CR>")
 
+-- Global LSP configuration
+vim.lsp.set_log_level("off")    -- avoid large log file (~/.local/state/nvim/lsp.log)
+                                -- log levels: off, debug, trace
+
 -- nvim startup may be too long to catch the initial SIGWINCH and resize the window
 --vim.cmd [[ autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID" ]]

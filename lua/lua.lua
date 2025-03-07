@@ -1,4 +1,6 @@
 local install_lua_language_server_from_sources = false
+local lua_LSP_max_memory = 1024*1024*1024
+local lua_LSP_timeout = "10h"
 
 dnf_install [[
     lua
@@ -55,6 +57,12 @@ if install_lua_language_server_from_sources then
             "&&",
             "ln -s -f $PWD/bin/lua-language-server ~/.local/bin/",
         }
+        fs.remove(HOME/".local/bin/lua-language-server")
+        fs.write(HOME/".local/bin/lua-language-server",
+            "#!/bin/bash\n",
+            "ulimit -Sv ", lua_LSP_max_memory//1024, " && \\\n",
+            "exec timeout ", lua_LSP_timeout, " ", FU_PATH/"lua-language-server/bin/lua-language-server", "\n")
+        fs.chmod(HOME/".local/bin/lua-language-server", fs.aR, fs.uW, fs.aX)
     end
 
 else
@@ -68,6 +76,12 @@ else
             "&&",
             "ln -s -f", FU_PATH/"lua-language-server-"..version.."-linux-x64/bin/lua-language-server", "~/.local/bin/",
         }
+        fs.remove(HOME/".local/bin/lua-language-server")
+        fs.write(HOME/".local/bin/lua-language-server",
+            "#!/bin/bash\n",
+            "ulimit -Sv ", lua_LSP_max_memory//1024, " && \\\n",
+            "exec timeout ", lua_LSP_timeout, " ", FU_PATH/"lua-language-server-"..version.."-linux-x64/bin/lua-language-server", "\n")
+        fs.chmod(HOME/".local/bin/lua-language-server", fs.aR, fs.uW, fs.aX)
     end
 
 end
