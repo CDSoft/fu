@@ -92,9 +92,9 @@ end
 dnf_install "asciinema"
 if UPDATE or not fs.is_file(HOME/".local/bin/termsvg") then
     local version = download("https://github.com/MrMarble/termsvg/releases/latest/"):match("tag/v([%d%.]+)")
-    local curr_version = (read(HOME/".local/bin/termsvg", "--version") or "") : match("[%d%.]+")
+    local curr_version = read(HOME/".local/bin/termsvg", "--version", "|| true") : match("[%d%.]+")
     if version ~= curr_version then
-        local url = "https://github.com/MrMarble/termsvg/releases/download/v"..version.."/termsvg-"..version.."-linux-arm64.tar.gz"
+        local url = "https://github.com/MrMarble/termsvg/releases/download/v"..version.."/termsvg-"..version.."-linux-amd64.tar.gz"
         download(url, FU_PATH/url:basename())
         run { "tar -C ~/.local/bin -xzvf", FU_PATH/url:basename(), "--strip-components=1", "*/termsvg" }
     end
