@@ -99,3 +99,8 @@ if UPDATE or not fs.is_file(HOME/".local/bin/termsvg") then
         run { "tar -C ~/.local/bin -xzvf", FU_PATH/url:basename(), "--strip-components=1", "*/termsvg" }
     end
 end
+
+-- gtts
+do
+    dnf_install "python3-gtts"
+end
