@@ -14,6 +14,8 @@ local fs = require "fs"
 
 local DEBUG = true
 
+local HOME = os.getenv "HOME"
+
 local process_blacklist = F[[
     alacritty
     xfce4-terminal
@@ -38,13 +40,16 @@ local process_blacklist = F[[
     wezterm-gui
     ghostty
     foot
+    node-22
+    timeout
 ]] : words() : from_set(F.const(true))
 
 local path_blacklist = F[[
     /opt/1Password
-]] : words() : from_set(F.const(true))
-
-local HOME = os.getenv "HOME"
+    ~/.local/opt/pyright-langserver/node_modules/pyright/dist
+]] : words()
+   : map(function(path) return path:gsub("^~", HOME) end)
+   : from_set(F.const(true))
 
 local function exit(cwd)
     print(cwd and cwd ~= "" and cwd or HOME)
