@@ -4,3 +4,6 @@
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 #output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 output * bg #020608 solid_color
+
+# custom window settings (use xwininfo to get windows information)
+for_window [app_id="ttyshow"] floating enable, resize set width 1920 px height 1080 px, inhibit_idle visible
