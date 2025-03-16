@@ -1,5 +1,5 @@
 " vim: filetype=vifm :
-" Sample configuration file for vifm (last updated: 12 November, 2023)
+" Sample configuration file for vifm (last updated: 18 December, 2024)
 " You can edit this file by hand.
 " The " character at the beginning of a line comments out the line.
 " Blank lines are ignored.
@@ -36,7 +36,9 @@ set trash
 set vifminfo=dhistory,chistory,shistory,
             \phistory,fhistory,dirstack,registers,bookmarks,bmarks
 
-" This is how many directories to store in the directory history.
+" This is size of all of the many kinds of histories, in particular it's the
+" number of last visited directories (not necessarily distinct ones) stored in
+" the directory history.
 set history=100
 
 " Automatically resolve symbolic links on l or Enter.
@@ -79,7 +81,7 @@ set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
 set ignorecase
 set smartcase
 
-" Don't highlight search results automatically
+" Don't select search matches automatically
 set nohlsearch
 
 " Use increment searching (search while typing)
@@ -95,6 +97,14 @@ endif
 
 " Set custom status line look
 set statusline="  %T %= %A %10u:%-7g %15s %6E %20d  "
+
+" Suppress "Permission denied" errors using syntax specific to GNU find
+if system("find --version | grep -c 'GNU findutils'") != 0
+    set findprg='find %s %a -print , -type d \( ! -readable -o ! -executable \) -prune'
+endif
+
+" Add -s to the default value to suppress "Permission denied" errors
+set grepprg="grep -n -H -I -r -s %i %a %s"
 
 " List of color schemes to try (picks the first one supported by the terminal)
 colorscheme christophe Default-256 Default
@@ -247,7 +257,7 @@ filextype {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
         \ {View using mplayer}
         \ mplayer %f,
         \ {Play using mpv}
-        \ mpv --no-video %f,
+        \ mpv %f,
 fileviewer {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
            \*.fl[icv],*.m2v,*.mov,*.webm,*.mts,*.m4v,*.r[am],*.qt,*.divx,
            \*.as[fx],*.unknown_video},
