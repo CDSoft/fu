@@ -16,6 +16,11 @@ then
         ) &
     done
     wait
+    while pgrep swaylock
+    do
+        pkill --signal SIGUSR1 swaylock
+        sleep 1
+    done
     swaylock --ignore-empty-password --show-failed-attempts --daemonize --tiling "${IMAGES[@]}" "$@"
 else
     LOCK=/tmp/lock.png
