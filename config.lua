@@ -77,4 +77,5 @@ PARAMETERS = {
     { "THUNDERBIRD",    D, _, _, _ },
     { "PICOM",          D, _, _, P },
     { "GHOSTTY",        _, _, _, _ },
+    { "CLAUDE_AI",      D, _, _, _ },
 }
