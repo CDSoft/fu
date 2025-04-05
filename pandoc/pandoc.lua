@@ -35,12 +35,12 @@ end
 
 -- lsvg
 if UPDATE or not fs.is_file(HOME/".local/bin/lsvg") then
-    gitclone "https://github.com/CDSoft/lsvg"
+    gitclone "https://codeberg.org/cdsoft/lsvg"
     run { "cd", FU_PATH/"lsvg", "&& bang && ninja install" }
 end
 
 -- panda
 if UPDATE or not fs.is_file(HOME/".local/bin/panda") then
-    gitclone "https://github.com/CDSoft/panda"
+    gitclone "https://codeberg.org/cdsoft/panda"
     run { "cd", FU_PATH/"panda", "&& bang && ninja install" }
 end

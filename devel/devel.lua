@@ -72,19 +72,19 @@ end
 
 -- Calculadoira
 if UPDATE or not fs.is_file(HOME/".local/bin/calculadoira") then
-    gitclone "https://github.com/CDSoft/calculadoira"
+    gitclone "https://codeberg.org/cdsoft/calculadoira"
     run { "cd", FU_PATH/"calculadoira", "&& bang && ninja install" }
 end
 
 -- tagref
 if UPDATE or not fs.is_file(HOME/".local/bin/tagref") then
-    gitclone "https://github.com/CDSoft/tagref"
+    gitclone "https://codeberg.org/cdsoft/tagref"
     run { "cd", FU_PATH/"tagref", "&& bang && ninja install" }
 end
 
 -- ypp
 if UPDATE or not fs.is_file(HOME/".local/bin/ypp") then
-    gitclone "https://github.com/CDSoft/ypp"
+    gitclone "https://codeberg.org/cdsoft/ypp"
     run { "cd", FU_PATH/"ypp", "&& bang && ninja install" }
 end
 

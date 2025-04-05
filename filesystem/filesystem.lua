@@ -49,10 +49,10 @@ end
 --[[
 if UPDATE or not fs.is_file(HOME/".local/bin/lzip") or not fs.is_file(HOME/".local/bin/plzip") or not fs.is_file(HOME/".local/bin/tarlz") then
     local curr_version = db.lzip_build
-    local version = download("https://github.com/CDSoft/lzip-builder/releases/latest/"):match("tag/(r%d+)")
+    local version = download("https://codeberg.org/cdsoft/lzip-builder/releases/latest/"):match("tag/(r%d+)")
     if version ~= curr_version then
         fs.with_tmpdir(function(tmp)
-            download("https://github.com/CDSoft/lzip-builder/releases/download/"..version.."/lzip-build-"..version.."-linux-x86_64.tar.gz", tmp/"lzip-build.tar.gz")
+            download("https://codeberg.org/cdsoft/lzip-builder/releases/download/"..version.."/lzip-build-"..version.."-linux-x86_64.tar.gz", tmp/"lzip-build.tar.gz")
             run { "tar -xvzf", tmp/"lzip-build.tar.gz", "-C", HOME/".local/bin" }
         end)
         db.lzip_build = version
@@ -63,12 +63,12 @@ end
 
 -- LZ4
 if UPDATE or not fs.is_file(HOME/".local/bin/lz4") then
-    gitclone "https://github.com/CDSoft/lz4-builder"
+    gitclone "https://codeberg.org/cdsoft/lz4-builder"
     run { "cd", FU_PATH/"lz4-builder", "&& bang && ninja install" }
 end
 
 -- Lzip
 if UPDATE or not fs.is_file(HOME/".local/bin/lzip") then
-    gitclone "https://github.com/CDSoft/lzip-builder"
+    gitclone "https://codeberg.org/cdsoft/lzip-builder"
     run { "cd", FU_PATH/"lzip-builder", "&& bang && ninja install" }
 end

@@ -3,7 +3,7 @@
 # Fedora Updater (fu): lightweight Fedora « distribution »
 #
 # Copyright (C) 2018-2025 Christophe Delord
-# https://github.com/CDSoft/fu
+# https://codeberg.org/cdsoft/fu
 #
 # This file is part of Fedora Updater (FU)
 #
@@ -26,7 +26,7 @@ export PREFIX=~/.local
 ( hash git && hash gcc ) 2>/dev/null || sudo dnf install git gcc
 
 [ -x $PREFIX/bin/ninja ] || (
-    NINJA_URL="https://github.com/CDSoft/ninja-builder"
+    NINJA_URL="https://codeberg.org/cdsoft/ninja-builder"
     TMP=$(mktemp -d)
     git clone $NINJA_URL "$TMP"
     cd "$TMP" || exit
@@ -35,7 +35,7 @@ export PREFIX=~/.local
 )
 
 [ -x $PREFIX/bin/luax ] || (
-    LUAX_URL="https://github.com/CDSoft/luax"
+    LUAX_URL="https://codeberg.org/cdsoft/luax"
     TMP=$(mktemp -d)
     git clone $LUAX_URL "$TMP"
     cd "$TMP" || exit

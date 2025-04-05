@@ -4,7 +4,7 @@
 Fedora Updater (fu): lightweight Fedora « distribution »
 
 Copyright (C) 2018-2025 Christophe Delord
-https://github.com/CDSoft/fu
+https://codeberg.org/cdsoft/fu
 
 This file is part of Fedora Updater (FU)
 

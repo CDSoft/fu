@@ -634,16 +634,8 @@ use "lewis6991/gitsigns.nvim" {
     end
 }
 
-use "CDSoft/pwd" {
-    pre_config = function()
-        theme_switcher:exclude_filetypes { "pwd" }
-    end;
-}
-use "CDSoft/todo" {
-    pre_config = function()
-        theme_switcher:exclude_filetypes { "todo" }
-    end
-}
+use "https://codeberg.org/cdsoft/pwd"
+use "https://codeberg.org/cdsoft/todo"
 
 use "thinca/vim-localrc" {
     config = function()
@@ -936,7 +928,7 @@ end
 
 use "mfussenegger/nvim-dap"
 
-use "https://github.com/CDSoft/trace32-practice.vim"
+use "https://codeberg.org/cdsoft/trace32-practice.vim"
 
 for i = 1, #pre_config do pre_config[i]() end
 require("lazy").setup(packs)

@@ -1,8 +1,8 @@
 Fedora Updater
 ==============
 
-[FU]: https://github.com/CDSoft/fu
-[Fedora Updater]: https://github.com/CDSoft/fu
+[FU]: https://codeberg.org/cdsoft/fu
+[Fedora Updater]: https://codeberg.org/cdsoft/fu
 
 [Fedora Updater] is a set of scripts to complete the Fedora installation
 for my personal and professional needs.
@@ -20,7 +20,7 @@ License
     Fedora Updater (fu): lightweight Fedora « distribution »
 
     Copyright (C) 2018-2025 Christophe Delord
-    https://github.com/CDSoft/fu
+    https://codeberg.org/cdsoft/fu
 
     This file is part of Fedora Updater (FU)
 
@@ -42,7 +42,7 @@ Installation
 
 Installation from GitHub:
 
-    git clone https://github.com/CDSoft/fu
+    git clone https://codeberg.org/cdsoft/fu
     cd fu
     ./fu
 
