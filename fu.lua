@@ -30,9 +30,7 @@ local import = require "import"
 I = F.I(_G) % "%%()"
 
 local args = (function()
-    local parser = require "argparse"()
-        : name "fu"
-        : description "Fedora Updater"
+    local parser = require "argparse"() : name "fu" : description "Fedora Updater"
     parser : flag "-u" : description "Fast update"
     parser : flag "-f" : description "Force update of all packages"
     parser : flag "-r" : description "Reset the package database"
