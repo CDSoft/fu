@@ -11,6 +11,9 @@ dnf_install [[
 
 pip_install "pynvim"
 
+-- To render LaTeX equations: (also need ":TSInstall latex" in neovim)
+--pip_install "pylatexenc" -- for 'MeanderingProgrammer/render-markdown.nvim'
+
 -- spell directory containing word lists
 fs.mkdirs(HOME/".local/share/nvim/site/spell")
 

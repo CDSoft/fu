@@ -554,7 +554,7 @@ use "hrsh7th/nvim-cmp" {
 
 -- https://github.com/yetone/avante.nvim
 
-local ai_provider = "%(CLAUDE_AI and 'claude' or '')"
+local ai_provider = "%(CLAUDE_AI and 'claude' or MISTRAL_AI and 'mistral' or '')"
 
 if ai_provider ~= '' then
 use "yetone/avante.nvim" {
@@ -563,6 +563,15 @@ use "yetone/avante.nvim" {
     opts = {
         -- add any opts here
         provider = ai_provider,
+        vendors = {
+            mistral = {
+                __inherited_from = "openai",
+                api_key_name = "%(myconf.MISTRAL_API_KEY)",
+                endpoint = "https://api.mistral.ai/v1/",
+                model = "mistral-large-latest",
+                max_tokens = 4096, -- to avoid using max_completion_tokens
+            },
+        },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
@@ -604,6 +613,17 @@ use "yetone/avante.nvim" {
             },
             ft = { "markdown", "Avante" },
         },
+    },
+}
+else
+use 'MeanderingProgrammer/render-markdown.nvim' {
+    opts = {
+        file_types = { "markdown" },
+    },
+    ft = { "markdown" },
+    dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+        "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
     },
 }
 end
