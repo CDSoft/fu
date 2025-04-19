@@ -137,9 +137,12 @@
         "on-click": "st btop"
     },
     "network": {
+        "family": "ipv4",
         "format": "{ifname} {ipaddr}",
-        "format-wifi": "{essid} {ipaddr} ({signalStrength}%) ",
-        "format-ethernet": "{ifname} {ipaddr} ",
+        //"format-wifi": "{essid} {ipaddr} ({signalStrength}%) ",
+        //"format-ethernet": "{ifname} {ipaddr} ",
+        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-ethernet": "{ifname} ",
         "format-disconnected": "",
         "tooltip-format": "{ifname} {ipaddr}",
         "tooltip-format-wifi": "{essid} {ipaddr} ({signalStrength}%) ",
