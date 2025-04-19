@@ -374,6 +374,20 @@ use "neovim/nvim-lspconfig" {
 
         local lspconfig = require 'lspconfig'
 
+        vim.diagnostic.config {
+            --virtual_text = true,    -- all messages at the end of the line
+            virtual_lines = true,   -- one message per line after the current line
+        }
+
+        vim.api.nvim_create_autocmd('LspAttach', {
+            callback = function(ev)
+                local client = vim.lsp.get_client_by_id(ev.data.client_id)
+                if client:supports_method('textDocument/completion') then
+                    vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger=true })
+                end
+            end,
+        })
+
         -- Use an on_attach function to only map the following keys
         -- after the language server attaches to the current buffer
         local on_attach = function(client, bufnr)
