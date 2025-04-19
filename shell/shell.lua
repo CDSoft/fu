@@ -11,7 +11,6 @@ dnf_install [[
     btop
     pwgen
     ripgrep
-    eza
     fd-find
     tmux
     tldr
@@ -72,4 +71,16 @@ if FORCE or not installed "grc" then
         "&&",
         "sudo ./install.sh",
     }
+end
+
+-- eza
+if UPDATE or not fs.is_file(HOME/".local/bin/eza") then
+    local eza_url = "https://github.com/eza-community/eza/releases"
+    local eza_version = read { "curl", "-Ls", "-o /dev/null", '-w "%{url_effective}"', eza_url/"latest" } : basename()
+    local curr_version = read "eza --version || true" : lines()[2] : words()[1]
+    if eza_version ~= curr_version then
+        local url = "https://github.com/eza-community/eza/releases/download/"..eza_version.."/eza_x86_64-unknown-linux-gnu.tar.gz"
+        download(url, FU_PATH/url:basename())
+        run { "tar -C ~/.local/bin -xzvf", FU_PATH/url:basename() }
+    end
 end
