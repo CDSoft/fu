@@ -1,5 +1,4 @@
--- copr to be removed when Neovim 0.7 is in the Fedora repository
---copr("/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:agriffis:neovim-nightly.repo", "agriffis/neovim-nightly")
+local install_latest_neovim = true
 
 dnf_install [[
     neovim
@@ -33,4 +32,19 @@ if FORCE or not installed "ccrypt" then
             "cp", tmp/"ccrypt", "~/.local/bin/",
         }
     end)
+end
+
+-- Latest Neovim
+if install_latest_neovim then
+    if FORCE or not fs.is_file(HOME/".local/bin/nvim") then
+        local neovim_url = "https://github.com/neovim/neovim/releases"
+        local neovim_version = read { "curl", "-Ls", "-o /dev/null", '-w "%{url_effective}"', neovim_url/"latest" } : basename()
+        local latest_url = neovim_url/"download"/neovim_version/"nvim-linux-x86_64.tar.gz"
+        local curr_version = read { HOME/".local/bin/nvim", "--version", "|| true" } : words()[2]
+        if neovim_version ~= curr_version then
+            local archive = FU_PATH/latest_url:basename()
+            download(latest_url, archive)
+            run { "tar xaf", archive, "-C", HOME/".local", "--strip-components 1" }
+        end
+    end
 end
