@@ -77,19 +77,16 @@ function preexec_set_win_title()
 precmd_functions+=(precmd_set_win_title)
 preexec_functions+=(preexec_set_win_title)
 
-# Foot shell integration
-if [ -n "$SWAYLOCK" ]
-then
-    precmd() {
-        print -Pn "\e]133;A\e\\"        # naviguate between prompts with Ctrl-Shift z/x
-        if ! builtin zle; then
-            print -n "\e]133;D\e\\"     # edit the last output with neovim with Ctrl-Shift-g
-        fi
-    }
-    preexec() {
-        print -n "\e]133;C\e\\"         # edit the last output with neovim with Ctrl-Shift-g
-    }
-fi
+# Foot/Xfce terminal shell integration
+precmd() {
+    print -Pn "\e]133;A\e\\"        # naviguate between prompts with Ctrl-Shift z/x (Ctrl-Shift <-/-> with Xfce terminal)
+    if ! builtin zle; then
+        print -n "\e]133;D\e\\"     # edit the last output with neovim with Ctrl-Shift-g
+    fi
+}
+preexec() {
+    print -n "\e]133;C\e\\"         # edit the last output with neovim with Ctrl-Shift-g
+}
 
 # https://github.com/zsh-users/zsh-syntax-highlighting
 

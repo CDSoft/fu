@@ -78,10 +78,9 @@ disabled = false    # 2-line prompt
 
 # Prompt character
 [character]
-#success_symbol = "[➜](bold green)"
-#error_symbol = "[➜](bold red)"
-success_symbol = "[>](bold green)"
-error_symbol = "[>](bold red)"
+format = "$symbol"
+success_symbol = "[> ](bold green)"
+error_symbol = "[> ](bold red)"
 
 # Command duration
 [cmd_duration]
