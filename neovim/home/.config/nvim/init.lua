@@ -631,6 +631,7 @@ use "yetone/avante.nvim" {
     },
 }
 else
+--[[
 use 'MeanderingProgrammer/render-markdown.nvim' {
     opts = {
         file_types = { "markdown" },
@@ -641,6 +642,7 @@ use 'MeanderingProgrammer/render-markdown.nvim' {
         "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
     },
 }
+--]]
 end
 
 use "mfussenegger/nvim-dap"
