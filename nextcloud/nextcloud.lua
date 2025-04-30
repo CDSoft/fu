@@ -22,9 +22,7 @@ if UPDATE or not nextcloud_installed then
     --]]
     if new_version ~= version then
         if version then run { HOME/".local/bin/Nextcloud", "-q" } end
-        fs.with_tmpdir(function(tmp)
-            download("https://github.com/nextcloud-releases/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage", HOME/".local/bin/Nextcloud")
-            fs.chmod(HOME/".local/bin/Nextcloud", fs.aR|fs.uW|fs.uX)
-        end)
+        download("https://github.com/nextcloud-releases/desktop/releases/download/v"..new_version.."/Nextcloud-"..new_version.."-x86_64.AppImage", HOME/".local/bin/Nextcloud")
+        fs.chmod(HOME/".local/bin/Nextcloud", fs.aR|fs.uW|fs.uX)
     end
 end

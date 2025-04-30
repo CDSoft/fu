@@ -5,7 +5,7 @@ local fs = require "fs"
 local sh = require "sh"
 
 local cwd = fs.getcwd()
-local root = os.getenv"HOME"/"Nextcloud/Notes"
+local root = os.getenv"HOME"/"sync/notes"
 
 local terminal = require "term".isatty() and {} or {
     os.getenv"SWAYSOCK" and "foot" or "xfce4-terminal --disable-server", "-e",

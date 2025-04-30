@@ -57,6 +57,7 @@ dnf_install [[
     gnome-clocks
     polybar
     gtk4-devel libadwaita-devel
+    cadaver
 ]]
 
 dnf_install [[
@@ -91,6 +92,7 @@ install_font("SourceCodePro", "SauceCodeProNerdFont-Regular.ttf")
 install_font("FiraCode", "FiraCodeNerdFont-Regular.ttf")
 
 -- FontAweome
+--[[
 local function install_fontawesome()
     local file = "FontAwesome.otf"
     if FORCE or not fs.is_file(HOME/".local/share/fonts"/file) then
@@ -100,7 +102,8 @@ local function install_fontawesome()
         font_cache_update = true
     end
 end
---install_fontawesome()
+install_fontawesome()
+--]]
 
 -- Update font cache
 if font_cache_update then
@@ -332,7 +335,7 @@ if FORCE or not installed "hsetroot" then
 end
 
 if not fs.is_file(HOME/".config/i3/empty.wav") then
-    fs.write(HOME/".config/i3/empty.wav", ("UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="):unbase64())
+    fs.write(HOME/".config/i3/empty.wav", F"UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=":unbase64())
 end
 
 if read { "getcap", read"which i3status" } : words()[2] ~= "cap_net_admin=ep" then
