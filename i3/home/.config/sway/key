@@ -18,7 +18,20 @@
 input type:keyboard {
   xkb_layout "%(KEYMAP)"
   xkb_numlock %(NUMLOCK and "enabled" or "disabled")
+
+# https://unix.stackexchange.com/questions/623873/annoying-ctrlf-instead-of-ctrlaltf-virtual-terminal-switching-on-fedora-33
+  xkb_options 'srvrkeys:none,grp:shifts_toggle'
 }
+
+bindsym $ctrl+$alt+F1   exec sudo chvt 1
+#bindsym $ctrl+$alt+F2   exec sudo chvt 2
+bindsym $ctrl+$alt+F3   exec sudo chvt 3
+bindsym $ctrl+$alt+F4   exec sudo chvt 4
+bindsym $ctrl+$alt+F5   exec sudo chvt 5
+bindsym $ctrl+$alt+F6   exec sudo chvt 6
+bindsym $ctrl+$alt+F7   exec sudo chvt 7
+bindsym $ctrl+$alt+F8   exec sudo chvt 8
+bindsym $ctrl+$alt+F9   exec sudo chvt 9
 
 # Special keys to adjust volume via PulseAudio
 bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle

@@ -75,7 +75,7 @@ local function log(fmt, ...)
     print(color(">>> %s"):format(fmt:format(...)))
 end
 
-db = setmetatable({ dnf={}, lua={}, pip={}, mime={} }, {
+db = setmetatable({ dnf={}, lua={}, pip={}, mime={}, sudoers={} }, {
     __index = {
         dbfile = FU_PATH/"db.lua",
         load = function(self)

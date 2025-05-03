@@ -341,3 +341,15 @@ end
 if read { "getcap", read"which i3status" } : words()[2] ~= "cap_net_admin=ep" then
     run { "sudo setcap cap_net_admin=ep", read'which i3status' }
 end
+
+-- add chvt to sudoers to allow switching tty in sway
+if FORCE or not db.sudoers.chvt then
+    fs.with_tmpfile(function(tmp)
+        fs.write(tmp, {USER, " ALL=(ALL) NOPASSWD: /usr/bin/chvt", "\n"})
+        run { "sudo chown root:root", tmp }
+        run { "sudo chmod 440", tmp }
+        run { "sudo mv", tmp, "/etc/sudoers.d"/USER.."-chvt" }
+    end)
+    db.sudoers.chvt = true
+    db:save()
+end
