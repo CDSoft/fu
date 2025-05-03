@@ -25,7 +25,7 @@ db:once(FORCE, "network_configured", function()
     run "sudo systemctl enable sshd.service"
 
     -- Disable firewalld
-    run "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
+    --run "sudo systemctl disable firewalld" -- firewalld fails to stop during shutdown.
 
     -- wireshark
     run { "sudo usermod -a -G wireshark", USER }
