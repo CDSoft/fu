@@ -1,6 +1,6 @@
 local install_lua_language_server_from_sources = false
 local lua_LSP_max_memory = 1024*1024*1024
-local lua_LSP_timeout = "10h"
+local lua_LSP_timeout = "31d"
 
 dnf_install [[
     lua
