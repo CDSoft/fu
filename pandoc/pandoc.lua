@@ -44,3 +44,6 @@ if UPDATE or not fs.is_file(HOME/".local/bin/panda") then
     gitclone "https://codeberg.org/cdsoft/panda"
     run { "cd", FU_PATH/"panda", "&& bang && ninja install" }
 end
+
+-- npm modules (mainly for HTML to PDF conversion)
+npm_install "chrome-launcher chrome-remote-interface"

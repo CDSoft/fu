@@ -75,7 +75,7 @@ local function log(fmt, ...)
     print(color(">>> %s"):format(fmt:format(...)))
 end
 
-db = setmetatable({ dnf={}, lua={}, pip={}, mime={}, sudoers={} }, {
+db = setmetatable({ dnf={}, lua={}, pip={}, npm={}, mime={}, sudoers={} }, {
     __index = {
         dbfile = FU_PATH/"db.lua",
         load = function(self)
@@ -196,6 +196,18 @@ function pip_install(names)
         log("pip install %s", new_names)
         run { "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring", "pip install --user", names }
         new_packages : foreach(function(name) db.pip[name] = true end)
+        db:save()
+    end
+end
+
+function npm_install(names)
+    names = I(names):words()
+    local new_packages = names:filter(function(name) return UPDATE or not db.npm[name] end)
+    if #new_packages > 0 then
+        local new_names = new_packages : unwords()
+        log("npm install %s", new_names)
+        run { "cd && npm install", names }
+        new_packages : foreach(function(name) db.npm[name] = true end)
         db:save()
     end
 end
