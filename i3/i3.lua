@@ -145,8 +145,8 @@ if FORCE or not fs.is_file(HOME/".urxvt/ext/font-size") then
 end
 
 -- st
-if FORCE or not fs.is_file(HOME/".local/bin/st") then
-    local version = "0.9"
+if FORCE or not fs.is_file(HOME/".local/bin/st") or true then
+    local version = "0.9.2"
     gitclone("https://git.suckless.org/st")
     run { "cd", FU_PATH/"st", "&&", "git reset --hard master", "&&", "git checkout master", "&&", "git clean -dfx", "&&", "git fetch", "&&", "git rebase" }
     run { "cd", FU_PATH/"st", "&&", "git checkout", version }
@@ -165,11 +165,11 @@ if FORCE or not fs.is_file(HOME/".local/bin/st") then
     patch "https://st.suckless.org/patches/boxdraw/st-boxdraw_v2-0.8.5.diff"
     patch "https://st.suckless.org/patches/desktopentry/st-desktopentry-0.8.5.diff"
     --patch "https://st.suckless.org/patches/dracula/st-dracula-0.8.5.diff"
-    patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb.diff"
+    --patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb.diff"
     --patch "https://st.suckless.org/patches/right_click_to_plumb/simple_plumb-0.8.5.diff"
-    --patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.8.5.diff"
-    --patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-20220127-2c5edf2.diff"
-    --patch "https://st.suckless.org/patches/undercurl/st-undercurl-0.8.4-20210822.diff"
+    patch "https://st.suckless.org/patches/scrollback/st-scrollback-0.9.2.diff"
+    patch "https://st.suckless.org/patches/scrollback/st-scrollback-mouse-0.9.2.diff"
+    patch "https://st.suckless.org/patches/undercurl/st-undercurl-0.9-20240103.diff"
 
     -- Same colors than Alacritty
 
