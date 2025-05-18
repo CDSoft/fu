@@ -23,7 +23,7 @@
 
 export PREFIX=~/.local
 
-( hash git && hash gcc ) 2>/dev/null || sudo dnf install git gcc
+( hash git && hash gcc && hash g++) 2>/dev/null || sudo dnf install git gcc gcc-c++
 
 [ -x $PREFIX/bin/ninja ] || (
     NINJA_URL="https://codeberg.org/cdsoft/ninja-builder"
@@ -40,7 +40,7 @@ export PREFIX=~/.local
     git clone $LUAX_URL "$TMP"
     cd "$TMP" || exit
     ./bootstrap.sh gcc small
-    ninja install
+    $PREFIX/bin/ninja install
     rm -rf "$TMP"
 )
 

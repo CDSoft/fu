@@ -1,4 +1,4 @@
-dnf_install "gcc"
+dnf_install "gcc gcc-c++"
 
 -- Ninja
 if UPDATE or not fs.is_file(HOME/".local/bin/ninja") then
