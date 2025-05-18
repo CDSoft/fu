@@ -8,8 +8,7 @@ set $ctrl Control
 set $win  Mod4
 set $mod  Mod4
 
-#set $terminal xfce4-terminal --disable-server
-set $terminal alacritty
+set $terminal xfce4-terminal --disable-server
 
 include win
 include win-i3

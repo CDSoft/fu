@@ -58,6 +58,7 @@ dnf_install [[
     polybar
     gtk4-devel libadwaita-devel
     cadaver
+    xfce4-terminal gnome-terminal
 ]]
 
 dnf_install [[
@@ -253,9 +254,14 @@ end
 
 -- https://docs.xfce.org/xfce/xfconf/xfconf-query#listing_properties
 do
+    local function xfce_type(value)
+        if value:match"^d+$" then return "int" end
+        if value=="true" or value=="false" then return "bool" end
+        return "string"
+    end
+
     -- xfce4-terminal configuration
     -- xfconf-query -c xfce4-terminal -lv
-    --[===[
     F[[
         /color-palette                  #000000;#cc0000;#4e9a06;#c4a000;#3465a4;#75507b;#06989a;#d3d7cf;#555753;#ef2929;#8ae234;#fce94f;#739fcf;#ad7fa8;#34e2e2;#eeeeec
         /font-name                      %(FONT) %(FONT_VARIANT) %(FONT_SIZE)
@@ -293,17 +299,16 @@ do
         /title-mode                     TERMINAL_TITLE_REPLACE
     ]] : trim() : lines() : foreach(function(line)
         local param, value = line:trim():split("%s+", 1):unpack()
-        run { "xfconf-query -c xfce4-terminal", "-p", param, "-s", string.format("%q", I(value)) }
+        run { "xfconf-query -c xfce4-terminal", "-p", param, "-n", "-t", xfce_type(value), "-s", string.format("%q", I(value)) }
     end)
-    --]===]
 
     -- xfce4-notifyd
     -- xfconf-query -c xfce4-notifyd -lv
     F[[
-        /theme                            Greybird
+        /theme                          Greybird
     ]] : trim() : lines() : foreach(function(line)
         local param, value = line:trim():split("%s+", 1):unpack()
-        run { "xfconf-query -c xfce4-notifyd", "-p", param, "-s", string.format("%q", I(value)) }
+        run { "xfconf-query -c xfce4-notifyd", "-p", param, "-n", "-t", xfce_type(value), "-s", string.format("%q", I(value)) }
     end)
 end
 
