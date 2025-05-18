@@ -33,12 +33,12 @@ bindsym $mod+Shift+b    border pixel 2
 bindsym $mod+$ctrl+b    border toggle
 for_window [window_role="pop-up"]                               floating enable
 for_window [window_role="task_dialog"]                          floating enable
-for_window [title="^Alacritty$"]                                border pixel 4
-for_window [title="^🖩 hCalc$"]                                  floating enable, border pixel 4
-for_window [title="^🖩 Calculadoira$"]                           floating enable, border pixel 4
-for_window [title="^🖩 Numbat$"]                                 floating enable, border pixel 4
-for_window [title="^🖩 bc$"]                                     floating enable, border pixel 4
-for_window [title="^ssh-agent$"]                                floating enable
+for_window [title="^Alacritty"]                                 border pixel 4
+for_window [title="^🖩 hCalc"]                                  floating enable, border pixel 4
+for_window [title="^🖩 Calculadoira"]                           floating enable, border pixel 4
+for_window [title="^🖩 Numbat"]                                 floating enable, border pixel 4
+for_window [title="^🖩 bc"]                                     floating enable, border pixel 4
+for_window [title="^ssh-agent"]                                 floating enable
 for_window [title="VM VirtualBox$"]                             floating enable, border normal 8
 for_window [title="^QEMU (.*)$"]                                floating enable, border normal 8
 for_window [title="Waiting for low CPU and network activity"]   floating enable, border pixel 4

@@ -58,7 +58,7 @@ dnf_install [[
     polybar
     gtk4-devel libadwaita-devel
     cadaver
-    xfce4-terminal gnome-terminal
+    xfce4-terminal gnome-terminal konsole
 ]]
 
 dnf_install [[
@@ -146,7 +146,7 @@ if FORCE or not fs.is_file(HOME/".urxvt/ext/font-size") then
 end
 
 -- st
-if FORCE or not fs.is_file(HOME/".local/bin/st") or true then
+if FORCE or not fs.is_file(HOME/".local/bin/st") then
     local version = "0.9.2"
     gitclone("https://git.suckless.org/st")
     run { "cd", FU_PATH/"st", "&&", "git reset --hard master", "&&", "git checkout master", "&&", "git clean -dfx", "&&", "git fetch", "&&", "git rebase" }

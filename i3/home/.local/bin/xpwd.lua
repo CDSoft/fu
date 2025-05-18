@@ -42,6 +42,7 @@ local process_blacklist = F[[
     foot
     node-22
     timeout
+    konsole
 ]] : words() : from_set(F.const(true))
 
 local path_blacklist = F[[

@@ -1,0 +1,19 @@
+MenuBar=Disabled
+
+[Desktop Entry]
+DefaultProfile=christ.profile
+
+[General]
+ConfigVersion=1
+
+[KonsoleWindow]
+ShowWindowTitleOnTitleBar=true
+
+[MainWindow]
+MenuBar=Disabled
+
+[TabBar]
+NewTabBehavior=PutNewTabAfterCurrentTab
+
+[UiSettings]
+ColorScheme=Brise sombre
