@@ -26,6 +26,7 @@ else
     LOCK=/tmp/lock.png
     magick import -window root -colorspace Gray $LOCK
     #magick $LOCK -scale 10% -scale 1000% $LOCK
-    magick $LOCK -scale $P1% -blur 0x2 -fill black -colorize 50% -scale $P2% $LOCK
+    #magick $LOCK -scale $P1% -blur 0x2 -fill black -colorize 50% -scale $P2% $LOCK
+    magick $LOCK -scale $P1% -blur 0x2 -scale $P2% $LOCK
     i3lock --ignore-empty-password --show-failed-attempts --tiling --image=$LOCK "$@"
 fi
