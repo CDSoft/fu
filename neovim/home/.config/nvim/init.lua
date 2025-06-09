@@ -801,6 +801,51 @@ nkey("<Leader>st", ":tabnew term://zsh<CR>")
 nkey("<Leader>sn", ":split term://zsh<CR>")
 nkey("<Leader>sv", ":vsplit term://zsh<CR>")
 
+-- Annotate prompts with a sign (https://neovim.io/doc/user/terminal.html)
+--[[
+vim.api.nvim_create_autocmd('TermOpen', {
+  command = 'setlocal signcolumn=auto',
+})
+local ns = vim.api.nvim_create_namespace('my.terminal.prompt')
+vim.api.nvim_create_autocmd('TermRequest', {
+  callback = function(args)
+    if string.match(args.data.sequence, '^\027]133;A') then
+      local lnum = args.data.cursor[1]
+      vim.api.nvim_buf_set_extmark(args.buf, ns, lnum - 1, 0, {
+        sign_text = '▶',
+        sign_hl_group = 'SpecialChar',
+      })
+    end
+  end,
+})
+--]]
+
+local function split_terminal_and_edit()
+  local buftype = vim.api.nvim_buf_get_option(0, 'buftype')
+  if buftype ~= 'terminal' then
+    vim.notify("This command can only be used in a terminal.", vim.log.levels.WARN)
+    return
+  end
+  vim.api.nvim_feedkeys('[[', 'n', false)   -- previous prompt
+  vim.api.nvim_feedkeys('v', 'n', false)    -- visual mode
+  vim.api.nvim_feedkeys(']]', 'n', false)   -- end of the previous command
+  vim.api.nvim_feedkeys('y', 'n', false)    -- copy
+  vim.defer_fn(function()                   -- wait for 'y' to complete
+    local win = vim.api.nvim_get_current_win()
+    local width = vim.api.nvim_win_get_width(win)
+    local height = vim.api.nvim_win_get_height(win)
+    local vertical = height/width > 0.4
+    vim.cmd(vertical and 'split' or 'vsplit') -- open new window according to its orientation
+    vim.cmd('enew')                           -- new buffer
+    vim.api.nvim_feedkeys('p', 'n', false)    -- paste selection
+  end, 100)
+end
+
+-- Raccourci pour exécuter la fonction
+--vim.keymap.set('n', '<leader>tc', copy_command_to_new_window, { desc = "Copy command to new window" })
+--vim.keymap.set('n', '<leader>tc', copy_command_to_new_window, { desc = "Copy command to new window" })
+nkey("<Leader>se", split_terminal_and_edit)
+
 -- Global LSP configuration
 vim.lsp.set_log_level("off")    -- avoid large log file (~/.local/state/nvim/lsp.log)
                                 -- log levels: off, debug, trace

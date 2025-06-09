@@ -85,6 +85,7 @@ precmd() {
     fi
 }
 preexec() {
+    print -Pn "\e]133;B\e\\"        # end of prompt
     print -n "\e]133;C\e\\"         # edit the last output with neovim with Ctrl-Shift-g
 }
 
