@@ -1,6 +1,6 @@
 if UPDATE or not installed "zig" or not installed "zls" then
 
-    local ZIG_VERSION = "0.14.0" -- undefine for autodetection
+    local ZIG_VERSION = "0.14.1" -- undefine for autodetection
 
     -- zig
     do
@@ -18,7 +18,7 @@ if UPDATE or not installed "zig" or not installed "zls" then
             assert(ZIG_ARCHIVE and ZIG_DIR, "Can not determine Zig version")
             ZIG_VERSION = ZIG_ARCHIVE:match("/([%d%.]+)/")
         else
-            ZIG_ARCHIVE = "https://ziglang.org/download/"..ZIG_VERSION.."/zig-linux-x86_64-"..ZIG_VERSION..".tar.xz"
+            ZIG_ARCHIVE = "https://ziglang.org/download/"..ZIG_VERSION.."/zig-x86_64-linux-"..ZIG_VERSION..".tar.xz"
         end
         local curr_version = installed "zig" and read("zig version")
 
