@@ -9,7 +9,7 @@ end
 -- LuaX
 if UPDATE then
     gitclone "https://codeberg.org/cdsoft/luax"
-    run { "cd", FU_PATH/"luax", "&& ./bootstrap.sh gcc small && ninja install" }
+    run { "cd", FU_PATH/"luax", "&& ./bootstrap.sh gcc fast lto && ninja install" }
 end
 
 -- bang

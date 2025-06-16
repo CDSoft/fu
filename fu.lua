@@ -42,8 +42,15 @@ FORCE = args.f
 UPDATE = args.u or FORCE
 RESET = args.r
 
-function read(...) return assert(require "sh".read(...)):trim() end
-function run(...) assert(require "sh".run(...)) end
+function read(...)
+    local out, msg = require "sh".read(...)
+    if not out then error(msg) end
+    return out:trim()
+end
+
+function run(...)
+    assert(require "sh".run(...))
+end
 
 HOSTNAME = read "hostname"
 HOME     = os.getenv "HOME"
