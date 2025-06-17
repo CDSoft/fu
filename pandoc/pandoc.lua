@@ -8,7 +8,7 @@ dnf_install [[
 
 -- Pandoc
 if UPDATE or not fs.is_file(HOME/".local/bin/pandoc") then
-    local version = download("https://github.com/jgm/pandoc/releases/latest/"):match("tag/([%d%.]+)")
+    local version = github_tag "https://github.com/jgm/pandoc/releases/latest"
     local curr_version = read "pandoc --version || true":words()[2]
     if version ~= curr_version then
         local url = "https://github.com/jgm/pandoc/releases/download/"..version.."/pandoc-"..version.."-linux-amd64.tar.gz"

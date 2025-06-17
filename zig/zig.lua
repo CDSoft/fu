@@ -36,7 +36,7 @@ if UPDATE or not installed "zig" or not installed "zls" then
     -- zls
     do
         local curr_version = installed "zls" and db.zls_version
-        local version = download("https://github.com/zigtools/zls/releases/latest/"):match("tag/([%d%.]+)")
+        local version = github_tag "https://github.com/zigtools/zls/releases/latest"
         if version ~= curr_version then
             fs.with_tmpdir(function(tmp)
                 download("https://github.com/zigtools/zls/releases/download"/version/"zls-x86_64-linux.tar.xz", tmp/"zls-x86_64-linux.tar.xz")

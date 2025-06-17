@@ -76,7 +76,7 @@ end
 -- eza
 if UPDATE or not fs.is_file(HOME/".local/bin/eza") then
     local eza_url = "https://github.com/eza-community/eza/releases"
-    local eza_version = read { "curl", "-Ls", "-o /dev/null", '-w "%{url_effective}"', eza_url/"latest" } : basename()
+    local eza_version = github_tag(eza_url/"latest")
     local curr_version = read "eza --version || true" : lines() : drop(1) : unlines() : words()[1]
     if eza_version ~= curr_version then
         local url = "https://github.com/eza-community/eza/releases/download/"..eza_version.."/eza_x86_64-unknown-linux-gnu.tar.gz"

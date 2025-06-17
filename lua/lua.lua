@@ -68,7 +68,7 @@ if install_lua_language_server_from_sources then
 else
 
     if UPDATE or not installed "lua-language-server" then
-        local version = download("https://github.com/LuaLS/lua-language-server/releases/latest"):match("tag/([%d%.]+)")
+        local version = github_tag "https://github.com/LuaLS/lua-language-server/releases/latest"
         download("https://github.com/LuaLS/lua-language-server/releases/download/"..version.."/lua-language-server-"..version.."-linux-x64.tar.gz", FU_PATH/"lua-language-server-"..version.."-linux-x64.tar.gz")
         fs.mkdirs(FU_PATH/"lua-language-server-"..version.."-linux-x64")
         run {

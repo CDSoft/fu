@@ -237,6 +237,10 @@ function download(url, dest)
     end
 end
 
+function github_tag(url)
+    return read { "curl", "-Ls", "-o /dev/null", '-w "%{url_effective}"', url } : basename()
+end
+
 function with_file(name, f)
     local content = fs.read(name)
     local new_content = f(content)

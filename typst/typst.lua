@@ -1,7 +1,7 @@
 -- Typst
 
 if UPDATE or not fs.is_file(HOME/".local/bin/typst") then
-    local version = download("https://github.com/typst/typst/releases/latest/"):match("tag/v([%d%.]+)")
+    local version = github_tag "https://github.com/typst/typst/releases/latest" : gsub("v", "")
     local curr_version = read "typst --version || true":words()[2]
     if version ~= curr_version then
         local url = "https://github.com/typst/typst/releases/download/v"..version.."/typst-x86_64-unknown-linux-musl.tar.xz"
@@ -22,9 +22,7 @@ if FORCE or not installed "typst-lsp" then
             "~/.cargo/bin/cargo install --path . --root ~/.local",
         }
     else
-        local version = download("https://github.com/nvarner/typst-lsp/releases/latest"):match("tag/(v[%d%.]+)")
-        version = version == "v0.6.0" and "v0.5.1"
-                or version
+        local version = github_tag "https://github.com/nvarner/typst-lsp/releases/latest"
         fs.with_tmpdir(function(tmp)
             download("https://github.com/nvarner/typst-lsp/releases/download"/version/"typst-lsp-x86_64-unknown-linux-gnu", tmp/"typst-lsp")
             run { "install", tmp/"typst-lsp", "~/.local/bin/" }
@@ -41,7 +39,7 @@ if FORCE or not installed "tinymist" then
             "~/.cargo/bin/cargo install --path . --root ~/.local",
         }
     else
-        local version = download("https://github.com/Myriad-Dreamin/tinymist/releases/latest"):match("tag/(v[%d%.]+)")
+        local version = github_tag "https://github.com/Myriad-Dreamin/tinymist/releases/latest"
         fs.with_tmpdir(function(tmp)
             download("https://github.com/Myriad-Dreamin/tinymist/releases/download"/version/"tinymist-linux-x64", tmp/"tinymist")
             run { "install", tmp/"tinymist", "~/.local/bin/" }

@@ -1,6 +1,6 @@
 if FORCE or not installed "numbat" then
     local curr_version = (read("numbat --version || true"):lines()[1] or F""):words()[2]
-    local version = download("https://github.com/sharkdp/numbat/releases/latest/"):match("tag/v([%d%.]+)")
+    local version = github_tag "https://github.com/sharkdp/numbat/releases/latest" : gsub("v", "")
     if version ~= curr_version then
         fs.with_tmpdir(function(tmp)
             download("https://github.com/sharkdp/numbat/releases/download/v"..version.."/numbat-v"..version.."-x86_64-unknown-linux-musl.tar.gz", tmp/"numbat.tar.gz")

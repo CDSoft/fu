@@ -38,7 +38,7 @@ end
 if install_latest_neovim then
     if FORCE or not fs.is_file(HOME/".local/bin/nvim") then
         local neovim_url = "https://github.com/neovim/neovim/releases"
-        local neovim_version = read { "curl", "-Ls", "-o /dev/null", '-w "%{url_effective}"', neovim_url/"latest" } : basename()
+        local neovim_version = github_tag(neovim_url/"latest")
         local latest_url = neovim_url/"download"/neovim_version/"nvim-linux-x86_64.tar.gz"
         local curr_version = read { HOME/".local/bin/nvim", "--version", "|| true" } : words()[2]
         if neovim_version ~= curr_version then
