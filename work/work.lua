@@ -5,6 +5,7 @@ dnf_install "dnf-plugins-core"
 
 dnf_install [[
     astyle
+    execstack
 ]]
 
 -- AWS
