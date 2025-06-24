@@ -601,7 +601,7 @@ use "yetone/avante.nvim" {
     opts = {
         -- add any opts here
         provider = ai_provider,
-        vendors = {
+        providers = {
             mistral = {
                 __inherited_from = "openai",
                 api_key_name = "%(myconf.MISTRAL_API_KEY)",
