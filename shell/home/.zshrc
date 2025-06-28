@@ -78,16 +78,19 @@ precmd_functions+=(precmd_set_win_title)
 preexec_functions+=(preexec_set_win_title)
 
 # Foot/Xfce terminal shell integration
-precmd() {
-    print -Pn "\e]133;A\e\\"        # naviguate between prompts with Ctrl-Shift z/x (Ctrl-Shift <-/-> with Xfce terminal)
+precmd_OSC_133() {
+    print -n "\e]133;A\e\\"         # naviguate between prompts with Ctrl-Shift z/x (Ctrl-Shift <-/-> with Xfce terminal)
     if ! builtin zle; then
         print -n "\e]133;D\e\\"     # edit the last output with neovim with Ctrl-Shift-g
     fi
 }
-preexec() {
-    print -Pn "\e]133;B\e\\"        # end of prompt
+preexec_OSC_133() {
+    #print -n "\e]133;B\e\\"         # end of prompt
     print -n "\e]133;C\e\\"         # edit the last output with neovim with Ctrl-Shift-g
 }
+
+precmd_functions+=(precmd_OSC_133)
+preexec_functions+=(preexec_OSC_133)
 
 # https://github.com/zsh-users/zsh-syntax-highlighting
 
