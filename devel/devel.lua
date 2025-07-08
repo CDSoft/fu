@@ -88,6 +88,12 @@ if UPDATE or not fs.is_file(HOME/".local/bin/ypp") then
     run { "cd", FU_PATH/"ypp", "&& bang && ninja install" }
 end
 
+-- yreq
+if UPDATE or not fs.is_file(HOME/".local/lib/yreq.lua") then
+    gitclone "https://codeberg.org/cdsoft/yreq"
+    run { "cd", FU_PATH/"yreq", "&& bang && ninja install" }
+end
+
 -- asciinema and termsvg
 dnf_install "asciinema"
 if UPDATE or not fs.is_file(HOME/".local/bin/termsvg") then
