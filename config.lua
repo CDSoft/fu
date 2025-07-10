@@ -71,7 +71,7 @@ CONFIGURATIONS = {
 }
 
 PARAMETERS = {
-    { "RFKILL",         _, _, _, P },
+    { "RFKILL",         D, _, _, P },
     { "NUMLOCK",        D, _, V, P },
     { "WALLPAPER",      D, _, _, _ },
     { "START_VLC",      _, _, _, _ },
