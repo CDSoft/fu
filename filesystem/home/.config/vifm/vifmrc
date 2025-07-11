@@ -146,6 +146,7 @@ plugin load
 
 command! df df -h %m 2> /dev/null
 command! diff nvim -d %f %F
+command! meld meld %f %F
 command! zip zip -r %c.zip %f
 command! run !! ./%f
 command! make !!make %a
