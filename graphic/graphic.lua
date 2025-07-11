@@ -23,3 +23,8 @@ if fs.is_file(HOME/".config/vlc/vlcrc") then
         return vlcrc:gsub('#?one%-instance=[01]', "one-instance=1")
     end)
 end
+
+-- Only Office
+dnf_install [[
+    https://github.com/ONLYOFFICE/DesktopEditors/releases/latest/download/onlyoffice-desktopeditors.x86_64.rpm
+]]
