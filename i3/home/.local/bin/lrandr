@@ -36,7 +36,7 @@ local layouts = {
     right = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], screen_scale[secondary_screen], "--right-of", primary_screen) end,
     above = function() xrandr("--output", secondary_screen, "--mode", screen_resolution[secondary_screen], screen_scale[secondary_screen], "--above", primary_screen) end,
 }
-layouts.top = layout.above
+layouts.top = layouts.above
 
 local current_name = nil
 for s in io.popen("xrandr"):lines() do
