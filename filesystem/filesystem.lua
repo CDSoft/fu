@@ -14,6 +14,7 @@ dnf_install [[
     cryfs
     p7zip p7zip-gui p7zip-plugins
     mc vifm
+    doublecmd doublecmd-qt6
     pmount
     exfatprogs fuse-exfat
     syslinux
