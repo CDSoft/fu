@@ -31,7 +31,7 @@ CONFIGURATIONS = {
     { "rust",           _, _, _, _ },
     { "shell",          D, L, V, P },
     { "network",        D, L, V, P },
-    { "syncthing",      D, L, _, _ },
+    { "syncthing",      D, L, _, P },
     { "nextcloud",      _, _, _, _ },
     { "filesystem",     D, L, V, P },
     { "devel",          D, L, V, P },
