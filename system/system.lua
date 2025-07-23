@@ -61,3 +61,12 @@ end)
 db:once(FORCE, "inotify_limits_configured", function()
     run "sudo sysctl -q -p /etc/sysctl.d/99-inotify_limits.conf"
 end)
+
+-- Cockpit (see https://cockpit-project.org/running)
+db:once(FORCE, "cockpit_configured", function()
+    dnf_install "cockpit"
+    run "sudo systemctl enable --now cockpit.socket"
+    -- Open the firewall if necessary:
+    --run "sudo firewall-cmd --add-service=cockpit"
+    --run "sudo firewall-cmd --add-service=cockpit --permanent"
+end)
