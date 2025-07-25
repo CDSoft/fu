@@ -50,6 +50,7 @@ pip_install [[
     appdirs
     awscli
     click
+    GitPython
     google-api-python-client
     google-auth-httplib2
     google-auth-oauthlib
