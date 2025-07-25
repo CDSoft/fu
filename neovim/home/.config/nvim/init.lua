@@ -376,7 +376,7 @@ use "neovim/nvim-lspconfig" {
 
         vim.diagnostic.config {
             --virtual_text = true,    -- all messages at the end of the line
-            virtual_lines = true,   -- one message per line after the current line
+            virtual_lines = not vim.g.vscode,   -- one message per line after the current line
         }
 
         vim.api.nvim_create_autocmd('LspAttach', {
