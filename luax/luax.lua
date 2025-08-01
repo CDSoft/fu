@@ -1,4 +1,13 @@
-dnf_install "gcc gcc-c++"
+dnf_install [[
+    gcc gcc-c++
+    curl
+    luarocks
+]]
+
+luarocks [[
+    luasocket
+    luasec
+]]
 
 -- Ninja
 if UPDATE or not fs.is_file(HOME/".local/bin/ninja") then
