@@ -79,6 +79,30 @@ vim.o.termguicolors = true
 vim.o.background = "dark"
 vim.cmd.colorscheme "lunaperche"
 
+-- Some corrections after applying lunaprche
+local colors = {
+    -- Couleurs de fond
+    bg = "black",           -- Fond principal
+    bg_alt = "#181825",       -- Fond alternatif
+    -- CORRECTION: Numéros de ligne plus clairs
+    line_number = "#9399b2",      -- Plus clair que l'original
+    line_number_current = "#dde6f4", -- Ligne actuelle bien visible
+    -- CORRECTION: Bordures de fenêtre avec fond approprié
+    win_separator = "#585b70",    -- Couleur du séparateur
+}
+local function hl(group) return function(opts) vim.api.nvim_set_hl(0, group, opts) end end
+-- Interface de base
+hl "Normal"       { fg = colors.fg,                  bg = colors.bg }
+hl "NormalFloat"  { fg = colors.fg,                  bg = colors.bg_alt }
+hl "NormalNC"     { fg = colors.fg_alt,              bg = colors.bg }
+-- CORRECTION: Numéros de ligne améliorés
+hl "LineNr"       { fg = colors.line_number,         bg = colors.bg }
+hl "CursorLineNr" { fg = colors.line_number_current, bg = colors.bg, bold = true }
+-- CORRECTION: Bordures de fenêtre corrigées
+hl "WinSeparator" { fg = colors.win_separator,       bg = colors.bg }
+hl "VertSplit"    { fg = colors.win_separator,       bg = colors.bg }
+hl "FloatBorder"  { fg = colors.win_separator,       bg = colors.bg_alt }
+
 use "norcalli/nvim-colorizer.lua" {
     config = function()
         require'colorizer'.setup(
