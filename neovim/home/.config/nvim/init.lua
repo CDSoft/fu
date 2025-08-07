@@ -781,8 +781,10 @@ vim.o.cursorline = true
 vim.o.cursorcolumn = false
 vim.o.equalalways = false -- do not resize other windows when splitting
 
+vim.o.winborder = "rounded"
 vim.o.laststatus = 3
 vim.o.number = true
+vim.o.relativenumber = false
 vim.o.numberwidth = 4
 vim.o.ruler = true
 vim.o.showcmd = true
