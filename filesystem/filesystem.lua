@@ -57,3 +57,9 @@ if UPDATE or not fs.is_file(HOME/".local/bin/lzip") then
     gitclone "https://codeberg.org/cdsoft/lzip-builder"
     run { "cd", FU_PATH/"lzip-builder", "&& bang && ninja install" }
 end
+
+-- dedup
+if UPDATE or not fs.is_file(HOME/".local/bin/dedup") then
+    gitclone "https://codeberg.org/cdsoft/dedup"
+    run { "cd", FU_PATH/"dedup", "&& bang && ninja install" }
+end
