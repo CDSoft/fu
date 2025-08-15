@@ -37,6 +37,8 @@ if cwd:has_prefix(root) then
         local next_id = 1 + (ids:maximum() or 0)
         local new_note = F{ next_id, "-", (#arg>0 and F.unwords(arg) or "New note")..".md" } : unwords()
 
+        fs.write(new_note, "# "..F.unwords(arg).."\n\n")
+
         sh.run { os.getenv"EDITOR", F.show(new_note) }
         vifm(cwd)
 
