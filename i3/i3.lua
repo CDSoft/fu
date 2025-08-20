@@ -92,6 +92,19 @@ end
 install_font("SourceCodePro", "SauceCodeProNerdFont-Regular.ttf")
 install_font("FiraCode", "FiraCodeNerdFont-Regular.ttf")
 
+dnf_install [[
+    google-roboto-condensed-fonts
+    google-roboto-fonts
+    google-roboto-mono-fonts
+    google-roboto-slab-fonts
+    fontawesome-6-brands-fonts
+    fontawesome-6-free-fonts
+    fontawesome-fonts-all
+    fontawesome-fonts-web
+    fontawesome4-fonts
+    fontawesome4-fonts-web
+]]
+
 -- FontAweome
 --[[
 local function install_fontawesome()
