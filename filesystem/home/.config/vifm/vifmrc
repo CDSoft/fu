@@ -191,6 +191,9 @@ command! mc !mc %d %D
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.  There is also %FOREGROUND, which is useful for entering passwords.
 
+" Text files, source code...
+filetype {*.c,*.h,*.lua,*.md,*.sh} nvim %f
+
 " PCAP
 filextype {*.pcap}
     \ { Open with a custom PCAP viewer }
