@@ -1,6 +1,5 @@
 dnf_install [[
     git git-gui gitk qgit gitg tig git-lfs
-    git-delta
     subversion
     clang llvm clang-tools-extra llvm-devel clang-devel lld-devel
     cppcheck

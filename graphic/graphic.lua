@@ -6,7 +6,7 @@ dnf_install [[
     libreoffice libreoffice-langpack-fr libreoffice-help-fr
     vokoscreenNG
     simple-scan
-    evince okular mupdf
+    evince mupdf
     atril
     xournal
     curl

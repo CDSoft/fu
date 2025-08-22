@@ -14,13 +14,12 @@ dnf_install [[
     cryfs
     p7zip p7zip-gui p7zip-plugins
     mc vifm
-    doublecmd doublecmd-qt6
     pmount
     exfatprogs fuse-exfat
     syslinux
     cryptsetup
     squashfs-tools squashfuse
-    baobab ncdu qdirstat
+    ncdu
     xz unrar lzip lz4
     archivemount sshfs curlftpfs
     fuse-zip
