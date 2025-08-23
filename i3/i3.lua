@@ -28,6 +28,7 @@ dnf_install [[
     fira-code-fonts
     google-droid-sans-mono-fonts
     dejavu-sans-mono-fonts
+    jetbrains-mono-fonts-all
     rofi
     rofi-themes
     fontawesome-fonts-web

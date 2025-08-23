@@ -61,6 +61,14 @@ family = "%(FONT)"
 style = "%(FONT_VARIANT)"
 
 ####################################################################
+# Bell
+####################################################################
+
+[bell]
+duration = 100
+color = "#ff0000"
+
+####################################################################
 # Selection
 ####################################################################
 
@@ -95,34 +103,34 @@ hide_when_typing = false
 # Keyboard
 ####################################################################
 
+[keyboard]
+bindings = [
+
 # let NumpadEnter and Return behave identically (see https://unix.stackexchange.com/questions/703899/two-enter-keys-are-behaving-differently)
-[[keyboard.bindings]]
-chars = "\r"
-key = "NumpadEnter"
+{ key="NumpadEnter", chars="\r" },
 
-[[keyboard.bindings]]
-action = "ScrollToTop"
-key = "Home"
-mode = "Vi|~Search"
-mods = "Control"
+{ key = "N",         mods = "Control",                             action = "SpawnNewInstance" },
+{ key = "Home",      mods = "Control",       mode = "Vi|~Search",  action = "ScrollToTop" },
+{ key = "End",       mods = "Control",       mode = "Vi|~Search",  action = "ScrollToBottom" },
+{ key = "PageUp",                            mode = "Vi|~Search",  action = "ScrollPageUp" },
+{ key = "PageDown",                          mode = "Vi|~Search",  action = "ScrollPageDown" },
 
-[[keyboard.bindings]]
-action = "ScrollToBottom"
-key = "End"
-mode = "Vi|~Search"
-mods = "Control"
+# https://github.com/alacritty/alacritty/issues/5850
+# Use ctrl-shift-up and ctrl-shift-down to jump to previous/next prompt in scrollback
+# !!! ctrl-shift-down does not seem to work !!! use n and shift-n to navigate after ctrl-shift-up
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "ToggleViMode" },
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchBackward" },
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", chars = "> .*" },
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchConfirm" },
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          action = "SearchBackward" },
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          chars = "> .*" },
+{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          action = "SearchConfirm" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "ToggleViMode" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchForward" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", chars = "> .*" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchConfirm" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          action = "SearchForward" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          chars = "> .*" },
+{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          action = "SearchConfirm" },
 
-[[keyboard.bindings]]
-action = "ScrollPageUp"
-key = "PageUp"
-mode = "Vi|~Search"
-
-[[keyboard.bindings]]
-action = "ScrollPageDown"
-key = "PageDown"
-mode = "Vi|~Search"
-
-[[keyboard.bindings]]
-action = "SpawnNewInstance"
-key = "N"
-mods = "Command"
+]
