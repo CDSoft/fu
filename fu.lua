@@ -223,18 +223,24 @@ function installed(cmd)
     return (os.execute("hash "..I(cmd).." 2>/dev/null"))
 end
 
-function download(url, dest)
+function try_download(url, dest)
     local sh = require "sh"
     log("download %s", url)
     dnf_install "curl"
     if not dest then
-        return assert(sh.read("curl", "-sSL", I(url)))
+        return sh.read("curl", "-sSLf", I(url))
     end
-    local ok, msg = sh.run("curl", "-sSL", I(url), "-o", dest)
+    local ok, msg = sh.run("curl", "-sSLf", I(url), "-o", dest)
     if not ok then
         fs.remove(dest)
-        error(msg)
     end
+    return ok, msg
+end
+
+function download(url, dest)
+    local content, err = try_download(url, dest)
+    if not content then error(err) end
+    return content
 end
 
 function github_tag(url)

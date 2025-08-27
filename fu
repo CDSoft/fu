@@ -23,7 +23,7 @@
 
 export PREFIX=~/.local
 
-( hash git && hash gcc && hash g++) 2>/dev/null || sudo dnf install git gcc gcc-c++
+( hash git && hash gcc && hash g++ && hash curl && hash minisign ) 2>/dev/null || sudo dnf install git gcc gcc-c++ curl minisign
 
 [ -x $PREFIX/bin/ninja ] || (
     NINJA_URL="https://codeberg.org/cdsoft/ninja-builder"

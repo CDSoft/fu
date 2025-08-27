@@ -1,34 +1,33 @@
 if UPDATE or not installed "zig" or not installed "zls" then
 
-    local ZIG_VERSION = "0.14.1" -- undefine for autodetection
+    local sys = require "sys"
+
+    local ZIG_VERSION = "0.14.1"
+    local ZIG_KEY = "RWSGOq2NVecA2UPNdBUZykf1CCb147pkmdtYxgb3Ti+JO/wCYvhbAb/U"
+
+    dnf_install "curl minisign"
 
     -- zig
     do
-        local ZIG_URL = "https://ziglang.org/download/"
-        local ZIG_ARCHIVE = nil
-        local ZIG_DIR
-        if not ZIG_VERSION then
-            local index = download(ZIG_URL)
-            index:gsub([[(https://ziglang%.org/download/[0-9.]+/(zig%-linux%-x86_64%-[0-9.]+)%.tar%.xz)]], function(url, name)
-                if not ZIG_ARCHIVE then
-                    ZIG_ARCHIVE = url
-                    ZIG_DIR = name
-                end
-            end)
-            assert(ZIG_ARCHIVE and ZIG_DIR, "Can not determine Zig version")
-            ZIG_VERSION = ZIG_ARCHIVE:match("/([%d%.]+)/")
-        else
-            ZIG_ARCHIVE = "https://ziglang.org/download/"..ZIG_VERSION.."/zig-x86_64-linux-"..ZIG_VERSION..".tar.xz"
-        end
         local curr_version = installed "zig" and read("zig version")
-
         if ZIG_VERSION ~= curr_version then
             fs.mkdirs(HOME/".local/opt")
-            download(ZIG_ARCHIVE, "~/.local/opt"/fs.basename(ZIG_ARCHIVE))
+            local mirrors = download "https://ziglang.org/download/community-mirrors.txt" : lines() : shuffle()
+            local tarball = "zig-"..sys.arch.."-"..sys.os.."-"..ZIG_VERSION..".tar.xz"
+            run { "rm -f", "~/.local/opt"/tarball, "~/.local/opt"/tarball..".minisig" }
+            for _, mirror in ipairs(mirrors) do
+                try_download(mirror.."/"..tarball, HOME/".local/opt"/tarball)
+                if fs.is_file(HOME/".local/opt"/tarball) then
+                    download(mirror.."/"..tarball..".minisig", HOME/".local/opt"/tarball..".minisig")
+                    run { "minisign", "-Vm", HOME/".local/opt"/tarball, "-x", HOME/".local/opt"/tarball..".minisig", "-P", ZIG_KEY }
+                    break
+                end
+            end
+            assert(fs.is_file(HOME/".local/opt"/tarball))
             run { "rm -rf", "~/.local/opt/zig"/ZIG_VERSION }
             run { "mkdir -p", "~/.local/opt/zig"/ZIG_VERSION }
-            run { "tar xJf", "~/.local/opt"/fs.basename(ZIG_ARCHIVE), "-C", "~/.local/opt/zig"/ZIG_VERSION, "--strip-components 1" }
-            run { "rm -f", "~/.local/opt"/fs.basename(ZIG_ARCHIVE) }
+            run { "tar xJf", "~/.local/opt"/tarball, "-C", "~/.local/opt/zig"/ZIG_VERSION, "--strip-components 1" }
+            run { "rm -f", "~/.local/opt"/tarball, "~/.local/opt"/tarball..".minisig" }
         end
         run { "ln -f -s", "~/.local/opt/zig"/ZIG_VERSION/"zig", "~/.local/bin/zig" }
     end

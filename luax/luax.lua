@@ -1,6 +1,7 @@
 dnf_install [[
     gcc gcc-c++
     curl
+    minisign
     luarocks
 ]]
 
