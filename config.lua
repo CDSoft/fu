@@ -76,7 +76,7 @@ PARAMETERS = {
     { "WALLPAPER",      D, _, _, _ },
     { "START_VLC",      _, _, _, _ },
     { "THUNDERBIRD",    D, _, _, _ },
-    { "PICOM",          D, _, _, P },
+    { "PICOM",          _, _, _, _ },
     { "GHOSTTY",        _, _, _, _ },
     { "CLAUDE_AI",      _, _, _, _ },
     { "MISTRAL_AI",     _, _, _, _ },

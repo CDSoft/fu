@@ -313,7 +313,7 @@ do
     -- xfce4-notifyd
     -- xfconf-query -c xfce4-notifyd -lv
     F[[
-        /theme                          Greybird
+        /theme                          Mint-Y
     ]] : trim() : lines() : foreach(function(line)
         local param, value = line:trim():split("%s+", 1):unpack()
         run { "xfconf-query -c xfce4-notifyd", "-p", param, "-n", "-t", xfce_type(value), "-s", string.format("%q", I(value)) }
