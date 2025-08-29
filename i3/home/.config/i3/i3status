@@ -7,20 +7,20 @@ bar {
     mode              dock
     status_command    i3status -c ~/.config/i3/status
     colors {
-        background #666666
+        background %(THEME=="dark" and "#000000" or "#666666")
         statusline #ffffff
         separator #666666
         # color class      border  background text
-%(I3_THEME == "green" and [[
+%(I3_THEME == "green" and I[[
         focused_workspace  #4c9978 #287755    #ffffff
         active_workspace   #333333 #5f6a67    #ffffff
-        inactive_workspace #333333 #444444    #888888
+        inactive_workspace #333333 %(THEME=="dark" and "#222222" or "#444444")    #888888
         urgent_workspace   #2f3a34 #900000    #ffffff
         binding_mode       #2f3a34 #900000    #ffffff
-]] or [[
+]] or I[[
         focused_workspace  #4c7899 #285577    #ffffff
         active_workspace   #333333 #5f676a    #ffffff
-        inactive_workspace #333333 #444444    #888888
+        inactive_workspace #333333 %(THEME=="dark" and "#222222" or "#444444")    #888888
         urgent_workspace   #2f343a #900000    #ffffff
         binding_mode       #2f343a #900000    #ffffff
 ]])
