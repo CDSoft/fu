@@ -118,19 +118,20 @@ bindings = [
 # https://github.com/alacritty/alacritty/issues/5850
 # Use ctrl-shift-up and ctrl-shift-down to jump to previous/next prompt in scrollback
 # !!! ctrl-shift-down does not seem to work !!! use n and shift-n to navigate after ctrl-shift-up
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "ToggleViMode" },
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchBackward" },
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", chars = "> .*" },
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchConfirm" },
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          action = "SearchBackward" },
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          chars = "> .*" },
-{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          action = "SearchConfirm" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "ToggleViMode" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchForward" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", chars = "> .*" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchConfirm" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          action = "SearchForward" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          chars = "> .*" },
-{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          action = "SearchConfirm" },
+# Currently disabled, conflicts with vim and tmux works better
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "ToggleViMode" },
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchBackward" },
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", chars = "> .*" },
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchConfirm" },
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          action = "SearchBackward" },
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          chars = "> .*" },
+#{ key = "ArrowUp",   mods = "Control|Shift", mode = "Vi",          action = "SearchConfirm" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "ToggleViMode" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchForward" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", chars = "> .*" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "~Vi|~Search", action = "SearchConfirm" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          action = "SearchForward" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          chars = "> .*" },
+#{ key = "ArrowDown", mods = "Control|Shift", mode = "Vi",          action = "SearchConfirm" },
 
 ]
