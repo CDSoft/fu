@@ -49,6 +49,7 @@ dnf_install [[
     glfw-devel glm-devel glew-devel
     libtool
     tokei
+    pcre-devel
 ]]
 
 -- git
