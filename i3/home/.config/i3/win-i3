@@ -8,4 +8,3 @@ tiling_drag modifier titlebar
 # Show fzf windows above fullscreen windows
 popup_during_fullscreen all
 
-

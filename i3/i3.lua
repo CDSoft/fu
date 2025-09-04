@@ -260,6 +260,16 @@ if install_foot_from_sources then
     end
 end
 
+-- find_cursor
+if FORCE or not fs.is_file(HOME/".local/bin/find-cursor") then
+    gitclone "https://github.com/arp242/find-cursor"
+    run {
+        "cd", FU_PATH/"find-cursor",
+        "&&",
+        "PREFIX=~/.local make all install",
+    }
+end
+
 -- https://docs.xfce.org/xfce/xfconf/xfconf-query#listing_properties
 do
     local function xfce_type(value)

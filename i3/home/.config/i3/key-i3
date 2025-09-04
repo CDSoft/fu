@@ -25,3 +25,7 @@ bindsym Shift+Print             exec ksnip -r
 # Screenshots with gimp
 #bindsym Print                   exec screenshot root
 #bindsym $win+Print              exec screenshot active
+
+# Show the mouse cursor position
+bindsym $mod+s exec find-cursor --color red --size 192 --distance 32 --grow
+
