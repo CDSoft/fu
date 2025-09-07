@@ -508,6 +508,7 @@ use "neovim/nvim-lspconfig" {
                         --library = vim.api.nvim_get_runtime_file("", true),
                         checkThirdParty = false,
                         library = {
+                            '%(FU_PATH)/luax/.build/lib',
                             '%(FU_PATH)/luax/libluax/complex',
                             '%(FU_PATH)/luax/libluax/crypt',
                             '%(FU_PATH)/luax/libluax/curl',
