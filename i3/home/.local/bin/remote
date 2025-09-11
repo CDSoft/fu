@@ -14,8 +14,7 @@ remote = {
 filemanager = "vifm %left %right"
 mount_point = "/mnt/%s"
 
-cfg = {}
-assert(loadfile(os.getenv"HOME".."/.myconf", "t", cfg))()
+cfg = require "import" (os.getenv"HOME".."/.myconf")
 
 assert(type(cfg.remote) == "table", "~/.myconf: remote configuration not defined")
 filemanager = cfg.remote.filemanager or filemanager
