@@ -262,6 +262,12 @@ end
 
 -- find_cursor
 if FORCE or not fs.is_file(HOME/".local/bin/find-cursor") then
+    dnf_install [[
+        libXext-devel
+        libXdamage-devel
+        libXrender-devel
+        libXext-devel
+    ]]
     gitclone "https://github.com/arp242/find-cursor"
     run {
         "cd", FU_PATH/"find-cursor",
