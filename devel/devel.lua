@@ -110,3 +110,8 @@ end
 do
     dnf_install "python3-gtts"
 end
+
+-- Claude Code
+if CLAUDE_CODE then
+    npm_global_install "@anthropic-ai/claude-code"
+end

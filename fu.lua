@@ -219,6 +219,20 @@ function npm_install(names)
     end
 end
 
+function npm_global_install(names)
+    names = I(names):words()
+    local new_packages = names:filter(function(name) return UPDATE or not db.npm[name] end)
+    if #new_packages > 0 then
+        local new_names = new_packages : unwords()
+        log("npm global install %s", new_names)
+        fs.mkdir(HOME/".npm-global")
+        run "npm config set prefix '~/.npm-global'"
+        run { "cd && npm install -g", names }
+        new_packages : foreach(function(name) db.npm[name] = true end)
+        db:save()
+    end
+end
+
 function installed(cmd)
     return (os.execute("hash "..I(cmd).." 2>/dev/null"))
 end

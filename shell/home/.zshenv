@@ -1,6 +1,6 @@
 # Environment variables
 
-export PATH=~/.local/bin:~/bin:$PATH
+export PATH=~/.local/bin:~/bin:~/.npm-global/bin:$PATH
 
 export EDITOR=nvim
 export VISUAL=nvim
