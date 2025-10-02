@@ -62,6 +62,7 @@ pip_install [[
     pydantic
     PyQt6
     python-can
+    qdarkstyle
     scipy
     tftpy
     tqdm
