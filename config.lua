@@ -2,7 +2,7 @@ TIMEZONE = "Europe/Paris"
 KEYMAP   = "fr"
 LOCALE   = "fr_FR.UTF-8"
 
-THEME        = "light" -- "light", "dark"
+THEME        = "dark" -- "light", "dark"
 I3_THEME     = "green" -- "blue" (default), "green"
 
 FONT_VARIANT = "Medium"

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <channel name="xfce4-panel" version="1.0">
   <property name="panels" type="uint" value="1">
@@ -13,7 +13,6 @@
         <value type="int" value="4"/>
         <value type="int" value="5"/>
         <value type="int" value="6"/>
-        <value type="int" value="7"/>
         <value type="int" value="8"/>
         <value type="int" value="9"/>
         <value type="int" value="10"/>
@@ -47,20 +46,19 @@
       <property name="size-max" type="uint" value="22"/>
       <property name="symbolic-icons" type="bool" value="true"/>
       <property name="known-items" type="array">
+        <value type="string" value="dnfdragora-updater"/>
+        <value type="string" value="indicator-solaar"/>
         <value type="string" value="blueman"/>
         <value type="string" value="nm-applet"/>
       </property>
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="seapplet"/>
+        <value type="string" value="blueberry-tray.py"/>
+        <value type="string" value="applet networkmanager"/>
+        <value type="string" value="volumeicon"/>
+      </property>
     </property>
     <property name="plugin-6" type="string" value="notification-plugin"/>
-    <property name="plugin-7" type="string" value="indicator">
-      <property name="blacklist" type="array">
-        <value type="string" value="libappmenu.so"/>
-      </property>
-      <property name="square-icons" type="bool" value="true"/>
-      <property name="known-indicators" type="array">
-        <value type="string" value="libayatana-application.so"/>
-      </property>
-    </property>
     <property name="plugin-8" type="string" value="power-manager-plugin"/>
     <property name="plugin-9" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
@@ -72,6 +70,8 @@
     </property>
     <property name="plugin-10" type="string" value="clock">
       <property name="digital-format" type="string" value=" %d %b, %H:%M "/>
+      <property name="digital-time-format" type="string" value=" %d %b, %H:%M "/>
+      <property name="digital-layout" type="uint" value="3"/>
     </property>
   </property>
   <property name="configver" type="int" value="2"/>
