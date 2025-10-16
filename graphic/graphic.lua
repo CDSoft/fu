@@ -25,6 +25,8 @@ if fs.is_file(HOME/".config/vlc/vlcrc") then
 end
 
 -- Only Office
+--[===[
 dnf_install [[
     https://github.com/ONLYOFFICE/DesktopEditors/releases/latest/download/onlyoffice-desktopeditors.x86_64.rpm
 ]]
+--]===]
