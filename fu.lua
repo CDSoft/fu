@@ -299,6 +299,7 @@ local function install_package(package)
         return res
     end
     fs.ls(package/"home/**", true) : filter(fs.is_file) : foreach(function(file)
+        if file:ext() == ".ignore" then return end
         local name = file:drop(#(package/"home/"))
         local dest = HOME/name
         fs.mkdirs(dest:dirname())
@@ -311,6 +312,7 @@ local function install_package(package)
         end
     end)
     fs.ls(package/"root/**", true) : filter(fs.is_file) : foreach(function(file)
+        if file:ext() == ".ignore" then return end
         local name = file:drop(#(package/"root/"))
         local dest = "/"..name
         local content = assert(fs.read(file))

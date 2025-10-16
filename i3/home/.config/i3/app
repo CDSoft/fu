@@ -3,7 +3,7 @@
 
 %(when(WALLPAPER) [[exec --no-startup-id every 1h wallpaper_of_the_day]])
 
-exec --no-startup-id xfsettingsd
+#exec --no-startup-id xfsettingsd
 
 exec --no-startup-id wait_for_waybar nm-applet
 exec --no-startup-id wait_for_waybar blueman-applet
