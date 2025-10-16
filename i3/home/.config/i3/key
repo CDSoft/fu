@@ -10,8 +10,8 @@ bindsym $mod+Shift+Return exec cd "`xpwd.lua`" && st -e tmux
 
 # Filemanagers
 bindsym $mod+$ctrl+Return exec cd "`xpwd.lua`" && $terminal -e vifm
-bindsym $mod+$alt+Return exec cd "`xpwd.lua`" && thunar
-#bindsym $mod+$alt+Return exec cd "`xpwd.lua`" && pcmanfm --new-win
+#bindsym $mod+$alt+Return exec cd "`xpwd.lua`" && thunar
+bindsym $mod+$alt+Return exec cd "`xpwd.lua`" && pcmanfm --new-win
 
 # scratchpad
 # move the currently focused window to the scratchpad
