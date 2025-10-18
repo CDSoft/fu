@@ -2,7 +2,7 @@ if UPDATE or not installed "zig" or not installed "zls" then
 
     local sys = require "sys"
 
-    local ZIG_VERSION = "0.14.1"
+    local ZIG_VERSION = "0.15.2"
     local ZIG_KEY = "RWSGOq2NVecA2UPNdBUZykf1CCb147pkmdtYxgb3Ti+JO/wCYvhbAb/U"
 
     dnf_install "curl minisign"
